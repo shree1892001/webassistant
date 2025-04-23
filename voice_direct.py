@@ -399,16 +399,16 @@ class VoiceAssistant:
         if search_match:
             query = search_match.group(1)
 
-            context = self._get_page_context()
-            search_selectors = self._get_llm_selectors("find search input field", context)
+            context = await self._get_page_context()
+            search_selectors = await self._get_llm_selectors("find search input field", context)
 
             for selector in search_selectors:
                 try:
-                    if self.page.locator(selector).count() > 0:
-                        self._retry_type(selector, query, "search query")
-                        self.page.locator(selector).press("Enter")
+                    if await self.page.locator(selector).count() > 0:
+                        await self._retry_type(selector, query, "search query")
+                        await self.page.locator(selector).press("Enter")
                         self.speak(f"🔍 Searching for '{query}'")
-                        self.page.wait_for_timeout(3000)
+                        await self.page.wait_for_timeout(3000)
                         return True
                 except Exception as e:
                     print(f"Error with search selector {selector}: {e}")
