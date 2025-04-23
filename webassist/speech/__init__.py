@@ -1,0 +1,3 @@
+"""
+Speech module for WebAssist
+"""
