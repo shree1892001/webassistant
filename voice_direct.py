@@ -156,6 +156,7 @@ class VoiceAssistant:
 
             # Define fallback selectors to use only if LLM fails
             fallback_email_selectors = [
+                '#floating_outlined3',
                 'input[type="email"]',
                 'input[name="email"]',
                 'input[id*="email"]',
@@ -253,8 +254,17 @@ class VoiceAssistant:
                             self.speak(f"Found login button with LLM selector. Clicking to reveal form...")
                             await self.page.locator(selector).click()
                             login_button_clicked = True
-                            # Wait for form to appear
-                            await self.page.wait_for_timeout(2000)
+                            # Wait for form to appear with specific selectors for the form shown in the HTML
+                            self.speak("Waiting for login form to appear...")
+                            try:
+                                # Wait for specific elements from the provided HTML
+                                await self.page.wait_for_selector('.signup-card-container, #floating_outlined3, #floating_outlined15, #signInButton',
+                                                               timeout=5000)
+                                self.speak("Login form is now visible")
+                            except Exception as e:
+                                print(f"Error waiting for login form: {e}")
+                                # Fallback to a simple timeout
+                                await self.page.wait_for_timeout(3000)
                             break
                     except Exception as e:
                         print(f"Error clicking login button {selector}: {e}")
@@ -269,8 +279,17 @@ class VoiceAssistant:
                                 self.speak(f"Found login button with fallback selector. Clicking to reveal form...")
                                 await self.page.locator(selector).click()
                                 login_button_clicked = True
-                                # Wait for form to appear
-                                await self.page.wait_for_timeout(2000)
+                                # Wait for form to appear with specific selectors for the form shown in the HTML
+                                self.speak("Waiting for login form to appear...")
+                                try:
+                                    # Wait for specific elements from the provided HTML
+                                    await self.page.wait_for_selector('.signup-card-container, #floating_outlined3, #floating_outlined15, #signInButton',
+                                                                   timeout=5000)
+                                    self.speak("Login form is now visible")
+                                except Exception as e:
+                                    print(f"Error waiting for login form: {e}")
+                                    # Fallback to a simple timeout
+                                    await self.page.wait_for_timeout(3000)
                                 break
                         except Exception as e:
                             print(f"Error clicking fallback login button {selector}: {e}")
@@ -347,6 +366,11 @@ class VoiceAssistant:
 
                 # Define fallback selectors
                 fallback_submit_selectors = [
+                    '#signInButton',  # Specific ID from the provided HTML
+                    'button[id="signInButton"]',
+                    'button:has-text("Sign In")',
+                    '.signup-btn',  # Class from the provided HTML
+                    '.vstate-button',  # Class from the provided HTML
                     'button[type="submit"]',
                     'input[type="submit"]',
                     'button:has-text("Login")',
@@ -418,9 +442,10 @@ class VoiceAssistant:
             return False
 
         # Handle "enter email" command
+        # First check for email and password pattern
         enter_email_match = re.search(r'enter (?:email|email address)\s+(\S+)\s+and (?:password|pass)\s+(\S+)', command, re.IGNORECASE)
         if not enter_email_match:
-            # Try more flexible patterns
+            # Try more flexible patterns for email and password
             enter_patterns = [
                 r'(?:enter|input|type)\s+(?:email|email address)?\s*(\S+)\s+(?:and|with)\s+(?:password|pass|p[a-z]*)?\s*(\S+)',
                 r'(?:fill|fill in)\s+(?:with)?\s*(?:email|username)?\s*(\S+)\s+(?:and|with)\s*(?:password|pass|p[a-z]*)?\s*(\S+)'
@@ -431,7 +456,117 @@ class VoiceAssistant:
                 if enter_email_match:
                     break
 
-        if enter_email_match:
+        # If no match for email+password, check for just email
+        email_only_match = None
+        if not enter_email_match:
+            email_only_patterns = [
+                r'enter (?:email|email address)\s+(\S+@\S+)',
+                r'(?:enter|input|type|fill)\s+(?:ema[a-z]+|email address)?\s*(\S+@\S+)',  # Handle typos like 'emaol'
+                r'(?:email|ema[a-z]+|email address)\s+(\S+@\S+)',  # Handle typos like 'emaol'
+                r'(?:enter|input|type|fill)\s+(?:email|ema[a-z]+)\s+(\S+)',  # Catch any word after email command
+                r'(?:email|ema[a-z]+)\s+(\S+)'  # Catch any word after email
+            ]
+
+            for pattern in email_only_patterns:
+                print(f"DEBUG: Trying email pattern: {pattern}")
+                email_only_match = re.search(pattern, command, re.IGNORECASE)
+                if email_only_match:
+                    print(f"DEBUG: Email pattern matched: {pattern}")
+                    break
+
+        if email_only_match:
+            # Handle email-only case
+            email = email_only_match.group(1)
+            self.speak(f"Entering email address: {email}")
+
+            # Get the current page context
+            context = await self._get_page_context()
+
+            # First try to use LLM to generate selectors
+            print("Using LLM to generate selectors for email field...")
+            email_selectors = await self._get_llm_selectors("find email or username input field", context)
+
+            # Define fallback selectors to use only if LLM fails
+            fallback_email_selectors = [
+                '#floating_outlined3',  # Specific ID from the provided HTML
+                'input[id="floating_outlined3"]',
+                'label:has-text("Email") + input',
+                'label:has-text("Email") ~ input',
+                'input[type="email"]',
+                'input[name="email"]',
+                'input[id*="email"]',
+                'input[placeholder*="email"]',
+                'input[type="text"][name*="user"]',
+                'input[id*="user"]',
+                # Add more generic selectors that might work on any site
+                'input',  # Try any input field
+                'input[type="text"]',  # Try any text input
+                'form input:first-child',  # First input in a form
+                'form input',  # Any input in a form
+                '.form-control',  # Bootstrap form control
+                'input.form-control',  # Bootstrap input
+                'input[autocomplete="email"]',  # Input with email autocomplete
+                'input[autocomplete="username"]'  # Input with username autocomplete
+            ]
+
+            # First try with just LLM selectors
+            all_email_selectors = email_selectors.copy() if email_selectors else []
+
+            # Try to fill the email field using LLM selectors first
+            print(f"DEBUG: Trying LLM email selectors: {all_email_selectors}")
+            email_found = False
+            for selector in all_email_selectors:
+                try:
+                    if await self.page.locator(selector).count() > 0:
+                        await self._retry_type(selector, email, "email address")
+                        email_found = True
+                        break
+                except Exception as e:
+                    print(f"Error with email selector {selector}: {e}")
+                    continue
+
+            # If LLM selectors didn't work for email, try fallback selectors
+            if not email_found and fallback_email_selectors:
+                print("LLM email selectors didn't work, trying fallback selectors...")
+                print(f"DEBUG: Fallback email selectors: {fallback_email_selectors}")
+
+                # First, let's check which selectors actually match elements
+                matching_selectors = []
+                for selector in fallback_email_selectors:
+                    try:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            matching_selectors.append(f"{selector} (matches {count} elements)")
+                    except Exception as e:
+                        print(f"Error checking fallback email selector {selector}: {e}")
+
+                if matching_selectors:
+                    print(f"DEBUG: Found matching selectors: {matching_selectors}")
+                else:
+                    print("DEBUG: No matching selectors found on the page")
+
+                # Now try to use the selectors to fill the email field
+                for selector in fallback_email_selectors:
+                    try:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            print(f"DEBUG: Trying to fill email using selector: {selector}")
+                            await self._retry_type(selector, email, "email address")
+                            email_found = True
+                            print(f"DEBUG: Successfully filled email using selector: {selector}")
+                            break
+                    except Exception as e:
+                        print(f"Error with fallback email selector {selector}: {e}")
+                        continue
+
+            if email_found:
+                self.speak("Email entered successfully")
+                return True
+            else:
+                self.speak("Could not find email field")
+                return False
+
+        elif enter_email_match:
             email, password = enter_email_match.groups()
             self.speak("Entering credentials...")
 
@@ -444,16 +579,34 @@ class VoiceAssistant:
             password_selectors = await self._get_llm_selectors("find password input field", context)
 
             # Define fallback selectors to use only if LLM fails
+            # Include specific selectors from the HTML provided
             fallback_email_selectors = [
+                '#floating_outlined3',  # Specific ID from the provided HTML
+                'input[id="floating_outlined3"]',
+                'label:has-text("Email") + input',
+                'label:has-text("Email") ~ input',
                 'input[type="email"]',
                 'input[name="email"]',
                 'input[id*="email"]',
                 'input[placeholder*="email"]',
                 'input[type="text"][name*="user"]',
-                'input[id*="user"]'
+                'input[id*="user"]',
+                # Add more generic selectors that might work on any site
+                'input',  # Try any input field
+                'input[type="text"]',  # Try any text input
+                'form input:first-child',  # First input in a form
+                'form input',  # Any input in a form
+                '.form-control',  # Bootstrap form control
+                'input.form-control',  # Bootstrap input
+                'input[autocomplete="email"]',  # Input with email autocomplete
+                'input[autocomplete="username"]'  # Input with username autocomplete
             ]
 
             fallback_password_selectors = [
+                '#floating_outlined15',  # Specific ID from the provided HTML
+                'input[id="floating_outlined15"]',
+                'label:has-text("Password") + input',
+                'label:has-text("Password") ~ input',
                 'input[type="password"]',
                 'input[name="password"]',
                 'input[id*="password"]',
@@ -461,7 +614,12 @@ class VoiceAssistant:
                 'input.password',
                 '#password',
                 '[aria-label*="password"]',
-                '[data-testid*="password"]'
+                '[data-testid*="password"]',
+                # Add more generic selectors
+                'input[autocomplete="current-password"]',
+                'input[autocomplete="new-password"]',
+                'form input[type="password"]',
+                'form input:nth-child(2)'  # Often the second input in a form is the password
             ]
 
             # First try with just LLM selectors
@@ -592,11 +750,32 @@ class VoiceAssistant:
             # If LLM selectors didn't work for email, try fallback selectors
             if not email_found and fallback_email_selectors:
                 print("LLM email selectors didn't work, trying fallback selectors...")
+                print(f"DEBUG: Fallback email selectors: {fallback_email_selectors}")
+
+                # First, let's check which selectors actually match elements
+                matching_selectors = []
                 for selector in fallback_email_selectors:
                     try:
-                        if await self.page.locator(selector).count() > 0:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            matching_selectors.append(f"{selector} (matches {count} elements)")
+                    except Exception as e:
+                        print(f"Error checking fallback email selector {selector}: {e}")
+
+                if matching_selectors:
+                    print(f"DEBUG: Found matching selectors: {matching_selectors}")
+                else:
+                    print("DEBUG: No matching selectors found on the page")
+
+                # Now try to use the selectors to fill the email field
+                for selector in fallback_email_selectors:
+                    try:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            print(f"DEBUG: Trying to fill email using selector: {selector}")
                             await self._retry_type(selector, email, "email address")
                             email_found = True
+                            print(f"DEBUG: Successfully filled email using selector: {selector}")
                             break
                     except Exception as e:
                         print(f"Error with fallback email selector {selector}: {e}")
@@ -618,11 +797,32 @@ class VoiceAssistant:
             # If LLM selectors didn't work for password, try fallback selectors
             if not password_found and fallback_password_selectors:
                 print("LLM password selectors didn't work, trying fallback selectors...")
+                print(f"DEBUG: Fallback password selectors: {fallback_password_selectors}")
+
+                # First, let's check which selectors actually match elements
+                matching_selectors = []
                 for selector in fallback_password_selectors:
                     try:
-                        if await self.page.locator(selector).count() > 0:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            matching_selectors.append(f"{selector} (matches {count} elements)")
+                    except Exception as e:
+                        print(f"Error checking fallback password selector {selector}: {e}")
+
+                if matching_selectors:
+                    print(f"DEBUG: Found matching password selectors: {matching_selectors}")
+                else:
+                    print("DEBUG: No matching password selectors found on the page")
+
+                # Now try to use the selectors to fill the password field
+                for selector in fallback_password_selectors:
+                    try:
+                        count = await self.page.locator(selector).count()
+                        if count > 0:
+                            print(f"DEBUG: Trying to fill password using selector: {selector}")
                             await self._retry_type(selector, password, "password")
                             password_found = True
+                            print(f"DEBUG: Successfully filled password using selector: {selector}")
                             break
                     except Exception as e:
                         print(f"Error with fallback password selector {selector}: {e}")
@@ -638,6 +838,18 @@ class VoiceAssistant:
                     self.speak("Could not find password field")
                 return False
 
+        # If we get here, no direct command matched
+        # Try to use LLM to interpret the command
+        print(f"No direct command match for: '{command}'. Trying LLM interpretation...")
+
+        # Check if the command might be related to entering data
+        if re.search(r'(enter|input|type|fill|email|password)', command, re.IGNORECASE):
+            action_data = await self._get_actions(command)
+            if 'actions' in action_data and len(action_data['actions']) > 0:
+                return await self._execute_actions(action_data)
+
+        # If we get here, we couldn't handle the command
+        self.speak(f"I'm not sure how to handle: '{command}'")
         return False
 
     async def _get_llm_selectors(self, task, context):
