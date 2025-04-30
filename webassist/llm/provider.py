@@ -24,6 +24,11 @@ class LLMProvider(ABC):
         """Get selectors from the LLM"""
         pass
 
+    @abstractmethod
+    async def get_actions(self, command: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Get actions for a command based on page context"""
+        pass
+
 
 class LLMProviderFactory:
     """Factory for creating LLM providers"""

@@ -45,7 +45,7 @@ class WebInteractor:
         """Enhanced interaction method with specific support for dialog form dropdowns"""
         if context.action == "select" and "dialog-form-input-field-wizard" in (context.element_classes or []):
             return await self._handle_dropdown(context)
-        
+
         # Existing interaction methods
         interaction_methods = {
             "click": self._handle_click,
@@ -93,7 +93,7 @@ class WebInteractor:
         3. Hidden accessibility elements
         4. Dropdown trigger and panel
         """
-        
+
         return await self.llm_selector.get_structured_guidance(prompt)
 
     async def _handle_click(self, context: InteractionContext) -> bool:
@@ -143,16 +143,16 @@ class WebInteractor:
 
     async def _handle_checkbox(self, context: InteractionContext) -> bool:
         guidance = await self._get_llm_guidance(context)
-        
+
         if context.product_name:
             # Handle product selection specifically
             return await self._select_product(context.product_name, context.value == 'true')
-        
+
         # Default checkbox handling
         for selector in guidance["selectors"]:
             if await self._retry_action(self._toggle_checkbox, selector, context.value, context.purpose):
                 return True
-        
+
         return False
 
     async def _select_product(self, product_name: str, should_check: bool) -> bool:
@@ -160,28 +160,28 @@ class WebInteractor:
         try:
             # Find the product container by its name
             product_selector = f"//div[contains(@class, 'wizard-card-checkbox-text1')]//div[contains(text(), '{product_name}')]/ancestor::div[contains(@class, 'wizard-card-checkbox-container')]"
-            
+
             # Find the checkbox within the product container
             checkbox_selector = f"{product_selector}//div[contains(@class, 'p-checkbox')]"
-            
+
             # Get the checkbox element
             checkbox = await self.page.locator(checkbox_selector).first
-            
+
             # Check if checkbox is already in desired state
             is_checked = await checkbox.evaluate("""el => {
                 return el.classList.contains('p-checkbox-checked')
             }""")
-            
+
             # Only click if the current state doesn't match desired state
             if is_checked != should_check:
                 await checkbox.click()
                 await self.page.wait_for_timeout(500)  # Wait for any animations/updates
-                
+
                 # Verify the change
                 new_state = await checkbox.evaluate("""el => {
                     return el.classList.contains('p-checkbox-checked')
                 }""")
-                
+
                 if new_state == should_check:
                     await self.speaker.speak(f"{'Selected' if should_check else 'Deselected'} {product_name}")
                     return True
@@ -189,9 +189,9 @@ class WebInteractor:
                 # Already in desired state
                 await self.speaker.speak(f"{product_name} is already {'selected' if should_check else 'deselected'}")
                 return True
-                
+
             return False
-            
+
         except Exception as e:
             self.logger.error(f"Failed to select product {product_name}: {str(e)}")
             return False
@@ -205,7 +205,7 @@ class WebInteractor:
             value="true" if should_check else "false",
             product_name=product_name
         )
-        
+
         return await self._handle_checkbox(context)
 
     async def _click_element(self, selector: str, purpose: str) -> bool:
@@ -250,7 +250,7 @@ class WebInteractor:
             # Check for PrimeNG specific classes or attributes
             has_primeng_class = await self.page.locator(selector).evaluate("""
                 el => {
-                    return el.classList.contains('p-dropdown') || 
+                    return el.classList.contains('p-dropdown') ||
                            el.classList.contains('p-dropdown-trigger') ||
                            el.closest('.p-dropdown') !== null;
                 }
@@ -361,7 +361,7 @@ class WebInteractor:
     async def _handle_dropdown(self, context: InteractionContext) -> bool:
         """Handle dropdown selection with specific support for dialog form wizard"""
         guidance = await self._get_llm_guidance(context)
-        
+
         # Primary selectors for the dialog form dropdown
         primary_selectors = [
             f"#{context.element_id}",
@@ -398,7 +398,7 @@ class WebInteractor:
                         # Ensure option is in view and click it
                         await option_elements[0].scroll_into_view_if_needed()
                         await option_elements[0].click()
-                        
+
                         # Verify selection
                         await self.page.wait_for_timeout(500)
                         selected_text = await dropdown.locator('.p-dropdown-label').text_content()
@@ -408,7 +408,7 @@ class WebInteractor:
 
                 # If we get here, the option wasn't found
                 self.logger.warning(f"Option '{context.value}' not found in dropdown {context.element_id}")
-                
+
             except Exception as e:
                 self.logger.error(f"Error handling dropdown {context.element_id}: {str(e)}")
                 continue
@@ -440,7 +440,7 @@ class WebInteractor:
             prompt = f"""
             Analyze this PrimeNG state dropdown interaction:
             Target State: {context.value}
-            
+
             HTML Structure:
             <div class="p-dropdown-panel p-component p-connected-overlay-enter-done">
                 <div class="p-dropdown-header">
@@ -466,26 +466,26 @@ class WebInteractor:
             """
 
             guidance = await self.llm_selector.get_structured_guidance(prompt)
-            
+
             # Execute dropdown interaction steps
             for step in guidance.get("steps", []):
                 action = step.get("action")
                 selector = step.get("selector")
                 value = step.get("value")
-                
+
                 if action == "wait":
                     await self.page.wait_for_selector(selector, state="visible", timeout=5000)
-                
+
                 elif action == "filter":
                     filter_input = await self.page.locator(selector).first
                     await filter_input.fill(value)
                     await self.page.wait_for_timeout(500)  # Wait for filter
-                
+
                 elif action == "click":
                     element = await self.page.locator(selector).first
                     await element.click()
                     await self.page.wait_for_timeout(500)  # Wait for animation
-                
+
                 elif action == "verify":
                     selected_text = await self.page.locator(selector).text_content()
                     if context.value.lower() not in selected_text.lower():
@@ -536,7 +536,7 @@ class WebInteractor:
             action="select",
             value=state_name
         )
-        
+
         return await self._handle_state_selection(context)
 
     # Voice command handler
@@ -544,11 +544,11 @@ class WebInteractor:
         """Handle voice command for state selection"""
         # Match pattern like "select Alabama" or "choose state Alabama"
         state_match = re.search(r'(?:select|choose|pick)\s+(?:state\s+)?(.+)', command, re.IGNORECASE)
-        
+
         if state_match:
             state_name = state_match.group(1).strip()
             return await self.select_state(state_name)
-        
+
         return InteractionResult(
             success=False,
             message=f"Could not parse state from command: {command}"
@@ -620,7 +620,7 @@ class VoiceWebAssistant:
                     const hasHiddenSelect = el.querySelector('.p-hidden-accessible.p-dropdown-hidden-select') !== null;
                     const hasLabel = el.querySelector('.p-dropdown-label') !== null;
                     const hasTrigger = el.querySelector('.p-dropdown-trigger') !== null;
-                    
+
                     return isPDropdown && hasHiddenInput && hasHiddenSelect && hasLabel && hasTrigger;
                 }
             """)
@@ -643,7 +643,7 @@ class VoiceWebAssistant:
                 state='visible',
                 timeout=3000
             )
-            
+
             if not panel_visible:
                 self.logger.error("Dropdown panel did not appear")
                 return False
@@ -670,7 +670,7 @@ class VoiceWebAssistant:
                     # Ensure option is in view
                     await option_element.scroll_into_view_if_needed()
                     await option_element.click()
-                    
+
                     # Verify selection
                     await self.page.wait_for_timeout(500)
                     label_text = await dropdown.locator('.p-dropdown-label').text_content()
@@ -707,6 +707,15 @@ class VoiceWebAssistant:
 
     def browse_website(self, url):
         try:
+            # Special handling for signin URLs
+            if url.startswith('#/signin') or url.startswith('/#/signin') or url == 'https://#/signin':
+                self.speak(f"🌐 Navigating to signin page")
+                # Use the correct URL format for the signin page
+                self.page.goto("https://redberyltest.in/#/signin", wait_until="networkidle", timeout=30000)
+                self.speak(f"📄 Loaded signin page: {self.page.title()}")
+                self._dismiss_popups()
+                return True
+
             if "://" in url:
                 self.speak(f"🌐 Navigating to {url}")
                 self.page.goto(url, wait_until="networkidle", timeout=20000)
@@ -741,8 +750,18 @@ class VoiceWebAssistant:
             return True
         except Exception as e:
             self.speak(f"❌ Navigation failed: {str(e)}")
-            if url.startswith('#') or url.startswith('/#'):
-                if 'signin' in url or 'login' in url:
+            # Special handling for signin URLs if the direct navigation failed
+            if url.startswith('#/signin') or url.startswith('/#/signin') or 'signin' in url:
+                self.speak("Trying alternative approach for signin page...")
+                try:
+                    # Try the known working URL
+                    self.page.goto("https://vstatefilings.com/#/signin", wait_until="networkidle", timeout=20000)
+                    self.speak("Successfully navigated to signin page")
+                    return True
+                except Exception as alt_err:
+                    self.speak(f"Alternative navigation also failed: {str(alt_err)}")
+
+                    # As a last resort, try to find and click login button
                     self.speak("Trying to find login option...")
                     login_selectors = self._get_llm_selectors("find login or sign in link or button",
                                                               self._get_page_context())
@@ -750,10 +769,10 @@ class VoiceWebAssistant:
                         try:
                             if self.page.locator(selector).count() > 0:
                                 self.page.locator(selector).first.click()
-                                self.page.wait_for_timeout(2000)
+                                self.page.wait_for_timeout(10000)
                                 self.speak("Found and clicked login option")
                                 return True
-                        except Exception as click_err:
+                        except Exception:
                             continue
             return False
 
@@ -805,48 +824,314 @@ class VoiceWebAssistant:
 
     def _handle_direct_commands(self, command):
         """Handle common commands directly, using LLM for complex selector generation"""
-        login_match = re.search(r'login with email\s+(\S+)\s+and password\s+(\S+)', command, re.IGNORECASE)
+        # Handle just entering email without submitting
+        enter_email_match = re.search(r'enter\s+(?:email|mail)\s+(\S+)', command, re.IGNORECASE)
+        if enter_email_match:
+            email = enter_email_match.group(1)
+
+            # First check if we need to navigate to the login page
+            url = self.page.url
+            if not ('signin' in url or 'login' in url):
+                self.speak("Navigating to signin page first...")
+                # Navigate to the correct signin URL
+                try:
+                    self.page.goto("https://vstatefilings.com/#/signin", wait_until="networkidle", timeout=20000)
+                    self.speak("Navigated to signin page")
+                    # Wait for the page to load
+                    self.page.wait_for_timeout(5000)
+                except Exception as e:
+                    self.speak(f"Failed to navigate to signin page: {str(e)}")
+                    return False
+
+            # Perform DOM inspection to find form elements
+            form_elements = self._check_for_input_fields()
+            print(f"DOM inspection results: {form_elements}")
+
+            # Define specific selector for email field
+            specific_email_selector = '#floating_outlined3'
+
+            # Try specific selector first
+            email_found = False
+            try:
+                # Check if specific email selector exists
+                if self.page.locator(specific_email_selector).count() > 0:
+                    self._retry_type(specific_email_selector, email, "email address")
+                    email_found = True
+                    print(f"Found email field with specific selector: {specific_email_selector}")
+                    self.speak("Email entered successfully")
+                    return True
+            except Exception as e:
+                print(f"Error with specific email selector: {e}")
+
+            # If specific selector didn't work, try LLM-generated selectors
+            if not email_found:
+                email_selectors = self._get_llm_selectors("find email or username input field", self._get_page_context())
+                # Add fallback selectors
+                fallback_email_selectors = [
+                    'input[type="email"]',
+                    'input[name="email"]',
+                    'input[id*="email"]',
+                    'input[placeholder*="email"]',
+                    'input[type="text"][name*="user"]',
+                    'input[id*="user"]',
+                    'input',  # Generic fallback
+                    'input[type="text"]',
+                    'form input:first-child',
+                    'form input'
+                ]
+
+                for selector in email_selectors + fallback_email_selectors:
+                    try:
+                        if self.page.locator(selector).count() > 0:
+                            self._retry_type(selector, email, "email address")
+                            email_found = True
+                            self.speak("Email entered successfully")
+                            return True
+                    except Exception as e:
+                        print(f"Error with email selector {selector}: {e}")
+                        continue
+
+            if not email_found:
+                self.speak("Could not find element to Enter email address")
+            return email_found
+
+        # More robust login pattern matching to handle typos
+        login_match = re.search(r'login\s+(?:with|wth)?\s*(?:email|mail)?\s+(\S+)\s+(?:and|&)?\s*(?:password|pass|pwd|oassword)?\s+(\S+)', command, re.IGNORECASE)
         if login_match:
             email, password = login_match.groups()
 
+            # First check if we need to navigate to the login page
+            url = self.page.url
+            if not ('signin' in url or 'login' in url):
+                self.speak("Navigating to signin page first...")
+                # Navigate to the correct signin URL
+                try:
+                    self.page.goto("https://vstatefilings.com/#/signin", wait_until="networkidle", timeout=20000)
+                    self.speak("Navigated to signin page")
+                    # Wait for the page to load
+                    self.page.wait_for_timeout(5000)
+                except Exception as e:
+                    self.speak(f"Failed to navigate to signin page: {str(e)}")
+                    return False
+
+            # Now we should be on the login page
+            self.speak("Found login page. Looking for login form...")
+            # Try to find and click login button if needed
+            login_selectors = self._get_llm_selectors("find login or sign in link or button", self._get_page_context())
+            fallback_login_selectors = [
+                'a:has-text("Login")',
+                'a:has-text("Sign in")',
+                'button:has-text("Login")',
+                'button:has-text("Sign in")',
+                '.login-button',
+                '.signin-button',
+                'button.blue-btnnn:has-text("Login/Register")',
+                'a:has-text("Login/Register")'
+            ]
+
+            for selector in login_selectors + fallback_login_selectors:
+                try:
+                    if self.page.locator(selector).count() > 0:
+                        self.page.locator(selector).first.click()
+                        self.speak("Found and clicked login option. Waiting for form to appear...")
+                        self.page.wait_for_timeout(5000)  # Wait for form to appear
+                        break
+                except Exception:
+                    continue
+
+            # Perform DOM inspection to find form elements
+            form_elements = self._check_for_input_fields()
+            print(f"DOM inspection results: {form_elements}")
+
+            # Get page context after potential navigation
             context = self._get_page_context()
 
-            email_selectors = self._get_llm_selectors("find email or username input field", context)
+            # Define specific selectors for known form elements
+            specific_email_selector = '#floating_outlined3'
+            specific_password_selector = '#floating_outlined15'
+            specific_button_selector = '#signInButton'
+
+            # Try JavaScript approach if DOM inspection found the elements
+            if form_elements.get('hasEmailField') or form_elements.get('hasPasswordField'):
+                try:
+                    # Use JavaScript to fill the form directly
+                    self.speak("Using direct DOM manipulation to fill login form...")
+                    js_result = self.page.evaluate(f"""() => {{
+                        try {{
+                            console.log("Starting form fill process...");
+
+                            // Try to find email field
+                            const emailField = document.getElementById('floating_outlined3');
+                            if (emailField) {{
+                                emailField.value = "{email}";
+                                emailField.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                emailField.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                                console.log("Email field filled with:", "{email}");
+                            }} else {{
+                                console.log("Email field not found");
+                                return {{ success: false, error: "Email field not found" }};
+                            }}
+
+                            // Try to find password field
+                            const passwordField = document.getElementById('floating_outlined15');
+                            if (passwordField) {{
+                                passwordField.value = "{password}";
+                                passwordField.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                passwordField.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                                console.log("Password field filled with:", "{password}");
+                            }} else {{
+                                console.log("Password field not found");
+                                return {{ success: false, error: "Password field not found" }};
+                            }}
+
+                            // Try to find submit button
+                            const submitButton = document.getElementById('signInButton');
+                            if (submitButton) {{
+                                submitButton.click();
+                                console.log("Submit button clicked");
+                            }} else {{
+                                console.log("Submit button not found");
+                                return {{ success: true, warning: "Form filled but submit button not found" }};
+                            }}
+
+                            return {{ success: true }};
+                        }} catch (error) {{
+                            console.error("Error in form fill:", error);
+                            return {{ success: false, error: error.toString() }};
+                        }}
+                    }}""")
+
+                    print(f"JavaScript form fill result: {js_result}")
+                    if js_result.get('success'):
+                        self.speak("Login form submitted using direct DOM manipulation")
+                        return True
+                    else:
+                        print(f"JavaScript form fill failed: {js_result.get('error')}")
+                except Exception as e:
+                    print(f"Error with JavaScript form fill: {e}")
+
+            # Try specific selectors first
             email_found = False
-            for selector in email_selectors:
-                try:
-                    if self.page.locator(selector).count() > 0:
-                        self._retry_type(selector, email, "email address")
-                        email_found = True
-                        break
-                except:
-                    continue
+            try:
+                # Check if specific email selector exists
+                if self.page.locator(specific_email_selector).count() > 0:
+                    self._retry_type(specific_email_selector, email, "email address")
+                    email_found = True
+                    print(f"Found email field with specific selector: {specific_email_selector}")
+            except Exception as e:
+                print(f"Error with specific email selector: {e}")
 
-            password_selectors = self._get_llm_selectors("find password input field", context)
-            password_found = False
-            for selector in password_selectors:
-                try:
-                    if self.page.locator(selector).count() > 0:
-                        self._retry_type(selector, password, "password")
-                        password_found = True
-                        break
-                except:
-                    continue
+            # If specific selector didn't work, try LLM-generated selectors
+            if not email_found:
+                email_selectors = self._get_llm_selectors("find email or username input field", context)
+                # Add fallback selectors
+                fallback_email_selectors = [
+                    'input[type="email"]',
+                    'input[name="email"]',
+                    'input[id*="email"]',
+                    'input[placeholder*="email"]',
+                    'input[type="text"][name*="user"]',
+                    'input[id*="user"]',
+                    'input',  # Generic fallback
+                    'input[type="text"]',
+                    'form input:first-child',
+                    'form input'
+                ]
 
-            if email_found and password_found:
-                login_button_selectors = self._get_llm_selectors("find login or sign in button", context)
-                for selector in login_button_selectors:
+                for selector in email_selectors + fallback_email_selectors:
                     try:
                         if self.page.locator(selector).count() > 0:
-                            self._retry_click(selector, "login button")
-                            return True
-                    except:
+                            self._retry_type(selector, email, "email address")
+                            email_found = True
+                            break
+                    except Exception as e:
+                        print(f"Error with email selector {selector}: {e}")
                         continue
 
-                self.speak("Filled login details but couldn't find login button")
+            # Try specific password selector first
+            password_found = False
+            try:
+                # Check if specific password selector exists
+                if self.page.locator(specific_password_selector).count() > 0:
+                    self._retry_type(specific_password_selector, password, "password")
+                    password_found = True
+                    print(f"Found password field with specific selector: {specific_password_selector}")
+            except Exception as e:
+                print(f"Error with specific password selector: {e}")
+
+            # If specific selector didn't work, try LLM-generated selectors
+            if not password_found:
+                password_selectors = self._get_llm_selectors("find password input field", context)
+                # Add fallback selectors
+                fallback_password_selectors = [
+                    'input[type="password"]',
+                    'input[name="password"]',
+                    'input[id*="password"]',
+                    'input[placeholder*="password"]',
+                    'input.password',
+                    '#password',
+                    'form input[type="password"]',
+                    'form input:nth-child(2)'
+                ]
+
+                for selector in password_selectors + fallback_password_selectors:
+                    try:
+                        if self.page.locator(selector).count() > 0:
+                            self._retry_type(selector, password, "password")
+                            password_found = True
+                            break
+                    except Exception as e:
+                        print(f"Error with password selector {selector}: {e}")
+                        continue
+
+            # Try to click the login button if both fields were found
+            if email_found and password_found:
+                # Try specific button selector first
+                button_clicked = False
+                try:
+                    if self.page.locator(specific_button_selector).count() > 0:
+                        self._retry_click(specific_button_selector, "Submit login form")
+                        button_clicked = True
+                        print(f"Clicked button with specific selector: {specific_button_selector}")
+                except Exception as e:
+                    print(f"Error with specific button selector: {e}")
+
+                # If specific selector didn't work, try LLM-generated selectors
+                if not button_clicked:
+                    login_button_selectors = self._get_llm_selectors("find login or sign in button", context)
+                    # Add fallback selectors
+                    fallback_button_selectors = [
+                        'button[type="submit"]',
+                        'input[type="submit"]',
+                        'button:has-text("Login")',
+                        'button:has-text("Sign in")',
+                        'button:has-text("Submit")',
+                        '.login-button',
+                        '.signin-button',
+                        '.submit-button',
+                        'button',
+                        'input[type="button"]'
+                    ]
+
+                    for selector in login_button_selectors + fallback_button_selectors:
+                        try:
+                            if self.page.locator(selector).count() > 0:
+                                self._retry_click(selector, "Submit login form")
+                                button_clicked = True
+                                break
+                        except Exception as e:
+                            print(f"Error with button selector {selector}: {e}")
+                            continue
+
+                if not button_clicked:
+                    self.speak("Filled login details but couldn't find login button")
+
                 return True
             else:
-                self.speak("Could not find all required login fields")
+                if not email_found:
+                    self.speak("Could not find element to Enter email address")
+                if not password_found:
+                    self.speak("Could not find element to Enter password")
                 return False
 
         search_match = re.search(r'search(?:\s+for)?\s+(.+)', command, re.IGNORECASE)
@@ -1090,6 +1375,9 @@ Respond ONLY with a JSON array of selector strings. Example:
             except:
                 pass
 
+            # Perform DOM inspection to find form elements
+            form_elements = self._check_for_input_fields()
+
             return {
                 "title": self.page.title(),
                 "url": self.page.url,
@@ -1097,11 +1385,56 @@ Respond ONLY with a JSON array of selector strings. Example:
                 "html": self._filter_html(self.page.locator("body").inner_html()[:4000]),
                 "input_fields": input_fields,
                 "menu_items": menu_items,
-                "buttons": buttons
+                "buttons": buttons,
+                "form_elements": form_elements
             }
         except Exception as e:
             print(f"Context error: {e}")
             return {}
+
+    def _check_for_input_fields(self):
+        """Check if there are any input fields on the page using direct DOM inspection"""
+        try:
+            # Use JavaScript to check for form elements directly in the DOM
+            form_elements = self.page.evaluate("""() => {
+                // Check for specific elements we know exist in the form
+                const emailField = document.getElementById('floating_outlined3');
+                const passwordField = document.getElementById('floating_outlined15');
+                const signInButton = document.getElementById('signInButton');
+
+                // Check for any input elements
+                const inputs = document.querySelectorAll('input');
+                const forms = document.querySelectorAll('form');
+
+                // Return detailed information
+                return {
+                    hasEmailField: !!emailField,
+                    hasPasswordField: !!passwordField,
+                    hasSignInButton: !!signInButton,
+                    inputCount: inputs.length,
+                    formCount: forms.length,
+                    inputTypes: Array.from(inputs).map(input => input.type || 'unknown'),
+                    inputIds: Array.from(inputs).map(input => input.id || 'no-id'),
+                    formIds: Array.from(forms).map(form => form.id || 'no-id')
+                };
+            }""")
+
+            # Log the results
+            print(f"DOM inspection found {form_elements.get('inputCount', 0)} input elements")
+            print(f"DOM inspection found {form_elements.get('formCount', 0)} form elements")
+            print(f"DOM inspection {'' if form_elements.get('hasEmailField') else 'did not find'} #floating_outlined3")
+            print(f"DOM inspection {'' if form_elements.get('hasPasswordField') else 'did not find'} #floating_outlined15")
+
+            return form_elements
+        except Exception as e:
+            print(f"DOM inspection error: {e}")
+            return {
+                "error": str(e),
+                "inputCount": 0,
+                "formCount": 0,
+                "hasEmailField": False,
+                "hasPasswordField": False
+            }
 
     def _filter_html(self, html):
         return re.sub(
@@ -1931,7 +2264,7 @@ Respond ONLY with JSON in this format:
         """Get LLM guidance for dropdown interaction"""
         prompt = f"""
         Analyze this PrimeNG dropdown interaction scenario:
-        
+
         Target State: {state_name}
         HTML Structure:
         <div class="p-dropdown-panel p-component">
@@ -1941,13 +2274,13 @@ Respond ONLY with JSON in this format:
             <div class="p-dropdown-items-wrapper">
                 <ul class="p-dropdown-items">
                     <li class="p-dropdown-item" aria-label="StateName">
-        
+
         Generate a detailed interaction plan with:
         1. Precise CSS/aria selectors for each element
         2. Step-by-step interaction sequence
         3. Verification methods
         4. Fallback strategies
-        
+
         Return as JSON with this structure:
         {{
             "steps": [
@@ -2040,7 +2373,7 @@ Respond ONLY with JSON in this format:
             action="select",
             value=state_name
         )
-        
+
         return await self.select_state_from_dropdown(state_name)
 
 
@@ -2050,8 +2383,9 @@ if __name__ == "__main__":
 
     load_dotenv()
 
-    # Get API key from environment variables
-    gemini_api_key = API_KEY_3
+    # Get API key from environment variables or use default
+    DEFAULT_API_KEY = "AIzaSyAvNz1x-OZl3kUDEm4-ZhwzJJy1Tqq6Flg"
+    gemini_api_key = os.environ.get("GEMINI_API_KEY", DEFAULT_API_KEY)
 
     if not gemini_api_key:
         print("❌ Error: GEMINI_API_KEY environment variable not set.")

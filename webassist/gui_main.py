@@ -102,11 +102,24 @@ async def initialize_assistant():
         return False
 
 
+async def cleanup():
+    """Clean up resources properly"""
+    try:
+        # Close any open browser sessions
+        if hasattr(assistant, 'interactor'):
+            if hasattr(assistant.interactor, 'context'):
+                await assistant.interactor.context.close()
+            if hasattr(assistant.interactor, 'browser'):
+                await assistant.interactor.browser.close()
+            if hasattr(assistant.interactor, 'playwright'):
+                await assistant.interactor.playwright.stop()
+    except Exception as e:
+        print(f"Error during cleanup: {e}")
+
 def on_closing():
     """Handle window closing"""
-    if assistant:
-        # Run the close method in a separate thread
-        threading.Thread(target=lambda: asyncio.run(assistant.close())).start()
+    # Run cleanup in a separate thread
+    threading.Thread(target=lambda: asyncio.run(cleanup())).start()
     root.destroy()
 
 
@@ -148,3 +161,4 @@ def create_gui():
 
 if __name__ == "__main__":
     create_gui()
+

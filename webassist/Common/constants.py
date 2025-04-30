@@ -2,6 +2,14 @@
 Constants used throughout the WebAssist package
 """
 
+
+
+
+# Configuration
+DEFAULT_START_URL = "https://www.google.com"
+EXIT_COMMANDS = ["exit", "quit"]
+HELP_COMMAND = "help"
+
 # API Keys (should be moved to environment variables or config file in production)
 DEFAULT_API_KEY ="AIzaSyAvNz1x-OZl3kUDEm4-ZhwzJJy1Tqq6Flg"
 API_KEY_1 ="AIzaSyBdgesVDKSwGPoJrF0lh5sA4iRWJOEUQwc"

@@ -69,30 +69,26 @@ Menu Items Found:
 Relevant HTML:
 {context.get('html', '')[:1000]}
 
-IMPORTANT: If this appears to be a PrimeNG component (classes containing p-dropdown, p-component, etc.),
-prioritize selectors that target PrimeNG specific elements:
-- Dropdown: .p-dropdown, .p-dropdown-trigger
-- Panel: .p-dropdown-panel
-- Items: .p-dropdown-item, .p-dropdown-items li
-- Filter: .p-dropdown-filter
+Return ONLY a JSON array of selector strings."""
 
-Respond ONLY with a JSON array of selector strings. Example:
-["selector1", "selector2", "selector3", "selector4", "selector5"]
-"""
-
-            # Generate the response
-            response = await self.generate_content(full_prompt)
-
-            # Extract the selectors
-            selectors_match = re.search(r'\[.*\]', response.text, re.DOTALL)
-            if selectors_match:
-                selectors_json = selectors_match.group(0)
-                selectors = json.loads(selectors_json)
-                return selectors[:5]
-            else:
-                return []
+            response = await self.model.generate_content(full_prompt)
+            
+            # Handle both string and structured responses
+            if isinstance(response.text, str):
+                try:
+                    # Try to parse as JSON
+                    selectors = json.loads(response.text)
+                    if isinstance(selectors, list):
+                        return selectors
+                    return []
+                except json.JSONDecodeError:
+                    # If not valid JSON, split by newlines and clean up
+                    return [s.strip() for s in response.text.split('\n') if s.strip()]
+            
+            return []
+            
         except Exception as e:
-            print(f"Selector generation error: {e}")
+            print(f"Error generating selectors: {e}")
             return []
 
     def _format_input_fields(self, input_fields: List[Dict[str, str]]) -> str:
@@ -114,3 +110,92 @@ Respond ONLY with a JSON array of selector strings. Example:
             submenu_indicator = " (has submenu)" if item.get("has_submenu") else ""
             result += f"{idx + 1}. {item.get('text', '')}{submenu_indicator}\n"
         return result
+
+    def _format_buttons(self, buttons: List[Dict[str, Any]]) -> str:
+        """Format buttons for LLM prompt"""
+        result = ""
+        for idx, button in enumerate(buttons):
+            result += f"{idx + 1}. {button.get('text', '')} - "
+            result += f"id: {button.get('id', '')}, "
+            result += f"class: {button.get('class', '')}, "
+            result += f"type: {button.get('type', '')}\n"
+        return result
+
+    async def get_actions(self, command: str, context: Dict[str, Any]) -> Dict[str, Any]:
+        """Get actions for a command based on page context"""
+        try:
+            # Format the context information
+            input_fields_info = ""
+            if "input_fields" in context and context["input_fields"]:
+                input_fields_info = "Input Fields Found:\n"
+                input_fields_info += self._format_input_fields(context["input_fields"])
+
+            menu_items_info = ""
+            if "menu_items" in context and context["menu_items"]:
+                menu_items_info = "Menu Items Found:\n"
+                menu_items_info += self._format_menu_items(context["menu_items"])
+
+            buttons_info = ""
+            if "buttons" in context and context["buttons"]:
+                buttons_info = "Buttons Found:\n"
+                buttons_info += self._format_buttons(context["buttons"])
+
+            # Create the prompt
+            prompt = f"""Analyze the web page and generate precise Playwright selectors to complete: "{command}".
+
+Selector Priority:
+1. ID (input#email, input#password)
+2. Type and Name (input[type='email'], input[name='email'])
+3. ARIA labels ([aria-label='Search'])
+4. Data-testid ([data-testid='login-btn'])
+5. Button text (button:has-text('Sign In'))
+6. Semantic CSS classes (.login-button, .p-menuitem)
+7. Input placeholder (input[placeholder='Email'])
+
+For tiered menus:
+- Parent menus: .p-menuitem, [role='menuitem']
+- Submenu items: .p-submenu-list .p-menuitem, ul[role='menu'] [role='menuitem']
+- For dropdown/select interactions: Use 'select_option' action when appropriate
+
+Current Page:
+Title: {context.get('title', 'N/A')}
+URL: {context.get('url', 'N/A')}
+Visible Text: {context.get('text', '')[:500]}
+
+{input_fields_info}
+{menu_items_info}
+{buttons_info}
+
+Relevant HTML:
+{context.get('html', '')}
+
+Respond ONLY with JSON in this format:
+{{
+  "actions": [
+    {{
+      "action": "click|type|navigate|hover|select_option|check|uncheck|toggle",
+      "selector": "CSS selector",
+      "text": "(only for type)",
+      "purpose": "description",
+      "url": "(only for navigate actions)",
+      "option": "(only for select_option)",
+      "fallback_selectors": ["alternate selector 1", "alternate selector 2"]
+    }}
+  ]
+}}"""
+
+            # Generate the response
+            response = await self.generate_content(prompt)
+            print("🔍 Raw LLM response:\n", response.text)
+
+            # Parse the response
+            json_str = re.search(r'\{.*\}', response.text, re.DOTALL)
+            if not json_str:
+                raise ValueError("No JSON found in response")
+
+            json_str = json_str.group(0)
+            return json.loads(json_str)
+        except Exception as e:
+            print(f"Action generation error: {e}")
+            return {"error": str(e)}
+
