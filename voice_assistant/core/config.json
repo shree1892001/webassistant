@@ -1,0 +1,22 @@
+{
+    "speech_rate": 150,
+    "speech_volume": 1.0,
+    "browser_headless": true,
+    "browser_width": 1280,
+    "browser_height": 720,
+    "filter_timeout": 5000,
+    "max_retries": 3,
+    "verify_text": true,
+    "verify_clear": true,
+    "browser": {
+        "browser_type": "chromium",
+        "headless": false
+    },
+    "voice": {
+        "rate": 150,
+        "volume": 1.0,
+        "voice": "default"
+    },
+    "input_mode": "text",
+    "plugins": {}
+}

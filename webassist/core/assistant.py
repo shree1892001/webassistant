@@ -158,7 +158,7 @@ class Assistant:
         prompt = self._create_prompt(command, page_context)
 
         try:
-            response = await self.llm_provider.generate_content(prompt)
+            response = self.llm_provider.generate_content(prompt)
             print("🔍 Raw LLM response:\n", response.text)
             return self._parse_response(response.text)
         except Exception as e:

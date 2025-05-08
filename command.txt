@@ -1,0 +1,4 @@
+# Enter your commands here, one per line
+# The assistant will process the last non-empty, non-comment line
+# Type 'exit' or 'quit' to exit
+# Type 'voice' or 'text' to switch modes

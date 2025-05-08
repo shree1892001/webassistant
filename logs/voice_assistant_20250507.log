@@ -1,0 +1,1583 @@
+2025-05-07 09:19:08,659 - __main__ - INFO - [voice_direct_modular.py:67] - Logging system initialized
+2025-05-07 09:19:15,755 - __main__ - INFO - [voice_direct_modular.py:67] - Logging system initialized
+2025-05-07 09:19:17,150 - __main__ - INFO - [voice_direct_modular.py:129] - No .env file found, using environment variables
+2025-05-07 09:19:17,233 - __main__ - INFO - [voice_direct_modular.py:134] - Using default API key from constants.py
+2025-05-07 09:19:17,244 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing browser...
+2025-05-07 09:19:18,505 - __main__ - INFO - [voice_direct_modular.py:217] - Starting Playwright
+2025-05-07 09:19:38,208 - __main__ - INFO - [voice_direct_modular.py:219] - Launching Chromium browser
+2025-05-07 09:19:42,272 - __main__ - INFO - [voice_direct_modular.py:143] - Browser initialized successfully
+2025-05-07 09:19:42,273 - __main__ - INFO - [voice_direct_modular.py:150] - Initializing speech components...
+2025-05-07 09:19:43,099 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 09:19:43,103 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 09:19:48,314 - __main__ - INFO - [voice_direct_modular.py:163] - Speech synthesizer initialized
+2025-05-07 09:19:48,316 - __main__ - INFO - [voice_direct_modular.py:168] - Speech recognizer initialized in text mode
+2025-05-07 09:19:48,318 - __main__ - INFO - [voice_direct_modular.py:170] - Speech components initialized successfully
+2025-05-07 09:19:48,319 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing browser utils...
+2025-05-07 09:19:48,321 - __main__ - INFO - [voice_direct_modular.py:181] - Browser utils initialized
+2025-05-07 09:19:48,322 - __main__ - INFO - [voice_direct_modular.py:187] - Initializing LLM utils...
+2025-05-07 09:20:01,881 - __main__ - INFO - [voice_direct_modular.py:196] - LLM utils initialized
+2025-05-07 09:20:01,882 - __main__ - INFO - [voice_direct_modular.py:229] - Initializing interaction handlers...
+2025-05-07 09:20:01,882 - __main__ - INFO - [voice_direct_modular.py:240] - Navigation handler initialized
+2025-05-07 09:20:01,884 - __main__ - INFO - [voice_direct_modular.py:246] - Selection handler initialized
+2025-05-07 09:20:01,884 - __main__ - INFO - [voice_direct_modular.py:252] - Form filling handler initialized
+2025-05-07 09:20:01,885 - __main__ - INFO - [voice_direct_modular.py:258] - Specialized handler initialized
+2025-05-07 09:20:01,886 - __main__ - INFO - [voice_direct_modular.py:260] - All handlers initialized successfully
+2025-05-07 09:20:01,887 - __main__ - INFO - [voice_direct_modular.py:205] - Navigating to start URL: https://www.google.com
+2025-05-07 09:20:01,888 - __main__ - INFO - [voice_direct_modular.py:284] - Navigating to: https://www.google.com
+2025-05-07 09:20:04,255 - __main__ - INFO - [voice_direct_modular.py:288] - Page loaded successfully: Google
+2025-05-07 09:20:04,256 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Loaded: Google
+2025-05-07 09:20:04,258 - __main__ - INFO - [voice_direct_modular.py:209] - Voice assistant initialization complete
+2025-05-07 09:20:04,270 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 09:20:04,272 - __main__ - INFO - [voice_direct_modular.py:302] - Processing command: 2
+2025-05-07 09:20:04,276 - __main__ - INFO - [voice_direct_modular.py:467] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 09:20:04,278 - __main__ - INFO - [voice_direct_modular.py:474] - Trying flexible email+password patterns
+2025-05-07 09:20:04,285 - __main__ - INFO - [voice_direct_modular.py:491] - No email+password pattern matched, trying email-only patterns
+2025-05-07 09:20:04,289 - __main__ - INFO - [voice_direct_modular.py:540] - Checking for login pattern
+2025-05-07 09:20:04,291 - __main__ - INFO - [voice_direct_modular.py:545] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 09:20:04,298 - __main__ - INFO - [voice_direct_modular.py:574] - Checking for password-only command
+2025-05-07 09:20:04,301 - __main__ - INFO - [voice_direct_modular.py:594] - Delegating to specialized handler
+2025-05-07 09:20:04,308 - __main__ - INFO - [voice_direct_modular.py:606] - Delegating to form filling handler
+2025-05-07 09:20:04,317 - __main__ - INFO - [voice_direct_modular.py:618] - Delegating to selection handler
+2025-05-07 09:20:04,323 - __main__ - INFO - [voice_direct_modular.py:630] - Delegating to navigation handler
+2025-05-07 09:20:04,327 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 09:20:40,283 - __main__ - INFO - [voice_direct_modular.py:302] - Processing command: go to www.redberyltest.in
+2025-05-07 09:20:40,283 - __main__ - INFO - [voice_direct_modular.py:365] - Navigation command detected
+2025-05-07 09:20:40,284 - __main__ - INFO - [voice_direct_modular.py:369] - Added https:// prefix to URL: https://www.redberyltest.in
+2025-05-07 09:20:40,285 - __main__ - INFO - [voice_direct_modular.py:284] - Navigating to: https://www.redberyltest.in
+2025-05-07 09:20:51,916 - __main__ - INFO - [voice_direct_modular.py:288] - Page loaded successfully: vState Filings
+2025-05-07 09:20:51,917 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Loaded: vState Filings
+2025-05-07 09:21:24,747 - __main__ - INFO - [voice_direct_modular.py:302] - Processing command: enter email shreyas.deodhare@redberyltech.com
+2025-05-07 09:21:24,748 - __main__ - INFO - [voice_direct_modular.py:452] - Email command detected. Extracted email: 'shreyas.deodhare@redberyltech.com', password: None
+2025-05-07 09:21:24,749 - __main__ - INFO - [voice_direct_modular.py:462] - Only email provided in command
+2025-05-07 09:21:24,749 - __main__ - INFO - [voice_direct_modular.py:510] - Processing email-only command with email: shreyas.deodhare@redberyltech.com
+2025-05-07 09:21:24,750 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Entering email: shreyas.deodhare@redberyltech.com
+2025-05-07 09:21:35,117 - __main__ - INFO - [voice_direct_modular.py:514] - Successfully filled email field
+2025-05-07 09:21:35,118 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Email entered successfully
+2025-05-07 09:22:11,897 - __main__ - INFO - [voice_direct_modular.py:302] - Processing command: enter password Shreyas@123
+2025-05-07 09:22:11,898 - __main__ - INFO - [voice_direct_modular.py:467] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 09:22:11,899 - __main__ - INFO - [voice_direct_modular.py:474] - Trying flexible email+password patterns
+2025-05-07 09:22:11,899 - __main__ - INFO - [voice_direct_modular.py:491] - No email+password pattern matched, trying email-only patterns
+2025-05-07 09:22:11,900 - __main__ - INFO - [voice_direct_modular.py:540] - Checking for login pattern
+2025-05-07 09:22:11,901 - __main__ - INFO - [voice_direct_modular.py:545] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 09:22:11,901 - __main__ - INFO - [voice_direct_modular.py:574] - Checking for password-only command
+2025-05-07 09:22:11,902 - __main__ - INFO - [voice_direct_modular.py:581] - Password-only command detected
+2025-05-07 09:22:11,902 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Entering password
+2025-05-07 09:22:11,962 - __main__ - INFO - [voice_direct_modular.py:585] - Successfully filled password field
+2025-05-07 09:22:11,963 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Password entered successfully
+2025-05-07 09:22:35,684 - __main__ - INFO - [voice_direct_modular.py:302] - Processing command: click the sign in button
+2025-05-07 09:22:35,684 - __main__ - INFO - [voice_direct_modular.py:467] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 09:22:35,684 - __main__ - INFO - [voice_direct_modular.py:474] - Trying flexible email+password patterns
+2025-05-07 09:22:35,686 - __main__ - INFO - [voice_direct_modular.py:491] - No email+password pattern matched, trying email-only patterns
+2025-05-07 09:22:35,686 - __main__ - INFO - [voice_direct_modular.py:540] - Checking for login pattern
+2025-05-07 09:22:35,687 - __main__ - INFO - [voice_direct_modular.py:545] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 09:22:35,687 - __main__ - INFO - [voice_direct_modular.py:574] - Checking for password-only command
+2025-05-07 09:22:35,688 - __main__ - INFO - [voice_direct_modular.py:594] - Delegating to specialized handler
+2025-05-07 09:22:35,689 - __main__ - INFO - [voice_direct_modular.py:606] - Delegating to form filling handler
+2025-05-07 09:22:35,689 - __main__ - INFO - [voice_direct_modular.py:618] - Delegating to selection handler
+2025-05-07 09:22:35,690 - __main__ - INFO - [voice_direct_modular.py:630] - Delegating to navigation handler
+2025-05-07 09:22:35,691 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Looking for sign in button...
+2025-05-07 09:22:43,691 - __main__ - INFO - [voice_direct_modular.py:268] - ASSISTANT: Clicked click on sign in button
+2025-05-07 09:22:44,713 - __main__ - INFO - [voice_direct_modular.py:633] - Command handled by navigation handler
+2025-05-07 09:57:49,488 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 09:58:12,685 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 09:58:12,686 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 09:58:12,687 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 09:58:13,198 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 09:58:14,433 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 09:58:18,114 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 09:58:18,115 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 09:58:18,923 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 09:58:18,924 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 09:58:27,370 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 09:58:27,371 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 09:58:27,372 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 09:58:27,374 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 09:58:27,376 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 09:58:27,377 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 09:58:39,741 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 09:58:39,741 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 09:58:39,742 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 09:58:39,743 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 09:58:39,743 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 09:58:39,744 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 09:58:39,745 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 09:58:39,745 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 09:58:39,746 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 09:58:48,812 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 09:58:48,814 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 09:58:48,815 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 09:58:48,822 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:02:42,695 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:02:50,095 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:02:50,096 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:02:50,097 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:02:50,275 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:02:51,295 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:02:53,775 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:02:53,779 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:02:54,119 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:02:54,120 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:02:54,641 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:02:54,642 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:02:54,643 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:02:54,644 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:02:54,645 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:02:54,647 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:03:14,228 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:03:30,381 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:03:30,389 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:03:30,390 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:03:30,910 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:03:32,751 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:03:39,077 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:03:39,079 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:03:39,797 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:03:39,799 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:03:42,979 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:03:42,983 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:03:42,984 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:03:42,987 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:03:42,988 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:03:42,990 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:03:50,512 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:03:50,513 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:03:50,514 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:03:50,515 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:03:50,516 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:03:50,517 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:03:50,517 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:03:50,518 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:03:50,521 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:04:08,821 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:04:08,823 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:04:08,825 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:04:09,101 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:04:42,657 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: go to www.redberyltest.in
+2025-05-07 10:04:42,659 - __main__ - INFO - [voice_direct_modular.py:366] - Navigation command detected
+2025-05-07 10:04:42,660 - __main__ - INFO - [voice_direct_modular.py:370] - Added https:// prefix to URL: https://www.redberyltest.in
+2025-05-07 10:04:42,660 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.redberyltest.in
+2025-05-07 10:04:52,471 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: vState Filings
+2025-05-07 10:04:52,471 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: vState Filings
+2025-05-07 10:05:33,702 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: enter email shreyas.deodhare@redberyltech.com
+2025-05-07 10:05:34,324 - __main__ - INFO - [voice_direct_modular.py:446] - Email command detected. Extracted email: 'shreyas.deodhare@redberyltech.com', password: None
+2025-05-07 10:05:34,325 - __main__ - INFO - [voice_direct_modular.py:455] - Only email provided in command
+2025-05-07 10:05:34,452 - __main__ - INFO - [voice_direct_modular.py:501] - Processing email-only command with email: shreyas.deodhare@redberyltech.com
+2025-05-07 10:05:34,453 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Entering email: shreyas.deodhare@redberyltech.com
+2025-05-07 10:05:47,844 - __main__ - INFO - [voice_direct_modular.py:505] - Successfully filled email field
+2025-05-07 10:05:47,845 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Email entered successfully
+2025-05-07 10:05:57,686 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: enter password Shreyas@123
+2025-05-07 10:05:57,687 - __main__ - INFO - [voice_direct_modular.py:460] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 10:05:57,688 - __main__ - INFO - [voice_direct_modular.py:466] - Trying flexible email+password patterns
+2025-05-07 10:05:57,699 - __main__ - INFO - [voice_direct_modular.py:482] - No email+password pattern matched, trying email-only patterns
+2025-05-07 10:05:57,706 - __main__ - INFO - [voice_direct_modular.py:530] - Checking for login pattern
+2025-05-07 10:05:57,708 - __main__ - INFO - [voice_direct_modular.py:534] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 10:05:57,716 - __main__ - INFO - [voice_direct_modular.py:561] - Checking for password-only command
+2025-05-07 10:05:57,717 - __main__ - INFO - [voice_direct_modular.py:568] - Password-only command detected
+2025-05-07 10:05:57,717 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Entering password
+2025-05-07 10:05:57,790 - __main__ - INFO - [voice_direct_modular.py:572] - Successfully filled password field
+2025-05-07 10:05:57,791 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Password entered successfully
+2025-05-07 10:06:44,335 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: click login button
+2025-05-07 10:06:44,337 - __main__ - INFO - [voice_direct_modular.py:403] - Login command detected
+2025-05-07 10:06:44,337 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Looking for login button...
+2025-05-07 10:06:47,092 - __main__ - INFO - [voice_direct_modular.py:411] - Got page context: URL=https://www.redberyltest.in/#/signin, Title=vState Filings
+2025-05-07 10:06:47,092 - __main__ - INFO - [voice_direct_modular.py:414] - Requesting login button selectors from LLM
+2025-05-07 10:06:49,275 - __main__ - INFO - [voice_direct_modular.py:424] - Raw LLM response for selectors: ```json
+[
+  "#root > div > div > div.MuiBox-root.css-0 > div > div > div > div.MuiBox-root.css-17w97...
+2025-05-07 10:06:49,276 - __main__ - INFO - [voice_direct_modular.py:428] - Attempting to click login button
+2025-05-07 10:09:21,616 - __main__ - INFO - [voice_direct_modular.py:432] - Successfully clicked login button
+2025-05-07 10:09:21,626 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Clicked login button
+2025-05-07 10:22:14,148 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:22:17,111 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:22:17,112 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:22:17,113 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:22:18,208 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:22:28,201 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:22:41,644 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:22:41,647 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:22:43,421 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:22:43,459 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:22:46,944 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:22:46,945 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:22:46,947 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:22:46,948 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:22:46,949 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:22:46,950 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:22:58,110 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:22:58,112 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:22:58,114 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:22:58,150 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:22:58,152 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:22:58,153 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:22:58,156 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:22:58,159 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:22:58,161 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:23:15,693 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:23:15,695 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:23:15,696 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:23:15,804 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:23:40,587 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: vocie
+2025-05-07 10:23:40,599 - __main__ - INFO - [voice_direct_modular.py:460] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 10:23:40,602 - __main__ - INFO - [voice_direct_modular.py:466] - Trying flexible email+password patterns
+2025-05-07 10:23:40,610 - __main__ - INFO - [voice_direct_modular.py:482] - No email+password pattern matched, trying email-only patterns
+2025-05-07 10:23:40,617 - __main__ - INFO - [voice_direct_modular.py:530] - Checking for login pattern
+2025-05-07 10:23:40,629 - __main__ - INFO - [voice_direct_modular.py:534] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 10:23:40,643 - __main__ - INFO - [voice_direct_modular.py:561] - Checking for password-only command
+2025-05-07 10:23:40,658 - __main__ - INFO - [voice_direct_modular.py:580] - Delegating to specialized handler
+2025-05-07 10:23:40,667 - __main__ - INFO - [voice_direct_modular.py:591] - Delegating to form filling handler
+2025-05-07 10:23:40,677 - __main__ - INFO - [voice_direct_modular.py:602] - Delegating to selection handler
+2025-05-07 10:23:40,693 - __main__ - INFO - [voice_direct_modular.py:613] - Delegating to navigation handler
+2025-05-07 10:23:40,708 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 10:28:00,643 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: ravina
+2025-05-07 10:28:00,654 - __main__ - INFO - [voice_direct_modular.py:301] - Processing voice command: ravina
+2025-05-07 10:28:00,657 - __main__ - INFO - [voice_direct_modular.py:346] - No voice-specific command detected, proceeding to regular command processing
+2025-05-07 10:28:00,661 - __main__ - INFO - [voice_direct_modular.py:460] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 10:28:00,665 - __main__ - INFO - [voice_direct_modular.py:466] - Trying flexible email+password patterns
+2025-05-07 10:28:00,668 - __main__ - INFO - [voice_direct_modular.py:482] - No email+password pattern matched, trying email-only patterns
+2025-05-07 10:28:00,672 - __main__ - INFO - [voice_direct_modular.py:530] - Checking for login pattern
+2025-05-07 10:28:00,673 - __main__ - INFO - [voice_direct_modular.py:534] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 10:28:00,674 - __main__ - INFO - [voice_direct_modular.py:561] - Checking for password-only command
+2025-05-07 10:28:00,676 - __main__ - INFO - [voice_direct_modular.py:580] - Delegating to specialized handler
+2025-05-07 10:28:00,679 - __main__ - INFO - [voice_direct_modular.py:591] - Delegating to form filling handler
+2025-05-07 10:28:00,681 - __main__ - INFO - [voice_direct_modular.py:602] - Delegating to selection handler
+2025-05-07 10:28:00,683 - __main__ - INFO - [voice_direct_modular.py:613] - Delegating to navigation handler
+2025-05-07 10:28:00,685 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 10:28:00,688 - __main__ - INFO - [voice_direct_modular.py:259] - Speaking text in voice mode: 'I'm not sure how to process th...' (truncated)
+2025-05-07 10:29:59,843 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:30:03,568 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:30:03,569 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:30:03,571 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:30:03,843 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:30:05,300 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:30:08,857 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:30:08,859 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:30:09,275 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:30:09,278 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:30:10,026 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:30:10,027 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:30:10,029 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:30:10,029 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:30:10,030 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:30:10,031 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:30:25,511 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:30:25,512 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:30:25,513 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:30:25,514 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:30:25,515 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:30:25,516 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:30:25,516 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:30:25,518 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:30:25,519 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:30:29,151 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:30:29,152 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:30:29,153 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:30:29,165 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:35:32,722 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:35:37,532 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:35:37,534 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:35:37,536 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:35:37,941 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:35:40,945 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:35:56,095 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:35:56,097 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:35:59,159 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:35:59,161 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:36:01,448 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:36:01,467 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:36:01,468 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:36:01,502 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:36:01,505 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:36:01,507 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:36:26,491 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:36:26,492 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:36:26,493 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:36:26,494 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:36:26,495 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:36:26,496 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:36:26,497 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:36:26,498 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:36:26,498 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:36:35,611 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:36:35,612 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:36:35,613 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:36:35,660 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:40:36,561 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:40:42,290 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:40:42,292 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:40:42,294 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:40:44,264 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:40:46,986 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:40:52,471 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:40:52,473 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:40:52,953 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:40:52,957 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:40:54,008 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:40:54,010 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:40:54,011 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:40:54,012 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:40:54,013 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:40:54,014 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:41:03,362 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:41:03,364 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:41:03,368 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:41:03,368 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:41:03,371 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:41:03,371 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:41:03,373 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:41:03,373 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:41:03,373 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:41:09,614 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:41:09,616 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:41:09,616 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:41:09,983 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 10:55:46,118 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 10:55:49,813 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 10:55:49,815 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 10:55:49,816 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 10:55:50,386 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 10:55:52,810 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 10:55:56,642 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 10:55:56,646 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 10:55:57,238 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 10:55:57,242 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 10:56:00,261 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 10:56:00,262 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 10:56:00,263 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 10:56:00,264 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 10:56:00,270 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 10:56:00,271 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 10:56:22,292 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 10:56:22,293 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 10:56:22,297 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 10:56:22,299 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 10:56:22,300 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 10:56:22,301 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 10:56:22,302 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 10:56:22,303 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 10:56:22,304 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 10:56:26,135 - __main__ - INFO - [voice_direct_modular.py:275] - Page loaded successfully: Google
+2025-05-07 10:56:26,137 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Loaded: Google
+2025-05-07 10:56:26,139 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 10:56:26,218 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 11:02:41,823 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 11:02:51,630 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 11:02:51,632 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 11:02:51,633 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 11:02:52,488 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 11:03:07,105 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 11:03:22,787 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 11:03:22,789 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 11:04:15,488 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 11:04:16,366 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 11:04:57,667 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 11:04:57,730 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in text mode
+2025-05-07 11:04:57,735 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 11:04:57,736 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 11:04:57,761 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 11:04:57,770 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 11:05:43,653 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 11:05:43,654 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 11:05:43,656 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 11:05:43,658 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 11:05:43,660 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 11:05:43,728 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 11:05:43,730 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 11:05:43,737 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 11:05:43,738 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 11:06:14,079 - __main__ - ERROR - [voice_direct_modular.py:279] - Error navigating to https://www.google.com: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.google.com/", waiting until "load"
+
+2025-05-07 11:06:14,082 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Error navigating to https://www.google.com: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.google.com/", waiting until "load"
+
+2025-05-07 11:06:14,084 - __main__ - INFO - [voice_direct_modular.py:196] - Voice assistant initialization complete
+2025-05-07 11:06:14,218 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 11:06:14,220 - __main__ - INFO - [voice_direct_modular.py:289] - Processing command: '
+2025-05-07 11:06:14,222 - __main__ - INFO - [voice_direct_modular.py:298] - Current input mode: text
+2025-05-07 11:06:14,223 - __main__ - INFO - [voice_direct_modular.py:306] - Processing as text command
+2025-05-07 11:06:14,264 - __main__ - INFO - [voice_direct_modular.py:493] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 11:06:14,275 - __main__ - INFO - [voice_direct_modular.py:499] - Trying flexible email+password patterns
+2025-05-07 11:06:14,291 - __main__ - INFO - [voice_direct_modular.py:515] - No email+password pattern matched, trying email-only patterns
+2025-05-07 11:06:14,304 - __main__ - INFO - [voice_direct_modular.py:563] - Checking for login pattern
+2025-05-07 11:06:14,306 - __main__ - INFO - [voice_direct_modular.py:567] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 11:06:14,758 - __main__ - INFO - [voice_direct_modular.py:594] - Checking for password-only command
+2025-05-07 11:06:15,099 - __main__ - INFO - [voice_direct_modular.py:613] - Delegating to specialized handler
+2025-05-07 11:06:15,285 - __main__ - INFO - [voice_direct_modular.py:624] - Delegating to form filling handler
+2025-05-07 11:06:15,656 - __main__ - INFO - [voice_direct_modular.py:635] - Delegating to selection handler
+2025-05-07 11:06:15,664 - __main__ - INFO - [voice_direct_modular.py:646] - Delegating to navigation handler
+2025-05-07 11:06:15,668 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 11:33:03,090 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 11:34:27,835 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 11:34:27,861 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 11:34:27,865 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 11:34:31,609 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 11:35:09,703 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 11:35:19,046 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 11:35:19,055 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 11:35:20,355 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'C:\\Users\\ACER\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 11:35:20,361 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\comtypes\gen'
+2025-05-07 11:35:22,816 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 11:35:22,821 - __main__ - ERROR - [voice_direct_modular.py:160] - Error initializing speech components: Could not find PyAudio; check installation
+2025-05-07 11:35:22,845 - __main__ - ERROR - [voice_direct_modular.py:162] - Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\speech_recognition\__init__.py", line 103, in get_pyaudio
+    import pyaudio
+ModuleNotFoundError: No module named 'pyaudio'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\webassist\voice_direct_modular.py", line 155, in initialize
+    self.recognizer = create_recognizer(config=speech_config, mode=input_mode, speak_func=self.speak)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\webassist\webassist\voice_assistant\speech\recognizer.py", line 265, in create_recognizer
+    return SRRecognizer(config, speak_func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\webassist\webassist\voice_assistant\speech\recognizer.py", line 32, in __init__
+    self.microphone = sr.Microphone()
+                      ^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\speech_recognition\__init__.py", line 75, in __init__
+    self.pyaudio_module = self.get_pyaudio()
+                          ^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\speech_recognition\__init__.py", line 105, in get_pyaudio
+    raise AttributeError("Could not find PyAudio; check installation")
+AttributeError: Could not find PyAudio; check installation
+
+2025-05-07 11:35:22,849 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 11:35:22,851 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 11:35:22,851 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 11:35:43,444 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 11:35:43,446 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 11:35:43,446 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 11:35:43,448 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 11:35:43,450 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 11:35:43,456 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 11:35:43,460 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 11:35:43,462 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 11:35:43,464 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 11:35:44,349 - __main__ - ERROR - [voice_direct_modular.py:279] - Error navigating to https://www.google.com: Page.goto: Target page, context or browser has been closed
+2025-05-07 11:35:44,349 - __main__ - INFO - [voice_direct_modular.py:255] - ASSISTANT: Error navigating to https://www.google.com: Page.goto: Target page, context or browser has been closed
+2025-05-07 11:35:44,351 - __main__ - INFO - [voice_direct_modular.py:259] - Speaking text in voice mode: 'Error navigating to https://ww...' (truncated)
+2025-05-07 11:37:30,559 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 11:37:57,265 - __main__ - INFO - [voice_direct_modular.py:117] - No .env file found, using environment variables
+2025-05-07 11:37:57,319 - __main__ - INFO - [voice_direct_modular.py:122] - Using default API key from constants.py
+2025-05-07 11:37:57,423 - __main__ - INFO - [voice_direct_modular.py:127] - Initializing browser...
+2025-05-07 11:37:58,103 - __main__ - INFO - [voice_direct_modular.py:204] - Starting Playwright
+2025-05-07 11:38:03,364 - __main__ - INFO - [voice_direct_modular.py:206] - Launching Chromium browser
+2025-05-07 11:38:11,795 - __main__ - INFO - [voice_direct_modular.py:131] - Browser initialized successfully
+2025-05-07 11:38:11,797 - __main__ - INFO - [voice_direct_modular.py:138] - Initializing speech components...
+2025-05-07 11:38:12,459 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'C:\\Users\\ACER\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 11:38:12,461 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\comtypes\gen'
+2025-05-07 11:38:22,379 - __main__ - INFO - [voice_direct_modular.py:151] - Speech synthesizer initialized
+2025-05-07 11:38:22,399 - __main__ - INFO - [voice_direct_modular.py:156] - Speech recognizer initialized in voice mode
+2025-05-07 11:38:22,411 - __main__ - INFO - [voice_direct_modular.py:158] - Speech components initialized successfully
+2025-05-07 11:38:22,413 - __main__ - INFO - [voice_direct_modular.py:164] - Initializing browser utils...
+2025-05-07 11:38:22,426 - __main__ - INFO - [voice_direct_modular.py:169] - Browser utils initialized
+2025-05-07 11:38:22,443 - __main__ - INFO - [voice_direct_modular.py:175] - Initializing LLM utils...
+2025-05-07 11:38:49,591 - __main__ - INFO - [voice_direct_modular.py:183] - LLM utils initialized
+2025-05-07 11:38:49,591 - __main__ - INFO - [voice_direct_modular.py:216] - Initializing interaction handlers...
+2025-05-07 11:38:49,596 - __main__ - INFO - [voice_direct_modular.py:227] - Navigation handler initialized
+2025-05-07 11:38:49,596 - __main__ - INFO - [voice_direct_modular.py:233] - Selection handler initialized
+2025-05-07 11:38:49,598 - __main__ - INFO - [voice_direct_modular.py:239] - Form filling handler initialized
+2025-05-07 11:38:49,599 - __main__ - INFO - [voice_direct_modular.py:245] - Specialized handler initialized
+2025-05-07 11:38:49,605 - __main__ - INFO - [voice_direct_modular.py:247] - All handlers initialized successfully
+2025-05-07 11:38:49,605 - __main__ - INFO - [voice_direct_modular.py:192] - Navigating to start URL: https://www.google.com
+2025-05-07 11:38:49,609 - __main__ - INFO - [voice_direct_modular.py:271] - Navigating to: https://www.google.com
+2025-05-07 11:38:50,180 - asyncio - ERROR - [base_events.py:1765] - Future exception was never retrieved
+future: <Future finished exception=BrokenPipeError(32, 'The pipe is being closed', None, 232, None)>
+Traceback (most recent call last):
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\asyncio\proactor_events.py", line 401, in _loop_writing
+    self._write_fut = self._loop._proactor.send(self._sock, data)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\asyncio\windows_events.py", line 563, in send
+    ov.WriteFile(conn.fileno(), buf)
+BrokenPipeError: [WinError 232] The pipe is being closed
+2025-05-07 11:53:33,723 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 11:57:43,336 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:26:18,357 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:26:40,480 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 12:26:40,508 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 12:26:40,588 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 12:26:41,488 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 12:26:47,127 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 12:27:01,632 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 12:27:01,696 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 12:27:08,649 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'C:\\Users\\ACER\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 12:27:08,933 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'C:\Users\ACER\AppData\Local\Programs\Python\Python311\Lib\site-packages\comtypes\gen'
+2025-05-07 12:27:27,929 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 12:27:28,213 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in voice mode
+2025-05-07 12:27:28,215 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 12:27:28,215 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 12:27:28,215 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 12:27:28,215 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 12:28:15,409 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 12:28:15,469 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 12:28:15,494 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 12:28:15,497 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 12:28:15,499 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 12:28:15,500 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 12:28:15,503 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 12:28:15,504 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 12:28:15,510 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 12:28:32,634 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 12:28:32,638 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 12:28:32,640 - __main__ - INFO - [voice_direct_modular.py:260] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 12:31:18,402 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:31:34,853 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 12:31:34,854 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 12:31:34,856 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 12:31:37,488 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 12:31:55,519 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 12:32:03,462 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 12:32:03,464 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 12:32:04,118 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 12:32:04,118 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 12:32:06,403 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 12:32:09,936 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in voice mode
+2025-05-07 12:32:09,940 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 12:32:09,942 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 12:32:09,942 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 12:32:09,943 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 12:32:45,827 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 12:32:45,829 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 12:32:45,832 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 12:32:45,832 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 12:32:45,834 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 12:32:45,835 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 12:32:45,837 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 12:32:45,839 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 12:32:45,841 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 12:32:59,035 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 12:32:59,036 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 12:32:59,037 - __main__ - INFO - [voice_direct_modular.py:260] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 12:33:43,078 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:33:53,634 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 12:33:53,636 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 12:33:53,636 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 12:33:53,973 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 12:33:55,900 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 12:33:59,738 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 12:33:59,739 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 12:34:00,215 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 12:34:00,216 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 12:34:01,508 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 12:34:01,509 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in text mode
+2025-05-07 12:34:01,510 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 12:34:01,511 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 12:34:01,515 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 12:34:01,518 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 12:34:11,228 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 12:34:11,229 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 12:34:11,234 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 12:34:11,235 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 12:34:11,236 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 12:34:11,237 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 12:34:11,238 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 12:34:11,240 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 12:34:11,241 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 12:34:16,798 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 12:34:16,799 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 12:34:16,800 - __main__ - INFO - [voice_direct_modular.py:197] - Voice assistant initialization complete
+2025-05-07 12:34:16,811 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 12:49:20,719 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:49:44,531 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 12:49:44,534 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 12:49:44,536 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 12:49:45,458 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 12:50:04,505 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 12:50:24,404 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 12:50:24,406 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 12:50:28,444 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 12:50:28,449 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 12:50:31,870 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 12:50:33,322 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in voice mode
+2025-05-07 12:50:33,324 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 12:50:33,325 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 12:50:33,351 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 12:50:33,352 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 12:50:54,490 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 12:51:01,918 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 12:51:01,920 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 12:51:01,921 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 12:51:03,477 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 12:51:09,736 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 12:51:17,144 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 12:51:17,149 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 12:51:17,768 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 12:51:17,769 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 12:51:35,694 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 12:51:35,695 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in text mode
+2025-05-07 12:51:35,696 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 12:51:35,697 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 12:51:35,697 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 12:51:35,703 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 12:52:13,891 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 12:52:13,895 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 12:52:13,899 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 12:52:13,900 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 12:52:13,900 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 12:52:13,901 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 12:52:13,902 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 12:52:13,903 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 12:52:13,904 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 12:52:22,444 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 12:52:22,446 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 12:52:22,449 - __main__ - INFO - [voice_direct_modular.py:197] - Voice assistant initialization complete
+2025-05-07 12:52:22,479 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 14:06:47,316 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 14:07:13,365 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 14:07:13,367 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 14:07:13,368 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 14:07:13,774 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 14:07:16,004 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 14:07:20,517 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 14:07:20,525 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 14:07:21,055 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 14:07:21,057 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 14:07:22,163 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 14:07:22,165 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in text mode
+2025-05-07 14:07:22,168 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 14:07:22,170 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 14:07:22,171 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 14:07:22,172 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 14:07:39,476 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 14:07:39,477 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 14:07:39,478 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 14:07:39,479 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 14:07:39,481 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 14:07:39,482 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 14:07:39,483 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 14:07:39,485 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 14:07:39,488 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 14:07:45,055 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 14:07:45,056 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 14:07:45,058 - __main__ - INFO - [voice_direct_modular.py:197] - Voice assistant initialization complete
+2025-05-07 14:07:45,168 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 14:35:31,923 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:00:39,808 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:01:42,176 - __main__ - INFO - [voice_direct_modular.py:118] - No .env file found, using environment variables
+2025-05-07 15:01:42,376 - __main__ - INFO - [voice_direct_modular.py:123] - Using default API key from constants.py
+2025-05-07 15:01:42,378 - __main__ - INFO - [voice_direct_modular.py:128] - Initializing browser...
+2025-05-07 15:01:46,785 - __main__ - INFO - [voice_direct_modular.py:205] - Starting Playwright
+2025-05-07 15:01:53,586 - __main__ - INFO - [voice_direct_modular.py:207] - Launching Chromium browser
+2025-05-07 15:01:59,971 - __main__ - INFO - [voice_direct_modular.py:132] - Browser initialized successfully
+2025-05-07 15:01:59,973 - __main__ - INFO - [voice_direct_modular.py:139] - Initializing speech components...
+2025-05-07 15:02:02,263 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 15:02:02,266 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 15:02:03,279 - __main__ - INFO - [voice_direct_modular.py:152] - Speech synthesizer initialized
+2025-05-07 15:02:03,279 - __main__ - INFO - [voice_direct_modular.py:157] - Speech recognizer initialized in text mode
+2025-05-07 15:02:03,280 - __main__ - INFO - [voice_direct_modular.py:159] - Speech components initialized successfully
+2025-05-07 15:02:03,281 - __main__ - INFO - [voice_direct_modular.py:165] - Initializing browser utils...
+2025-05-07 15:02:03,287 - __main__ - INFO - [voice_direct_modular.py:170] - Browser utils initialized
+2025-05-07 15:02:03,289 - __main__ - INFO - [voice_direct_modular.py:176] - Initializing LLM utils...
+2025-05-07 15:02:11,721 - __main__ - INFO - [voice_direct_modular.py:184] - LLM utils initialized
+2025-05-07 15:02:11,721 - __main__ - INFO - [voice_direct_modular.py:217] - Initializing interaction handlers...
+2025-05-07 15:02:11,723 - __main__ - INFO - [voice_direct_modular.py:228] - Navigation handler initialized
+2025-05-07 15:02:11,726 - __main__ - INFO - [voice_direct_modular.py:234] - Selection handler initialized
+2025-05-07 15:02:11,727 - __main__ - INFO - [voice_direct_modular.py:240] - Form filling handler initialized
+2025-05-07 15:02:11,729 - __main__ - INFO - [voice_direct_modular.py:246] - Specialized handler initialized
+2025-05-07 15:02:11,729 - __main__ - INFO - [voice_direct_modular.py:248] - All handlers initialized successfully
+2025-05-07 15:02:11,730 - __main__ - INFO - [voice_direct_modular.py:193] - Navigating to start URL: https://www.google.com
+2025-05-07 15:02:11,732 - __main__ - INFO - [voice_direct_modular.py:272] - Navigating to: https://www.google.com
+2025-05-07 15:02:15,659 - __main__ - INFO - [voice_direct_modular.py:276] - Page loaded successfully: Google
+2025-05-07 15:02:15,660 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Loaded: Google
+2025-05-07 15:02:15,662 - __main__ - INFO - [voice_direct_modular.py:197] - Voice assistant initialization complete
+2025-05-07 15:02:15,705 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 15:03:30,587 - __main__ - INFO - [voice_direct_modular.py:296] - Processing command: voice
+2025-05-07 15:03:30,602 - __main__ - INFO - [voice_direct_modular.py:305] - Current input mode: text
+2025-05-07 15:03:30,605 - __main__ - INFO - [voice_direct_modular.py:319] - Processing as text command
+2025-05-07 15:03:30,630 - __main__ - INFO - [voice_direct_modular.py:510] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:03:30,633 - __main__ - INFO - [voice_direct_modular.py:516] - Trying flexible email+password patterns
+2025-05-07 15:03:30,661 - __main__ - INFO - [voice_direct_modular.py:532] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:03:30,729 - __main__ - INFO - [voice_direct_modular.py:580] - Checking for login pattern
+2025-05-07 15:03:30,731 - __main__ - INFO - [voice_direct_modular.py:584] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:03:30,759 - __main__ - INFO - [voice_direct_modular.py:611] - Checking for password-only command
+2025-05-07 15:03:30,798 - __main__ - INFO - [voice_direct_modular.py:630] - Delegating to specialized handler
+2025-05-07 15:03:30,811 - __main__ - INFO - [voice_direct_modular.py:641] - Delegating to form filling handler
+2025-05-07 15:03:30,821 - __main__ - INFO - [voice_direct_modular.py:652] - Delegating to selection handler
+2025-05-07 15:03:30,826 - __main__ - INFO - [voice_direct_modular.py:663] - Delegating to navigation handler
+2025-05-07 15:03:30,831 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 15:03:30,872 - __main__ - INFO - [voice_direct_modular.py:256] - ASSISTANT: Error processing command: 'TextInputRecognizer' object has no attribute '_detect_command_type'
+2025-05-07 15:13:34,434 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:13:49,349 - __main__ - INFO - [voice_direct_modular.py:148] - No .env file found, using environment variables
+2025-05-07 15:13:49,352 - __main__ - INFO - [voice_direct_modular.py:153] - Using default API key from constants.py
+2025-05-07 15:13:49,353 - __main__ - INFO - [voice_direct_modular.py:158] - Initializing browser...
+2025-05-07 15:13:50,186 - __main__ - INFO - [voice_direct_modular.py:235] - Starting Playwright
+2025-05-07 15:13:53,791 - __main__ - INFO - [voice_direct_modular.py:237] - Launching Chromium browser
+2025-05-07 15:14:03,740 - __main__ - INFO - [voice_direct_modular.py:162] - Browser initialized successfully
+2025-05-07 15:14:03,741 - __main__ - INFO - [voice_direct_modular.py:169] - Initializing speech components...
+2025-05-07 15:14:05,527 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 15:14:05,572 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 15:14:07,544 - __main__ - INFO - [voice_direct_modular.py:182] - Speech synthesizer initialized
+2025-05-07 15:14:07,546 - __main__ - INFO - [voice_direct_modular.py:187] - Speech recognizer initialized in text mode
+2025-05-07 15:14:07,547 - __main__ - INFO - [voice_direct_modular.py:189] - Speech components initialized successfully
+2025-05-07 15:14:07,550 - __main__ - INFO - [voice_direct_modular.py:195] - Initializing browser utils...
+2025-05-07 15:14:07,551 - __main__ - INFO - [voice_direct_modular.py:200] - Browser utils initialized
+2025-05-07 15:14:07,568 - __main__ - INFO - [voice_direct_modular.py:206] - Initializing LLM utils...
+2025-05-07 15:14:53,690 - __main__ - INFO - [voice_direct_modular.py:214] - LLM utils initialized
+2025-05-07 15:14:53,694 - __main__ - INFO - [voice_direct_modular.py:247] - Initializing interaction handlers...
+2025-05-07 15:14:53,710 - __main__ - INFO - [voice_direct_modular.py:258] - Navigation handler initialized
+2025-05-07 15:14:53,744 - __main__ - INFO - [voice_direct_modular.py:264] - Selection handler initialized
+2025-05-07 15:14:53,750 - __main__ - INFO - [voice_direct_modular.py:270] - Form filling handler initialized
+2025-05-07 15:14:53,756 - __main__ - INFO - [voice_direct_modular.py:276] - Specialized handler initialized
+2025-05-07 15:14:53,766 - __main__ - INFO - [voice_direct_modular.py:278] - All handlers initialized successfully
+2025-05-07 15:14:53,769 - __main__ - INFO - [voice_direct_modular.py:223] - Navigating to start URL: https://www.google.com
+2025-05-07 15:14:53,771 - __main__ - INFO - [voice_direct_modular.py:302] - Navigating to: https://www.google.com
+2025-05-07 15:15:11,525 - __main__ - INFO - [voice_direct_modular.py:306] - Page loaded successfully: Google
+2025-05-07 15:15:11,527 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Loaded: Google
+2025-05-07 15:15:11,531 - __main__ - INFO - [voice_direct_modular.py:227] - Voice assistant initialization complete
+2025-05-07 15:15:12,658 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 15:16:42,802 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:16:52,954 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:17:00,365 - __main__ - INFO - [voice_direct_modular.py:148] - No .env file found, using environment variables
+2025-05-07 15:17:00,367 - __main__ - INFO - [voice_direct_modular.py:153] - Using default API key from constants.py
+2025-05-07 15:17:00,368 - __main__ - INFO - [voice_direct_modular.py:158] - Initializing browser...
+2025-05-07 15:17:00,700 - __main__ - INFO - [voice_direct_modular.py:235] - Starting Playwright
+2025-05-07 15:17:03,930 - __main__ - INFO - [voice_direct_modular.py:237] - Launching Chromium browser
+2025-05-07 15:17:08,525 - __main__ - INFO - [voice_direct_modular.py:162] - Browser initialized successfully
+2025-05-07 15:17:08,526 - __main__ - INFO - [voice_direct_modular.py:169] - Initializing speech components...
+2025-05-07 15:17:10,079 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 15:17:10,080 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 15:17:11,149 - __main__ - INFO - [voice_direct_modular.py:182] - Speech synthesizer initialized
+2025-05-07 15:17:11,151 - __main__ - INFO - [voice_direct_modular.py:187] - Speech recognizer initialized in text mode
+2025-05-07 15:17:11,153 - __main__ - INFO - [voice_direct_modular.py:189] - Speech components initialized successfully
+2025-05-07 15:17:11,153 - __main__ - INFO - [voice_direct_modular.py:195] - Initializing browser utils...
+2025-05-07 15:17:11,157 - __main__ - INFO - [voice_direct_modular.py:200] - Browser utils initialized
+2025-05-07 15:17:11,161 - __main__ - INFO - [voice_direct_modular.py:206] - Initializing LLM utils...
+2025-05-07 15:17:40,074 - __main__ - INFO - [voice_direct_modular.py:214] - LLM utils initialized
+2025-05-07 15:17:40,079 - __main__ - INFO - [voice_direct_modular.py:247] - Initializing interaction handlers...
+2025-05-07 15:17:40,081 - __main__ - INFO - [voice_direct_modular.py:258] - Navigation handler initialized
+2025-05-07 15:17:40,083 - __main__ - INFO - [voice_direct_modular.py:264] - Selection handler initialized
+2025-05-07 15:17:40,083 - __main__ - INFO - [voice_direct_modular.py:270] - Form filling handler initialized
+2025-05-07 15:17:40,084 - __main__ - INFO - [voice_direct_modular.py:276] - Specialized handler initialized
+2025-05-07 15:17:40,084 - __main__ - INFO - [voice_direct_modular.py:278] - All handlers initialized successfully
+2025-05-07 15:17:40,085 - __main__ - INFO - [voice_direct_modular.py:223] - Navigating to start URL: https://www.google.com
+2025-05-07 15:17:40,086 - __main__ - INFO - [voice_direct_modular.py:302] - Navigating to: https://www.google.com
+2025-05-07 15:18:10,508 - __main__ - INFO - [voice_direct_modular.py:306] - Page loaded successfully: Google
+2025-05-07 15:18:10,547 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Loaded: Google
+2025-05-07 15:18:10,559 - __main__ - INFO - [voice_direct_modular.py:227] - Voice assistant initialization complete
+2025-05-07 15:18:11,310 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 15:21:18,521 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:21:25,955 - __main__ - INFO - [voice_direct_modular.py:148] - No .env file found, using environment variables
+2025-05-07 15:21:25,956 - __main__ - INFO - [voice_direct_modular.py:153] - Using default API key from constants.py
+2025-05-07 15:21:25,956 - __main__ - INFO - [voice_direct_modular.py:158] - Initializing browser...
+2025-05-07 15:21:27,593 - __main__ - INFO - [voice_direct_modular.py:235] - Starting Playwright
+2025-05-07 15:21:33,607 - __main__ - INFO - [voice_direct_modular.py:237] - Launching Chromium browser
+2025-05-07 15:21:39,539 - __main__ - INFO - [voice_direct_modular.py:162] - Browser initialized successfully
+2025-05-07 15:21:39,539 - __main__ - INFO - [voice_direct_modular.py:169] - Initializing speech components...
+2025-05-07 15:21:40,031 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 15:21:40,031 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 15:21:42,631 - __main__ - INFO - [voice_direct_modular.py:182] - Speech synthesizer initialized
+2025-05-07 15:21:42,632 - __main__ - INFO - [voice_direct_modular.py:187] - Speech recognizer initialized in text mode
+2025-05-07 15:21:42,635 - __main__ - INFO - [voice_direct_modular.py:189] - Speech components initialized successfully
+2025-05-07 15:21:42,638 - __main__ - INFO - [voice_direct_modular.py:195] - Initializing browser utils...
+2025-05-07 15:21:42,639 - __main__ - INFO - [voice_direct_modular.py:200] - Browser utils initialized
+2025-05-07 15:21:42,640 - __main__ - INFO - [voice_direct_modular.py:206] - Initializing LLM utils...
+2025-05-07 15:22:03,295 - __main__ - INFO - [voice_direct_modular.py:214] - LLM utils initialized
+2025-05-07 15:22:03,296 - __main__ - INFO - [voice_direct_modular.py:247] - Initializing interaction handlers...
+2025-05-07 15:22:03,297 - __main__ - INFO - [voice_direct_modular.py:258] - Navigation handler initialized
+2025-05-07 15:22:03,298 - __main__ - INFO - [voice_direct_modular.py:264] - Selection handler initialized
+2025-05-07 15:22:03,300 - __main__ - INFO - [voice_direct_modular.py:270] - Form filling handler initialized
+2025-05-07 15:22:03,301 - __main__ - INFO - [voice_direct_modular.py:276] - Specialized handler initialized
+2025-05-07 15:22:03,302 - __main__ - INFO - [voice_direct_modular.py:278] - All handlers initialized successfully
+2025-05-07 15:22:03,303 - __main__ - INFO - [voice_direct_modular.py:223] - Navigating to start URL: https://www.google.com
+2025-05-07 15:22:03,304 - __main__ - INFO - [voice_direct_modular.py:302] - Navigating to: https://www.google.com
+2025-05-07 15:22:20,351 - __main__ - INFO - [voice_direct_modular.py:306] - Page loaded successfully: Google
+2025-05-07 15:22:20,352 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Loaded: Google
+2025-05-07 15:22:20,353 - __main__ - INFO - [voice_direct_modular.py:227] - Voice assistant initialization complete
+2025-05-07 15:22:20,869 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 15:22:37,989 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:151] - 🔄 Domain correction: 'redberyltest' -> 'redberyltest.in'
+2025-05-07 15:22:38,004 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:209] - Command processed: 'go to www.redberyltest.in' -> 'go to www.redberyltest.in.in'
+2025-05-07 15:22:38,006 - __main__ - INFO - [voice_direct_modular.py:323] - Command processed: 'go to www.redberyltest.in' -> 'go to www.redberyltest.in.in'
+2025-05-07 15:22:38,008 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: go to www.redberyltest.in.in
+2025-05-07 15:22:38,011 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:22:38,012 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Navigation
+2025-05-07 15:22:38,014 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:22:38,015 - __main__ - INFO - [voice_direct_modular.py:442] - Navigation command detected
+2025-05-07 15:22:38,017 - __main__ - INFO - [voice_direct_modular.py:446] - URL to navigate to: www.redberyltest.in.in
+2025-05-07 15:22:38,018 - __main__ - INFO - [voice_direct_modular.py:450] - Added https:// prefix to URL: https://www.redberyltest.in.in
+2025-05-07 15:22:38,020 - __main__ - INFO - [voice_direct_modular.py:302] - Navigating to: https://www.redberyltest.in.in
+2025-05-07 15:22:42,428 - __main__ - ERROR - [voice_direct_modular.py:310] - Error navigating to https://www.redberyltest.in.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redberyltest.in.in/
+Call log:
+  - navigating to "https://www.redberyltest.in.in/", waiting until "load"
+
+2025-05-07 15:22:42,429 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Error navigating to https://www.redberyltest.in.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redberyltest.in.in/
+Call log:
+  - navigating to "https://www.redberyltest.in.in/", waiting until "load"
+
+2025-05-07 15:23:41,372 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:151] - 🔄 Domain correction: 'redberyltest' -> 'redberyltest.in'
+2025-05-07 15:23:41,666 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:209] - Command processed: 'go to www.redberyltest' -> 'go to www.redberyltest.in'
+2025-05-07 15:23:41,669 - __main__ - INFO - [voice_direct_modular.py:323] - Command processed: 'go to www.redberyltest' -> 'go to www.redberyltest.in'
+2025-05-07 15:23:41,702 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: go to www.redberyltest.in
+2025-05-07 15:23:41,745 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:23:41,781 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Navigation
+2025-05-07 15:23:41,783 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:23:41,787 - __main__ - INFO - [voice_direct_modular.py:442] - Navigation command detected
+2025-05-07 15:23:41,793 - __main__ - INFO - [voice_direct_modular.py:446] - URL to navigate to: www.redberyltest.in
+2025-05-07 15:23:41,796 - __main__ - INFO - [voice_direct_modular.py:450] - Added https:// prefix to URL: https://www.redberyltest.in
+2025-05-07 15:23:41,797 - __main__ - INFO - [voice_direct_modular.py:302] - Navigating to: https://www.redberyltest.in
+2025-05-07 15:24:13,520 - __main__ - INFO - [voice_direct_modular.py:306] - Page loaded successfully: vState Filings
+2025-05-07 15:24:13,537 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Loaded: vState Filings
+2025-05-07 15:25:09,581 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: enter email shreyas.deodhare@redberyltech.com
+2025-05-07 15:25:09,618 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:25:09,656 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Form Filling
+2025-05-07 15:25:09,657 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:25:09,815 - __main__ - INFO - [voice_direct_modular.py:526] - Email command detected. Extracted email: 'shreyas.deodhare@redberyltech.com', password: None
+2025-05-07 15:25:09,817 - __main__ - INFO - [voice_direct_modular.py:535] - Only email provided in command
+2025-05-07 15:25:10,271 - __main__ - INFO - [voice_direct_modular.py:581] - Processing email-only command with email: shreyas.deodhare@redberyltech.com
+2025-05-07 15:25:10,322 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Entering email: shreyas.deodhare@redberyltech.com
+2025-05-07 15:25:26,843 - __main__ - INFO - [voice_direct_modular.py:585] - Successfully filled email field
+2025-05-07 15:25:26,844 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Email entered successfully
+2025-05-07 15:28:45,871 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: enter password Shreyas@123
+2025-05-07 15:28:45,974 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:28:45,993 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Form Filling
+2025-05-07 15:28:46,002 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:28:46,098 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:28:46,323 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:28:46,453 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:28:47,449 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:28:47,506 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:28:47,930 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:28:47,932 - __main__ - INFO - [voice_direct_modular.py:648] - Password-only command detected
+2025-05-07 15:28:47,934 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Entering password
+2025-05-07 15:28:55,098 - __main__ - INFO - [voice_direct_modular.py:652] - Successfully filled password field
+2025-05-07 15:28:55,098 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Password entered successfully
+2025-05-07 15:29:28,033 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click the login button
+2025-05-07 15:29:28,187 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:29:28,199 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:29:28,200 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:29:28,286 - __main__ - INFO - [voice_direct_modular.py:483] - Login command detected
+2025-05-07 15:29:28,290 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for login button...
+2025-05-07 15:29:54,888 - __main__ - INFO - [voice_direct_modular.py:491] - Got page context: URL=https://www.redberyltest.in/#/signin, Title=vState Filings
+2025-05-07 15:29:54,890 - __main__ - INFO - [voice_direct_modular.py:494] - Requesting login button selectors from LLM
+2025-05-07 15:30:00,200 - __main__ - INFO - [voice_direct_modular.py:504] - Raw LLM response for selectors: ```json
+[
+  "#root > div > div > div.MuiBox-root.jss1 > div > form > div:nth-child(3) > button",
+  "...
+2025-05-07 15:30:00,201 - __main__ - INFO - [voice_direct_modular.py:508] - Attempting to click login button
+2025-05-07 15:30:02,220 - __main__ - INFO - [voice_direct_modular.py:512] - Successfully clicked login button
+2025-05-07 15:30:02,221 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked login button
+2025-05-07 15:31:03,863 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click the orders tab
+2025-05-07 15:31:03,950 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:31:03,961 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:31:03,964 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:31:04,072 - __main__ - INFO - [voice_direct_modular.py:471] - Tab click command detected for tab: orders
+2025-05-07 15:31:04,075 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for orders tab...
+2025-05-07 15:31:12,809 - __main__ - INFO - [voice_direct_modular.py:475] - Successfully clicked orders tab
+2025-05-07 15:31:12,810 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked orders tab
+2025-05-07 15:32:58,015 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click order 15069
+2025-05-07 15:32:58,068 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:32:58,074 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:32:58,076 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:32:58,097 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:32:58,098 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:32:58,102 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:32:58,105 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:32:58,107 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:32:58,111 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:32:58,149 - __main__ - INFO - [voice_direct_modular.py:660] - Delegating to specialized handler
+2025-05-07 15:32:58,180 - __main__ - INFO - [voice_direct_modular.py:671] - Delegating to form filling handler
+2025-05-07 15:32:58,200 - __main__ - INFO - [voice_direct_modular.py:682] - Delegating to selection handler
+2025-05-07 15:32:58,252 - __main__ - INFO - [voice_direct_modular.py:693] - Delegating to navigation handler
+2025-05-07 15:32:58,271 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for order 15069...
+2025-05-07 15:33:16,050 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked click on order 15069
+2025-05-07 15:33:17,090 - __main__ - INFO - [voice_direct_modular.py:696] - Command handled by navigation handler
+2025-05-07 15:33:39,775 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click the edit button
+2025-05-07 15:33:39,855 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:33:39,856 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:33:39,895 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:33:40,014 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:33:40,019 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:33:40,032 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:33:40,071 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:33:40,073 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:33:40,105 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:33:40,110 - __main__ - INFO - [voice_direct_modular.py:660] - Delegating to specialized handler
+2025-05-07 15:33:40,150 - __main__ - INFO - [voice_direct_modular.py:671] - Delegating to form filling handler
+2025-05-07 15:33:40,158 - __main__ - INFO - [voice_direct_modular.py:682] - Delegating to selection handler
+2025-05-07 15:33:40,189 - __main__ - INFO - [voice_direct_modular.py:693] - Delegating to navigation handler
+2025-05-07 15:33:40,199 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for edit button...
+2025-05-07 15:34:03,308 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Could not find edit button
+2025-05-07 15:34:03,324 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for edit button...
+2025-05-07 15:34:50,297 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked edit button
+2025-05-07 15:35:22,101 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click principal address dropdown
+2025-05-07 15:35:22,119 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:35:22,121 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:35:22,122 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:35:22,128 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:35:22,129 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:35:22,131 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:35:22,133 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:35:22,134 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:35:22,137 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:35:22,138 - __main__ - INFO - [voice_direct_modular.py:660] - Delegating to specialized handler
+2025-05-07 15:35:22,154 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for principal address dropdown...
+2025-05-07 15:35:25,686 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked the Principal Address dropdown
+2025-05-07 15:35:26,774 - __main__ - INFO - [voice_direct_modular.py:663] - Command handled by specialized handler
+2025-05-07 15:36:17,865 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click principal address dropdown
+2025-05-07 15:36:17,892 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:36:17,893 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:36:17,895 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:36:17,905 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:36:17,906 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:36:17,985 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:36:17,986 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:36:17,987 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:36:18,007 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:36:18,011 - __main__ - INFO - [voice_direct_modular.py:660] - Delegating to specialized handler
+2025-05-07 15:36:18,106 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for principal address dropdown...
+2025-05-07 15:36:25,576 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked the Principal Address dropdown
+2025-05-07 15:36:27,655 - __main__ - INFO - [voice_direct_modular.py:663] - Command handled by specialized handler
+2025-05-07 15:41:08,172 - __main__ - INFO - [voice_direct_modular.py:326] - Processing command: click the principal address dropdown and select 123 Main Street
+2025-05-07 15:41:09,128 - __main__ - INFO - [voice_direct_modular.py:335] - Current input mode: text
+2025-05-07 15:41:09,151 - __main__ - INFO - [voice_direct_modular.py:340] - Command type detected: Click
+2025-05-07 15:41:09,159 - __main__ - INFO - [voice_direct_modular.py:349] - Processing as text command
+2025-05-07 15:41:10,501 - __main__ - INFO - [voice_direct_modular.py:540] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 15:41:10,503 - __main__ - INFO - [voice_direct_modular.py:546] - Trying flexible email+password patterns
+2025-05-07 15:41:10,504 - __main__ - INFO - [voice_direct_modular.py:562] - No email+password pattern matched, trying email-only patterns
+2025-05-07 15:41:10,506 - __main__ - INFO - [voice_direct_modular.py:610] - Checking for login pattern
+2025-05-07 15:41:10,507 - __main__ - INFO - [voice_direct_modular.py:614] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 15:41:10,509 - __main__ - INFO - [voice_direct_modular.py:641] - Checking for password-only command
+2025-05-07 15:41:10,510 - __main__ - INFO - [voice_direct_modular.py:660] - Delegating to specialized handler
+2025-05-07 15:41:10,515 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Looking for principal address dropdown...
+2025-05-07 15:41:25,677 - __main__ - INFO - [voice_direct_modular.py:286] - ASSISTANT: Clicked the Principal Address dropdown
+2025-05-07 15:41:27,074 - __main__ - INFO - [voice_direct_modular.py:663] - Command handled by specialized handler
+2025-05-07 15:50:42,796 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 15:50:55,355 - __main__ - INFO - [voice_direct_modular.py:263] - No .env file found, using environment variables
+2025-05-07 15:50:55,357 - __main__ - INFO - [voice_direct_modular.py:268] - Using default API key from constants.py
+2025-05-07 15:50:55,358 - __main__ - INFO - [voice_direct_modular.py:273] - Initializing browser...
+2025-05-07 15:50:59,490 - __main__ - INFO - [voice_direct_modular.py:350] - Starting Playwright
+2025-05-07 15:51:18,827 - __main__ - INFO - [voice_direct_modular.py:352] - Launching Chromium browser
+2025-05-07 15:52:02,571 - __main__ - INFO - [voice_direct_modular.py:277] - Browser initialized successfully
+2025-05-07 15:52:02,572 - __main__ - INFO - [voice_direct_modular.py:284] - Initializing speech components...
+2025-05-07 15:52:04,002 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 15:52:04,006 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 15:52:07,217 - __main__ - INFO - [voice_direct_modular.py:297] - Speech synthesizer initialized
+2025-05-07 15:52:07,223 - __main__ - INFO - [voice_direct_modular.py:302] - Speech recognizer initialized in text mode
+2025-05-07 15:52:07,247 - __main__ - INFO - [voice_direct_modular.py:304] - Speech components initialized successfully
+2025-05-07 15:52:07,265 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing browser utils...
+2025-05-07 15:52:07,266 - __main__ - INFO - [voice_direct_modular.py:315] - Browser utils initialized
+2025-05-07 15:52:07,295 - __main__ - INFO - [voice_direct_modular.py:321] - Initializing LLM utils...
+2025-05-07 15:52:32,645 - __main__ - INFO - [voice_direct_modular.py:329] - LLM utils initialized
+2025-05-07 15:52:32,646 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing interaction handlers...
+2025-05-07 15:52:32,647 - __main__ - INFO - [voice_direct_modular.py:373] - Navigation handler initialized
+2025-05-07 15:52:32,647 - __main__ - INFO - [voice_direct_modular.py:379] - Selection handler initialized
+2025-05-07 15:52:32,649 - __main__ - INFO - [voice_direct_modular.py:385] - Form filling handler initialized
+2025-05-07 15:52:32,649 - __main__ - INFO - [voice_direct_modular.py:391] - Specialized handler initialized
+2025-05-07 15:52:32,650 - __main__ - INFO - [voice_direct_modular.py:395] - Principal Address handler initialized
+2025-05-07 15:52:32,651 - __main__ - INFO - [voice_direct_modular.py:397] - All handlers initialized successfully
+2025-05-07 15:52:32,651 - __main__ - INFO - [voice_direct_modular.py:338] - Navigating to start URL: https://www.google.com
+2025-05-07 15:52:32,652 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.google.com
+2025-05-07 15:52:38,137 - __main__ - INFO - [voice_direct_modular.py:425] - Page loaded successfully: Google
+2025-05-07 15:52:38,137 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Loaded: Google
+2025-05-07 15:52:38,138 - __main__ - INFO - [voice_direct_modular.py:342] - Voice assistant initialization complete
+2025-05-07 15:52:38,154 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 15:53:06,425 - __main__ - INFO - [voice_direct_modular.py:445] - Processing command: go to www.redbreyltest.in
+2025-05-07 15:53:06,438 - __main__ - INFO - [voice_direct_modular.py:454] - Current input mode: text
+2025-05-07 15:53:06,440 - __main__ - INFO - [voice_direct_modular.py:459] - Command type detected: Navigation
+2025-05-07 15:53:06,442 - __main__ - INFO - [voice_direct_modular.py:468] - Processing as text command
+2025-05-07 15:53:06,444 - __main__ - INFO - [voice_direct_modular.py:568] - Navigation command detected
+2025-05-07 15:53:06,458 - __main__ - INFO - [voice_direct_modular.py:572] - URL to navigate to: www.redbreyltest.in
+2025-05-07 15:53:06,459 - __main__ - INFO - [voice_direct_modular.py:576] - Added https:// prefix to URL: https://www.redbreyltest.in
+2025-05-07 15:53:06,459 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.redbreyltest.in
+2025-05-07 15:53:11,344 - __main__ - ERROR - [voice_direct_modular.py:429] - Error navigating to https://www.redbreyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redbreyltest.in/
+Call log:
+  - navigating to "https://www.redbreyltest.in/", waiting until "load"
+
+2025-05-07 15:53:11,346 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Error navigating to https://www.redbreyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redbreyltest.in/
+Call log:
+  - navigating to "https://www.redbreyltest.in/", waiting until "load"
+
+2025-05-07 15:53:28,802 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:151] - 🔄 Domain correction: 'redberyltest' -> 'redberyltest.in'
+2025-05-07 15:53:28,812 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:209] - Command processed: 'go to www.redberyltest.in' -> 'go to www.redberyltest.in.in'
+2025-05-07 15:53:28,814 - __main__ - INFO - [voice_direct_modular.py:442] - Command processed: 'go to www.redberyltest.in' -> 'go to www.redberyltest.in.in'
+2025-05-07 15:53:28,816 - __main__ - INFO - [voice_direct_modular.py:445] - Processing command: go to www.redberyltest.in.in
+2025-05-07 15:53:28,817 - __main__ - INFO - [voice_direct_modular.py:454] - Current input mode: text
+2025-05-07 15:53:28,817 - __main__ - INFO - [voice_direct_modular.py:459] - Command type detected: Navigation
+2025-05-07 15:53:28,819 - __main__ - INFO - [voice_direct_modular.py:468] - Processing as text command
+2025-05-07 15:53:28,820 - __main__ - INFO - [voice_direct_modular.py:568] - Navigation command detected
+2025-05-07 15:53:28,825 - __main__ - INFO - [voice_direct_modular.py:572] - URL to navigate to: www.redberyltest.in.in
+2025-05-07 15:53:28,827 - __main__ - INFO - [voice_direct_modular.py:576] - Added https:// prefix to URL: https://www.redberyltest.in.in
+2025-05-07 15:53:28,827 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.redberyltest.in.in
+2025-05-07 15:53:29,136 - __main__ - ERROR - [voice_direct_modular.py:429] - Error navigating to https://www.redberyltest.in.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redberyltest.in.in/
+Call log:
+  - navigating to "https://www.redberyltest.in.in/", waiting until "load"
+
+2025-05-07 15:53:29,139 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Error navigating to https://www.redberyltest.in.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www.redberyltest.in.in/
+Call log:
+  - navigating to "https://www.redberyltest.in.in/", waiting until "load"
+
+2025-05-07 15:53:44,458 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:151] - 🔄 Domain correction: 'redberyltest' -> 'redberyltest.in'
+2025-05-07 15:53:44,520 - webassist.voice_assistant.utils.command_processor - INFO - [command_processor.py:209] - Command processed: 'go to www.redberyltest' -> 'go to www.redberyltest.in'
+2025-05-07 15:53:44,804 - __main__ - INFO - [voice_direct_modular.py:442] - Command processed: 'go to www.redberyltest' -> 'go to www.redberyltest.in'
+2025-05-07 15:53:44,955 - __main__ - INFO - [voice_direct_modular.py:445] - Processing command: go to www.redberyltest.in
+2025-05-07 15:53:45,150 - __main__ - INFO - [voice_direct_modular.py:454] - Current input mode: text
+2025-05-07 15:53:45,367 - __main__ - INFO - [voice_direct_modular.py:459] - Command type detected: Navigation
+2025-05-07 15:53:45,570 - __main__ - INFO - [voice_direct_modular.py:468] - Processing as text command
+2025-05-07 15:53:45,671 - __main__ - INFO - [voice_direct_modular.py:568] - Navigation command detected
+2025-05-07 15:53:45,684 - __main__ - INFO - [voice_direct_modular.py:572] - URL to navigate to: www.redberyltest.in
+2025-05-07 15:53:45,686 - __main__ - INFO - [voice_direct_modular.py:576] - Added https:// prefix to URL: https://www.redberyltest.in
+2025-05-07 15:53:45,687 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.redberyltest.in
+2025-05-07 15:54:16,727 - __main__ - ERROR - [voice_direct_modular.py:429] - Error navigating to https://www.redberyltest.in: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.redberyltest.in/", waiting until "load"
+
+2025-05-07 15:54:17,006 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Error navigating to https://www.redberyltest.in: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.redberyltest.in/", waiting until "load"
+
+2025-05-07 16:01:14,114 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 16:01:57,674 - __main__ - INFO - [voice_direct_modular.py:263] - No .env file found, using environment variables
+2025-05-07 16:01:57,675 - __main__ - INFO - [voice_direct_modular.py:268] - Using default API key from constants.py
+2025-05-07 16:01:57,677 - __main__ - INFO - [voice_direct_modular.py:273] - Initializing browser...
+2025-05-07 16:02:05,121 - __main__ - INFO - [voice_direct_modular.py:350] - Starting Playwright
+2025-05-07 16:02:24,210 - __main__ - INFO - [voice_direct_modular.py:352] - Launching Chromium browser
+2025-05-07 16:02:40,375 - __main__ - INFO - [voice_direct_modular.py:277] - Browser initialized successfully
+2025-05-07 16:02:40,383 - __main__ - INFO - [voice_direct_modular.py:284] - Initializing speech components...
+2025-05-07 16:02:52,414 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 16:02:52,486 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 16:03:19,430 - __main__ - INFO - [voice_direct_modular.py:297] - Speech synthesizer initialized
+2025-05-07 16:03:19,449 - __main__ - INFO - [voice_direct_modular.py:302] - Speech recognizer initialized in text mode
+2025-05-07 16:03:19,450 - __main__ - INFO - [voice_direct_modular.py:304] - Speech components initialized successfully
+2025-05-07 16:03:19,451 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing browser utils...
+2025-05-07 16:03:19,452 - __main__ - INFO - [voice_direct_modular.py:315] - Browser utils initialized
+2025-05-07 16:03:19,453 - __main__ - INFO - [voice_direct_modular.py:321] - Initializing LLM utils...
+2025-05-07 16:04:11,844 - __main__ - INFO - [voice_direct_modular.py:329] - LLM utils initialized
+2025-05-07 16:04:11,849 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing interaction handlers...
+2025-05-07 16:04:11,850 - __main__ - INFO - [voice_direct_modular.py:373] - Navigation handler initialized
+2025-05-07 16:04:11,852 - __main__ - INFO - [voice_direct_modular.py:379] - Selection handler initialized
+2025-05-07 16:04:11,853 - __main__ - INFO - [voice_direct_modular.py:385] - Form filling handler initialized
+2025-05-07 16:04:11,855 - __main__ - INFO - [voice_direct_modular.py:391] - Specialized handler initialized
+2025-05-07 16:04:11,855 - __main__ - INFO - [voice_direct_modular.py:395] - Principal Address handler initialized
+2025-05-07 16:04:11,856 - __main__ - INFO - [voice_direct_modular.py:397] - All handlers initialized successfully
+2025-05-07 16:04:11,857 - __main__ - INFO - [voice_direct_modular.py:338] - Navigating to start URL: https://www.google.com
+2025-05-07 16:04:11,857 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.google.com
+2025-05-07 16:04:27,675 - __main__ - INFO - [voice_direct_modular.py:425] - Page loaded successfully: Google
+2025-05-07 16:04:27,676 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Loaded: Google
+2025-05-07 16:04:27,678 - __main__ - INFO - [voice_direct_modular.py:342] - Voice assistant initialization complete
+2025-05-07 16:04:29,799 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 16:18:58,288 - __main__ - INFO - [voice_direct_modular.py:59] - Logging system initialized
+2025-05-07 16:19:06,537 - __main__ - INFO - [voice_direct_modular.py:268] - No .env file found, using environment variables
+2025-05-07 16:19:06,540 - __main__ - INFO - [voice_direct_modular.py:273] - Using default API key from constants.py
+2025-05-07 16:19:06,552 - __main__ - INFO - [voice_direct_modular.py:278] - Initializing browser...
+2025-05-07 16:19:07,737 - __main__ - INFO - [voice_direct_modular.py:353] - Starting Playwright
+2025-05-07 16:19:22,782 - __main__ - INFO - [voice_direct_modular.py:355] - Launching Chromium browser
+2025-05-07 16:19:33,895 - __main__ - INFO - [voice_direct_modular.py:282] - Browser initialized successfully
+2025-05-07 16:19:33,897 - __main__ - INFO - [voice_direct_modular.py:289] - Initializing speech components...
+2025-05-07 16:19:34,764 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 16:19:34,767 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 16:19:36,074 - __main__ - INFO - [voice_direct_modular.py:302] - Speech synthesizer initialized
+2025-05-07 16:19:39,020 - __main__ - INFO - [voice_direct_modular.py:306] - Speech recognizer initialized in voice mode
+2025-05-07 16:19:39,039 - __main__ - INFO - [voice_direct_modular.py:308] - Speech components initialized successfully
+2025-05-07 16:19:39,054 - __main__ - INFO - [voice_direct_modular.py:314] - Initializing browser utils...
+2025-05-07 16:19:39,055 - __main__ - INFO - [voice_direct_modular.py:319] - Browser utils initialized
+2025-05-07 16:19:39,126 - __main__ - INFO - [voice_direct_modular.py:325] - Initializing LLM utils...
+2025-05-07 16:20:12,814 - __main__ - INFO - [voice_direct_modular.py:332] - LLM utils initialized
+2025-05-07 16:20:12,816 - __main__ - INFO - [voice_direct_modular.py:365] - Initializing interaction handlers...
+2025-05-07 16:20:12,818 - __main__ - INFO - [voice_direct_modular.py:376] - Navigation handler initialized
+2025-05-07 16:20:12,820 - __main__ - INFO - [voice_direct_modular.py:382] - Selection handler initialized
+2025-05-07 16:20:12,821 - __main__ - INFO - [voice_direct_modular.py:388] - Form filling handler initialized
+2025-05-07 16:20:12,822 - __main__ - INFO - [voice_direct_modular.py:394] - Specialized handler initialized
+2025-05-07 16:20:12,822 - __main__ - INFO - [voice_direct_modular.py:398] - Principal Address handler initialized
+2025-05-07 16:20:12,822 - __main__ - INFO - [voice_direct_modular.py:400] - All handlers initialized successfully
+2025-05-07 16:20:12,823 - __main__ - INFO - [voice_direct_modular.py:341] - Navigating to start URL: https://www.google.com
+2025-05-07 16:20:12,823 - __main__ - INFO - [voice_direct_modular.py:424] - Navigating to: https://www.google.com
+2025-05-07 16:20:22,657 - __main__ - INFO - [voice_direct_modular.py:428] - Page loaded successfully: Google
+2025-05-07 16:20:22,659 - __main__ - INFO - [voice_direct_modular.py:408] - ASSISTANT: Loaded: Google
+2025-05-07 16:20:22,660 - __main__ - INFO - [voice_direct_modular.py:412] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 16:22:45,024 - __main__ - INFO - [voice_direct_modular.py:59] - Logging system initialized
+2025-05-07 16:22:50,276 - __main__ - INFO - [voice_direct_modular.py:268] - No .env file found, using environment variables
+2025-05-07 16:22:50,277 - __main__ - INFO - [voice_direct_modular.py:273] - Using default API key from constants.py
+2025-05-07 16:22:50,278 - __main__ - INFO - [voice_direct_modular.py:278] - Initializing browser...
+2025-05-07 16:22:50,732 - __main__ - INFO - [voice_direct_modular.py:353] - Starting Playwright
+2025-05-07 16:22:54,675 - __main__ - INFO - [voice_direct_modular.py:355] - Launching Chromium browser
+2025-05-07 16:22:58,404 - __main__ - INFO - [voice_direct_modular.py:282] - Browser initialized successfully
+2025-05-07 16:22:58,405 - __main__ - INFO - [voice_direct_modular.py:289] - Initializing speech components...
+2025-05-07 16:22:58,869 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 16:22:58,870 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 16:23:00,268 - __main__ - INFO - [voice_direct_modular.py:302] - Speech synthesizer initialized
+2025-05-07 16:23:00,269 - __main__ - INFO - [voice_direct_modular.py:306] - Speech recognizer initialized in text mode
+2025-05-07 16:23:00,269 - __main__ - INFO - [voice_direct_modular.py:308] - Speech components initialized successfully
+2025-05-07 16:23:00,316 - __main__ - INFO - [voice_direct_modular.py:314] - Initializing browser utils...
+2025-05-07 16:23:00,399 - __main__ - INFO - [voice_direct_modular.py:319] - Browser utils initialized
+2025-05-07 16:23:00,510 - __main__ - INFO - [voice_direct_modular.py:325] - Initializing LLM utils...
+2025-05-07 16:24:01,391 - __main__ - INFO - [voice_direct_modular.py:332] - LLM utils initialized
+2025-05-07 16:24:01,597 - __main__ - INFO - [voice_direct_modular.py:365] - Initializing interaction handlers...
+2025-05-07 16:24:01,623 - __main__ - INFO - [voice_direct_modular.py:376] - Navigation handler initialized
+2025-05-07 16:24:01,625 - __main__ - INFO - [voice_direct_modular.py:382] - Selection handler initialized
+2025-05-07 16:24:01,626 - __main__ - INFO - [voice_direct_modular.py:388] - Form filling handler initialized
+2025-05-07 16:24:01,627 - __main__ - INFO - [voice_direct_modular.py:394] - Specialized handler initialized
+2025-05-07 16:24:01,647 - __main__ - INFO - [voice_direct_modular.py:398] - Principal Address handler initialized
+2025-05-07 16:24:01,648 - __main__ - INFO - [voice_direct_modular.py:400] - All handlers initialized successfully
+2025-05-07 16:24:01,649 - __main__ - INFO - [voice_direct_modular.py:341] - Navigating to start URL: https://www.google.com
+2025-05-07 16:24:01,651 - __main__ - INFO - [voice_direct_modular.py:424] - Navigating to: https://www.google.com
+2025-05-07 16:24:14,154 - __main__ - INFO - [voice_direct_modular.py:428] - Page loaded successfully: Google
+2025-05-07 16:24:14,172 - __main__ - INFO - [voice_direct_modular.py:408] - ASSISTANT: Loaded: Google
+2025-05-07 16:24:14,218 - __main__ - INFO - [voice_direct_modular.py:345] - Voice assistant initialization complete
+2025-05-07 16:24:14,688 - __main__ - INFO - [voice_direct_modular.py:408] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 16:32:14,250 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 16:33:24,906 - __main__ - INFO - [voice_direct_modular.py:263] - No .env file found, using environment variables
+2025-05-07 16:33:24,931 - __main__ - INFO - [voice_direct_modular.py:268] - Using default API key from constants.py
+2025-05-07 16:33:24,932 - __main__ - INFO - [voice_direct_modular.py:273] - Initializing browser...
+2025-05-07 16:33:25,474 - __main__ - INFO - [voice_direct_modular.py:350] - Starting Playwright
+2025-05-07 16:33:27,626 - __main__ - INFO - [voice_direct_modular.py:352] - Launching Chromium browser
+2025-05-07 16:33:31,343 - __main__ - INFO - [voice_direct_modular.py:277] - Browser initialized successfully
+2025-05-07 16:33:31,344 - __main__ - INFO - [voice_direct_modular.py:284] - Initializing speech components...
+2025-05-07 16:33:31,794 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 16:33:31,798 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 16:33:32,882 - __main__ - INFO - [voice_direct_modular.py:297] - Speech synthesizer initialized
+2025-05-07 16:33:32,883 - __main__ - INFO - [voice_direct_modular.py:302] - Speech recognizer initialized in text mode
+2025-05-07 16:33:32,884 - __main__ - INFO - [voice_direct_modular.py:304] - Speech components initialized successfully
+2025-05-07 16:33:32,886 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing browser utils...
+2025-05-07 16:33:32,888 - __main__ - INFO - [voice_direct_modular.py:315] - Browser utils initialized
+2025-05-07 16:33:32,889 - __main__ - INFO - [voice_direct_modular.py:321] - Initializing LLM utils...
+2025-05-07 16:33:41,149 - __main__ - INFO - [voice_direct_modular.py:329] - LLM utils initialized
+2025-05-07 16:33:41,151 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing interaction handlers...
+2025-05-07 16:33:41,153 - __main__ - INFO - [voice_direct_modular.py:373] - Navigation handler initialized
+2025-05-07 16:33:41,155 - __main__ - INFO - [voice_direct_modular.py:379] - Selection handler initialized
+2025-05-07 16:33:41,157 - __main__ - INFO - [voice_direct_modular.py:385] - Form filling handler initialized
+2025-05-07 16:33:41,158 - __main__ - INFO - [voice_direct_modular.py:391] - Specialized handler initialized
+2025-05-07 16:33:41,160 - __main__ - INFO - [voice_direct_modular.py:395] - Principal Address handler initialized
+2025-05-07 16:33:41,162 - __main__ - INFO - [voice_direct_modular.py:397] - All handlers initialized successfully
+2025-05-07 16:33:41,163 - __main__ - INFO - [voice_direct_modular.py:338] - Navigating to start URL: https://www.google.com
+2025-05-07 16:33:41,164 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.google.com
+2025-05-07 16:33:45,907 - __main__ - INFO - [voice_direct_modular.py:425] - Page loaded successfully: Google
+2025-05-07 16:33:45,908 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Loaded: Google
+2025-05-07 16:33:45,909 - __main__ - INFO - [voice_direct_modular.py:342] - Voice assistant initialization complete
+2025-05-07 16:33:51,096 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 16:37:58,955 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 16:38:20,848 - __main__ - INFO - [voice_direct_modular.py:263] - No .env file found, using environment variables
+2025-05-07 16:38:20,848 - __main__ - INFO - [voice_direct_modular.py:268] - Using default API key from constants.py
+2025-05-07 16:38:20,848 - __main__ - INFO - [voice_direct_modular.py:273] - Initializing browser...
+2025-05-07 16:38:21,445 - __main__ - INFO - [voice_direct_modular.py:350] - Starting Playwright
+2025-05-07 16:38:26,217 - __main__ - INFO - [voice_direct_modular.py:352] - Launching Chromium browser
+2025-05-07 16:38:33,414 - __main__ - INFO - [voice_direct_modular.py:277] - Browser initialized successfully
+2025-05-07 16:38:33,415 - __main__ - INFO - [voice_direct_modular.py:284] - Initializing speech components...
+2025-05-07 16:38:37,897 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 16:38:37,917 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 16:38:53,972 - __main__ - INFO - [voice_direct_modular.py:297] - Speech synthesizer initialized
+2025-05-07 16:39:00,779 - __main__ - INFO - [voice_direct_modular.py:302] - Speech recognizer initialized in voice mode
+2025-05-07 16:39:00,783 - __main__ - INFO - [voice_direct_modular.py:304] - Speech components initialized successfully
+2025-05-07 16:39:00,807 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing browser utils...
+2025-05-07 16:39:00,895 - __main__ - INFO - [voice_direct_modular.py:315] - Browser utils initialized
+2025-05-07 16:39:00,896 - __main__ - INFO - [voice_direct_modular.py:321] - Initializing LLM utils...
+2025-05-07 16:39:41,781 - __main__ - INFO - [voice_direct_modular.py:329] - LLM utils initialized
+2025-05-07 16:39:41,813 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing interaction handlers...
+2025-05-07 16:39:41,815 - __main__ - INFO - [voice_direct_modular.py:373] - Navigation handler initialized
+2025-05-07 16:39:41,819 - __main__ - INFO - [voice_direct_modular.py:379] - Selection handler initialized
+2025-05-07 16:39:41,823 - __main__ - INFO - [voice_direct_modular.py:385] - Form filling handler initialized
+2025-05-07 16:39:41,824 - __main__ - INFO - [voice_direct_modular.py:391] - Specialized handler initialized
+2025-05-07 16:39:41,824 - __main__ - INFO - [voice_direct_modular.py:395] - Principal Address handler initialized
+2025-05-07 16:39:41,825 - __main__ - INFO - [voice_direct_modular.py:397] - All handlers initialized successfully
+2025-05-07 16:39:41,825 - __main__ - INFO - [voice_direct_modular.py:338] - Navigating to start URL: https://www.google.com
+2025-05-07 16:39:41,828 - __main__ - INFO - [voice_direct_modular.py:421] - Navigating to: https://www.google.com
+2025-05-07 16:39:50,616 - __main__ - INFO - [voice_direct_modular.py:425] - Page loaded successfully: Google
+2025-05-07 16:39:50,618 - __main__ - INFO - [voice_direct_modular.py:405] - ASSISTANT: Loaded: Google
+2025-05-07 16:39:50,620 - __main__ - INFO - [voice_direct_modular.py:409] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 16:57:11,412 - __main__ - INFO - [voice_direct_modular.py:58] - Logging system initialized
+2025-05-07 17:08:16,432 - __main__ - INFO - [voice_direct_modular.py:61] - Logging system initialized
+2025-05-07 17:08:31,066 - __main__ - INFO - [voice_direct_modular.py:315] - No .env file found, using environment variables
+2025-05-07 17:08:31,068 - __main__ - INFO - [voice_direct_modular.py:320] - Using default API key from constants.py
+2025-05-07 17:08:31,069 - __main__ - INFO - [voice_direct_modular.py:325] - Initializing browser...
+2025-05-07 17:08:37,592 - __main__ - INFO - [voice_direct_modular.py:402] - Starting Playwright
+2025-05-07 17:08:47,423 - __main__ - INFO - [voice_direct_modular.py:404] - Launching Chromium browser
+2025-05-07 17:09:01,039 - __main__ - INFO - [voice_direct_modular.py:329] - Browser initialized successfully
+2025-05-07 17:09:01,040 - __main__ - INFO - [voice_direct_modular.py:336] - Initializing speech components...
+2025-05-07 17:09:09,246 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:09:09,319 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:09:19,215 - __main__ - INFO - [voice_direct_modular.py:349] - Speech synthesizer initialized
+2025-05-07 17:09:21,434 - __main__ - INFO - [voice_direct_modular.py:354] - Speech recognizer initialized in voice mode
+2025-05-07 17:09:21,435 - __main__ - INFO - [voice_direct_modular.py:356] - Speech components initialized successfully
+2025-05-07 17:09:21,440 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing browser utils...
+2025-05-07 17:09:21,441 - __main__ - INFO - [voice_direct_modular.py:367] - Browser utils initialized
+2025-05-07 17:09:21,442 - __main__ - INFO - [voice_direct_modular.py:373] - Initializing LLM utils...
+2025-05-07 17:10:37,931 - __main__ - INFO - [voice_direct_modular.py:381] - LLM utils initialized
+2025-05-07 17:10:37,935 - __main__ - INFO - [voice_direct_modular.py:414] - Initializing interaction handlers...
+2025-05-07 17:10:37,937 - __main__ - INFO - [voice_direct_modular.py:425] - Navigation handler initialized
+2025-05-07 17:10:37,938 - __main__ - INFO - [voice_direct_modular.py:431] - Selection handler initialized
+2025-05-07 17:10:37,939 - __main__ - INFO - [voice_direct_modular.py:437] - Form filling handler initialized
+2025-05-07 17:10:37,940 - __main__ - INFO - [voice_direct_modular.py:443] - Specialized handler initialized
+2025-05-07 17:10:37,941 - __main__ - INFO - [voice_direct_modular.py:447] - Principal Address handler initialized
+2025-05-07 17:10:37,941 - __main__ - INFO - [voice_direct_modular.py:449] - All handlers initialized successfully
+2025-05-07 17:10:37,942 - __main__ - INFO - [voice_direct_modular.py:390] - Navigating to start URL: https://www.google.com
+2025-05-07 17:10:37,943 - __main__ - INFO - [voice_direct_modular.py:473] - Navigating to: https://www.google.com
+2025-05-07 17:10:46,573 - __main__ - INFO - [voice_direct_modular.py:477] - Page loaded successfully: Google
+2025-05-07 17:10:46,574 - __main__ - INFO - [voice_direct_modular.py:457] - ASSISTANT: Loaded: Google
+2025-05-07 17:10:46,575 - __main__ - INFO - [voice_direct_modular.py:461] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 17:11:16,074 - __main__ - INFO - [voice_direct_modular.py:61] - Logging system initialized
+2025-05-07 17:11:18,806 - __main__ - INFO - [voice_direct_modular.py:315] - No .env file found, using environment variables
+2025-05-07 17:11:18,807 - __main__ - INFO - [voice_direct_modular.py:320] - Using default API key from constants.py
+2025-05-07 17:11:18,811 - __main__ - INFO - [voice_direct_modular.py:325] - Initializing browser...
+2025-05-07 17:11:19,244 - __main__ - INFO - [voice_direct_modular.py:402] - Starting Playwright
+2025-05-07 17:11:23,378 - __main__ - INFO - [voice_direct_modular.py:404] - Launching Chromium browser
+2025-05-07 17:11:35,215 - __main__ - INFO - [voice_direct_modular.py:329] - Browser initialized successfully
+2025-05-07 17:11:35,217 - __main__ - INFO - [voice_direct_modular.py:336] - Initializing speech components...
+2025-05-07 17:11:36,871 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:11:36,874 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:11:38,736 - __main__ - INFO - [voice_direct_modular.py:349] - Speech synthesizer initialized
+2025-05-07 17:11:38,738 - __main__ - INFO - [voice_direct_modular.py:354] - Speech recognizer initialized in text mode
+2025-05-07 17:11:38,741 - __main__ - INFO - [voice_direct_modular.py:356] - Speech components initialized successfully
+2025-05-07 17:11:38,750 - __main__ - INFO - [voice_direct_modular.py:362] - Initializing browser utils...
+2025-05-07 17:11:38,750 - __main__ - INFO - [voice_direct_modular.py:367] - Browser utils initialized
+2025-05-07 17:11:38,752 - __main__ - INFO - [voice_direct_modular.py:373] - Initializing LLM utils...
+2025-05-07 17:12:46,563 - __main__ - INFO - [voice_direct_modular.py:381] - LLM utils initialized
+2025-05-07 17:12:46,575 - __main__ - INFO - [voice_direct_modular.py:414] - Initializing interaction handlers...
+2025-05-07 17:12:46,576 - __main__ - INFO - [voice_direct_modular.py:425] - Navigation handler initialized
+2025-05-07 17:12:46,584 - __main__ - INFO - [voice_direct_modular.py:431] - Selection handler initialized
+2025-05-07 17:12:46,588 - __main__ - INFO - [voice_direct_modular.py:437] - Form filling handler initialized
+2025-05-07 17:12:46,589 - __main__ - INFO - [voice_direct_modular.py:443] - Specialized handler initialized
+2025-05-07 17:12:46,590 - __main__ - INFO - [voice_direct_modular.py:447] - Principal Address handler initialized
+2025-05-07 17:12:46,593 - __main__ - INFO - [voice_direct_modular.py:449] - All handlers initialized successfully
+2025-05-07 17:12:46,594 - __main__ - INFO - [voice_direct_modular.py:390] - Navigating to start URL: https://www.google.com
+2025-05-07 17:12:46,596 - __main__ - INFO - [voice_direct_modular.py:473] - Navigating to: https://www.google.com
+2025-05-07 17:13:07,722 - __main__ - INFO - [voice_direct_modular.py:477] - Page loaded successfully: Google
+2025-05-07 17:13:07,724 - __main__ - INFO - [voice_direct_modular.py:457] - ASSISTANT: Loaded: Google
+2025-05-07 17:13:07,726 - __main__ - INFO - [voice_direct_modular.py:394] - Voice assistant initialization complete
+2025-05-07 17:13:07,785 - __main__ - INFO - [voice_direct_modular.py:457] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 17:16:00,506 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 17:16:06,380 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 17:16:06,380 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 17:16:06,381 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 17:16:07,409 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 17:16:16,162 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 17:16:34,690 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 17:16:34,694 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 17:16:40,886 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:16:40,918 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:16:53,305 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 17:16:53,362 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 17:16:53,363 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 17:16:53,364 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 17:16:53,413 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 17:16:53,414 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 17:17:52,610 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 17:17:52,613 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 17:17:52,617 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 17:17:52,618 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 17:17:52,780 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 17:17:52,907 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 17:17:52,908 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 17:17:52,909 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 17:17:52,910 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 17:18:00,173 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 17:18:00,175 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 17:18:00,176 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 17:18:00,559 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 17:23:38,616 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 17:24:26,981 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 17:24:27,013 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 17:24:27,016 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 17:24:30,695 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 17:25:09,653 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 17:25:35,084 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 17:25:35,084 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 17:25:43,688 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:25:43,693 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:25:49,819 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 17:25:49,820 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 17:25:49,823 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 17:25:49,824 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 17:25:49,829 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 17:25:49,836 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 17:26:32,649 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 17:26:32,653 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 17:26:32,654 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 17:26:32,654 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 17:26:32,656 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 17:26:32,657 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 17:26:32,657 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 17:26:32,658 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 17:26:32,660 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 17:27:00,695 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 17:27:01,132 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 17:27:01,439 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 17:27:02,171 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 17:30:34,093 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 17:31:15,758 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 17:31:15,776 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 17:31:15,777 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 17:31:18,757 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 17:31:50,511 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 17:32:09,258 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 17:32:09,261 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 17:32:14,294 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:32:14,351 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:32:24,965 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 17:32:24,973 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 17:32:24,982 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 17:32:24,983 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 17:32:24,983 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 17:32:24,984 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 17:33:35,427 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 17:33:35,430 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 17:33:35,434 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 17:33:35,435 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 17:33:35,439 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 17:33:35,442 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 17:33:35,443 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 17:33:35,443 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 17:33:35,445 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 17:33:43,231 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 17:33:43,232 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 17:33:43,233 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 17:33:43,419 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 17:34:01,151 - __main__ - INFO - [voice_direct_modular.py:2887] - Starting voice recognition...
+2025-05-07 17:57:01,761 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 17:57:14,534 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 17:57:33,901 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 17:57:33,902 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 17:57:33,903 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 17:57:38,013 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 17:58:06,611 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 17:58:27,932 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 17:58:28,637 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 17:58:40,477 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 17:58:40,629 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 17:58:57,230 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 17:58:57,231 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 17:58:57,232 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 17:58:57,233 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 17:58:57,770 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 17:58:57,773 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 17:59:51,132 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 17:59:51,134 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 17:59:51,152 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 17:59:51,166 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 17:59:51,169 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 17:59:51,179 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 17:59:51,180 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 17:59:51,181 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 17:59:51,182 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 18:00:15,753 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 18:00:15,859 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 18:00:15,903 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 18:00:17,037 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 18:00:27,230 - __main__ - INFO - [voice_direct_modular.py:2887] - Starting voice recognition...
+2025-05-07 18:00:27,234 - __main__ - WARNING - [voice_direct_modular.py:2895] - No speech detected
+2025-05-07 18:00:27,248 - __main__ - INFO - [voice_direct_modular.py:2887] - Starting voice recognition...
+2025-05-07 19:43:44,319 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 19:43:54,690 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 19:43:54,691 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 19:43:54,692 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 19:43:55,015 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 19:44:26,148 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 19:44:33,855 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 19:44:33,855 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 19:44:34,120 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 19:44:34,122 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 19:44:34,912 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 19:44:34,913 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 19:44:34,914 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 19:44:34,914 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 19:44:34,915 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 19:44:34,916 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 19:44:45,997 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 19:44:45,998 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 19:44:45,999 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 19:44:46,000 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 19:44:46,001 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 19:44:46,001 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 19:44:46,002 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 19:44:46,003 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 19:44:46,003 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 19:44:47,770 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 19:44:47,771 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 19:44:47,772 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 19:44:47,828 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 19:45:52,924 - __main__ - INFO - [voice_direct_modular.py:2887] - Starting voice recognition...
+2025-05-07 20:01:09,784 - __main__ - WARNING - [voice_direct_modular.py:2895] - No speech detected
+2025-05-07 20:01:10,147 - __main__ - INFO - [voice_direct_modular.py:2887] - Starting voice recognition...
+2025-05-07 20:01:42,662 - __main__ - INFO - [voice_direct_modular.py:2892] - Recognized text: retry_voice_recognition
+2025-05-07 20:01:46,213 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 20:03:20,845 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 20:03:20,846 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 20:03:20,846 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 20:03:21,047 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 20:03:22,155 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 20:03:24,454 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 20:03:24,455 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 20:03:24,792 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 20:03:24,793 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 20:03:25,776 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 20:03:25,777 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 20:03:25,778 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 20:03:25,779 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 20:03:25,779 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 20:03:25,780 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 20:03:42,551 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 20:03:42,552 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 20:03:42,553 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 20:03:42,555 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 20:03:42,555 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 20:03:42,557 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 20:03:42,558 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 20:03:42,559 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 20:03:42,560 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 20:03:44,598 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 20:03:44,599 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 20:03:44,600 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 20:03:44,639 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 20:07:29,160 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 20:07:34,711 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 20:07:34,712 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 20:07:34,713 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 20:07:34,916 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 20:07:36,103 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 20:07:38,866 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 20:07:38,867 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 20:07:39,379 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 20:07:39,381 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 20:07:40,151 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 20:07:40,152 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 20:07:40,153 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 20:07:40,154 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 20:07:40,155 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 20:07:40,156 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 20:07:53,017 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 20:07:53,018 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 20:07:53,019 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 20:07:53,021 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 20:07:53,022 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 20:07:53,022 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 20:07:53,023 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 20:07:53,024 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 20:07:53,025 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 20:07:56,182 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 20:07:56,182 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 20:07:56,183 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 20:07:56,191 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 20:08:19,005 - __main__ - INFO - [voice_direct_modular.py:2894] - Starting voice recognition...
+2025-05-07 20:09:07,218 - __main__ - INFO - [voice_direct_modular.py:2899] - Recognized text: text
+2025-05-07 20:14:21,103 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 20:14:27,775 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 20:14:27,821 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 20:14:27,860 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 20:14:29,976 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 20:14:35,661 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 20:14:39,339 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 20:14:39,340 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 20:14:39,763 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 20:14:39,765 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 20:14:40,622 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 20:14:46,246 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in voice mode
+2025-05-07 20:14:46,247 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 20:14:46,248 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 20:14:46,249 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 20:14:46,250 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 20:14:54,312 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 20:14:54,313 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 20:14:54,314 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 20:14:54,314 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 20:14:54,315 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 20:14:54,316 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 20:14:54,318 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 20:14:54,318 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 20:14:54,319 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 20:14:56,239 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 20:14:56,240 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 20:14:56,241 - __main__ - INFO - [voice_direct_modular.py:269] - Speaking text in voice mode: 'Loaded: Google...' (truncated)
+2025-05-07 20:34:21,743 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 20:34:26,355 - __main__ - INFO - [voice_direct_modular.py:126] - No .env file found, using environment variables
+2025-05-07 20:34:26,355 - __main__ - INFO - [voice_direct_modular.py:131] - Using default API key from constants.py
+2025-05-07 20:34:26,356 - __main__ - INFO - [voice_direct_modular.py:136] - Initializing browser...
+2025-05-07 20:34:26,611 - __main__ - INFO - [voice_direct_modular.py:214] - Starting Playwright
+2025-05-07 20:34:33,020 - __main__ - INFO - [voice_direct_modular.py:216] - Launching Chromium browser
+2025-05-07 20:34:35,234 - __main__ - INFO - [voice_direct_modular.py:140] - Browser initialized successfully
+2025-05-07 20:34:35,235 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing speech components...
+2025-05-07 20:34:35,592 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 20:34:35,593 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 20:34:36,594 - __main__ - INFO - [voice_direct_modular.py:160] - Speech synthesizer initialized
+2025-05-07 20:34:36,595 - __main__ - INFO - [voice_direct_modular.py:165] - Speech recognizer initialized in text mode
+2025-05-07 20:34:36,596 - __main__ - INFO - [voice_direct_modular.py:167] - Speech components initialized successfully
+2025-05-07 20:34:36,597 - __main__ - INFO - [voice_direct_modular.py:173] - Initializing browser utils...
+2025-05-07 20:34:36,597 - __main__ - INFO - [voice_direct_modular.py:178] - Browser utils initialized
+2025-05-07 20:34:36,598 - __main__ - INFO - [voice_direct_modular.py:184] - Initializing LLM utils...
+2025-05-07 20:34:46,194 - __main__ - INFO - [voice_direct_modular.py:193] - LLM utils initialized
+2025-05-07 20:34:46,195 - __main__ - INFO - [voice_direct_modular.py:226] - Initializing interaction handlers...
+2025-05-07 20:34:46,196 - __main__ - INFO - [voice_direct_modular.py:237] - Navigation handler initialized
+2025-05-07 20:34:46,196 - __main__ - INFO - [voice_direct_modular.py:243] - Selection handler initialized
+2025-05-07 20:34:46,197 - __main__ - INFO - [voice_direct_modular.py:249] - Form filling handler initialized
+2025-05-07 20:34:46,198 - __main__ - INFO - [voice_direct_modular.py:255] - Specialized handler initialized
+2025-05-07 20:34:46,198 - __main__ - INFO - [voice_direct_modular.py:257] - All handlers initialized successfully
+2025-05-07 20:34:46,199 - __main__ - INFO - [voice_direct_modular.py:202] - Navigating to start URL: https://www.google.com
+2025-05-07 20:34:46,199 - __main__ - INFO - [voice_direct_modular.py:281] - Navigating to: https://www.google.com
+2025-05-07 20:34:48,441 - __main__ - INFO - [voice_direct_modular.py:285] - Page loaded successfully: Google
+2025-05-07 20:34:48,441 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Loaded: Google
+2025-05-07 20:34:48,442 - __main__ - INFO - [voice_direct_modular.py:206] - Voice assistant initialization complete
+2025-05-07 20:34:48,446 - __main__ - INFO - [voice_direct_modular.py:265] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 22:25:47,388 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 22:25:55,042 - __main__ - INFO - [voice_direct_modular.py:137] - No .env file found, using environment variables
+2025-05-07 22:25:55,044 - __main__ - INFO - [voice_direct_modular.py:142] - Using default API key from constants.py
+2025-05-07 22:25:55,045 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing browser...
+2025-05-07 22:25:58,672 - __main__ - INFO - [voice_direct_modular.py:270] - Starting Playwright
+2025-05-07 22:26:25,285 - __main__ - INFO - [voice_direct_modular.py:272] - Launching Chromium browser
+2025-05-07 22:26:30,547 - __main__ - INFO - [voice_direct_modular.py:151] - Browser initialized successfully
+2025-05-07 22:26:30,548 - __main__ - INFO - [voice_direct_modular.py:158] - Initializing speech components...
+2025-05-07 22:26:34,422 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 22:26:34,426 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 22:26:41,446 - __main__ - INFO - [voice_direct_modular.py:173] - Speech synthesizer initialized
+2025-05-07 22:26:41,448 - __main__ - INFO - [voice_direct_modular.py:186] - Attempting to initialize speech recognizer in text mode
+2025-05-07 22:26:41,449 - __main__ - INFO - [voice_direct_modular.py:188] - Speech recognizer initialized in text mode
+2025-05-07 22:26:41,451 - __main__ - INFO - [voice_direct_modular.py:214] - Speech components initialization complete. Synthesizer: Available, Recognizer: Available
+2025-05-07 22:26:41,452 - __main__ - INFO - [voice_direct_modular.py:229] - Initializing browser utils...
+2025-05-07 22:26:41,459 - __main__ - INFO - [voice_direct_modular.py:234] - Browser utils initialized
+2025-05-07 22:26:41,461 - __main__ - INFO - [voice_direct_modular.py:240] - Initializing LLM utils...
+2025-05-07 22:26:58,371 - __main__ - INFO - [voice_direct_modular.py:249] - LLM utils initialized
+2025-05-07 22:26:58,372 - __main__ - INFO - [voice_direct_modular.py:282] - Initializing interaction handlers...
+2025-05-07 22:26:58,376 - __main__ - INFO - [voice_direct_modular.py:293] - Navigation handler initialized
+2025-05-07 22:26:58,377 - __main__ - INFO - [voice_direct_modular.py:299] - Selection handler initialized
+2025-05-07 22:26:58,378 - __main__ - INFO - [voice_direct_modular.py:305] - Form filling handler initialized
+2025-05-07 22:26:58,379 - __main__ - INFO - [voice_direct_modular.py:311] - Specialized handler initialized
+2025-05-07 22:26:58,380 - __main__ - INFO - [voice_direct_modular.py:313] - All handlers initialized successfully
+2025-05-07 22:26:58,383 - __main__ - INFO - [voice_direct_modular.py:258] - Navigating to start URL: https://www.google.com
+2025-05-07 22:26:58,385 - __main__ - INFO - [voice_direct_modular.py:337] - Navigating to: https://www.google.com
+2025-05-07 22:27:06,702 - __main__ - INFO - [voice_direct_modular.py:341] - Page loaded successfully: Google
+2025-05-07 22:27:06,703 - __main__ - INFO - [voice_direct_modular.py:321] - ASSISTANT: Loaded: Google
+2025-05-07 22:27:06,704 - __main__ - INFO - [voice_direct_modular.py:262] - Voice assistant initialization complete
+2025-05-07 22:27:06,714 - __main__ - INFO - [voice_direct_modular.py:321] - ASSISTANT: Voice Assistant is ready. Say or type 'help' for available commands.
+2025-05-07 22:27:06,715 - __main__ - INFO - [voice_direct_modular.py:355] - Processing command: 1
+2025-05-07 22:27:06,719 - __main__ - INFO - [voice_direct_modular.py:548] - Direct email pattern didn't match, trying fallback patterns
+2025-05-07 22:27:06,722 - __main__ - INFO - [voice_direct_modular.py:555] - Trying flexible email+password patterns
+2025-05-07 22:27:06,730 - __main__ - INFO - [voice_direct_modular.py:572] - No email+password pattern matched, trying email-only patterns
+2025-05-07 22:27:06,735 - __main__ - INFO - [voice_direct_modular.py:621] - Checking for login pattern
+2025-05-07 22:27:06,737 - __main__ - INFO - [voice_direct_modular.py:626] - Simple login pattern didn't match, trying flexible patterns
+2025-05-07 22:27:06,748 - __main__ - INFO - [voice_direct_modular.py:655] - Checking for password-only command
+2025-05-07 22:27:06,752 - __main__ - INFO - [voice_direct_modular.py:675] - Delegating to specialized handler
+2025-05-07 22:27:06,758 - __main__ - INFO - [voice_direct_modular.py:687] - Delegating to form filling handler
+2025-05-07 22:27:06,767 - __main__ - INFO - [voice_direct_modular.py:699] - Delegating to selection handler
+2025-05-07 22:27:06,772 - __main__ - INFO - [voice_direct_modular.py:711] - Delegating to navigation handler
+2025-05-07 22:27:06,778 - __main__ - INFO - [voice_direct_modular.py:321] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-07 22:27:29,920 - __main__ - INFO - [voice_direct_modular.py:3043] - Starting voice recognition...
+2025-05-07 22:27:57,197 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 22:33:22,556 - __main__ - WARNING - [voice_direct_modular.py:3051] - No speech detected
+2025-05-07 22:33:22,663 - __main__ - INFO - [voice_direct_modular.py:3043] - Starting voice recognition...
+2025-05-07 22:34:06,582 - __main__ - INFO - [voice_direct_modular.py:64] - Logging system initialized
+2025-05-07 22:34:15,908 - __main__ - INFO - [voice_direct_modular.py:137] - No .env file found, using environment variables
+2025-05-07 22:34:15,910 - __main__ - INFO - [voice_direct_modular.py:142] - Using default API key from constants.py
+2025-05-07 22:34:15,911 - __main__ - INFO - [voice_direct_modular.py:147] - Initializing browser...
+2025-05-07 22:34:16,338 - __main__ - INFO - [voice_direct_modular.py:270] - Starting Playwright
+2025-05-07 22:34:19,221 - __main__ - INFO - [voice_direct_modular.py:272] - Launching Chromium browser
+2025-05-07 22:34:24,165 - __main__ - INFO - [voice_direct_modular.py:151] - Browser initialized successfully
+2025-05-07 22:34:24,167 - __main__ - INFO - [voice_direct_modular.py:158] - Initializing speech components...
+2025-05-07 22:34:24,732 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-07 22:34:24,734 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-07 22:34:25,835 - __main__ - INFO - [voice_direct_modular.py:173] - Speech synthesizer initialized
+2025-05-07 22:34:25,836 - __main__ - INFO - [voice_direct_modular.py:186] - Attempting to initialize speech recognizer in voice mode
+2025-05-07 22:34:28,929 - __main__ - INFO - [voice_direct_modular.py:188] - Speech recognizer initialized in voice mode
+2025-05-07 22:34:28,929 - __main__ - INFO - [voice_direct_modular.py:214] - Speech components initialization complete. Synthesizer: Available, Recognizer: Available
+2025-05-07 22:34:28,931 - __main__ - INFO - [voice_direct_modular.py:229] - Initializing browser utils...
+2025-05-07 22:34:28,933 - __main__ - INFO - [voice_direct_modular.py:234] - Browser utils initialized
+2025-05-07 22:34:28,933 - __main__ - INFO - [voice_direct_modular.py:240] - Initializing LLM utils...
+2025-05-07 22:34:42,526 - __main__ - INFO - [voice_direct_modular.py:249] - LLM utils initialized
+2025-05-07 22:34:42,527 - __main__ - INFO - [voice_direct_modular.py:282] - Initializing interaction handlers...
+2025-05-07 22:34:42,527 - __main__ - INFO - [voice_direct_modular.py:293] - Navigation handler initialized
+2025-05-07 22:34:42,529 - __main__ - INFO - [voice_direct_modular.py:299] - Selection handler initialized
+2025-05-07 22:34:42,530 - __main__ - INFO - [voice_direct_modular.py:305] - Form filling handler initialized
+2025-05-07 22:34:42,533 - __main__ - INFO - [voice_direct_modular.py:311] - Specialized handler initialized
+2025-05-07 22:34:42,534 - __main__ - INFO - [voice_direct_modular.py:313] - All handlers initialized successfully
+2025-05-07 22:34:42,535 - __main__ - INFO - [voice_direct_modular.py:258] - Navigating to start URL: https://www.google.com
+2025-05-07 22:34:42,537 - __main__ - INFO - [voice_direct_modular.py:337] - Navigating to: https://www.google.com
+2025-05-07 22:34:46,301 - __main__ - INFO - [voice_direct_modular.py:341] - Page loaded successfully: Google
+2025-05-07 22:34:46,302 - __main__ - INFO - [voice_direct_modular.py:321] - ASSISTANT: Loaded: Google
+2025-05-07 22:34:46,303 - __main__ - INFO - [voice_direct_modular.py:325] - Speaking text in voice mode: 'Loaded: Google...' (truncated)

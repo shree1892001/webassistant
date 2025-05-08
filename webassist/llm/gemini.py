@@ -20,14 +20,14 @@ class GeminiProvider(LLMProvider):
         self.model_name = model or GEMINI_MODEL
         self.model = genai.GenerativeModel(self.model_name)
 
-    async def generate_content(self, prompt: str) -> Any:
+    def generate_content(self, prompt: str) -> Any:
         """Generate content using Gemini"""
         return self.model.generate_content(prompt)
 
     async def get_structured_guidance(self, prompt: str) -> Dict[str, Any]:
         """Get structured guidance from Gemini"""
         try:
-            response = await self.generate_content(prompt)
+            response = self.generate_content(prompt)
             response_text = response.text
 
             # Try to extract JSON from the response
@@ -71,8 +71,8 @@ Relevant HTML:
 
 Return ONLY a JSON array of selector strings."""
 
-            response = await self.model.generate_content(full_prompt)
-            
+            response = self.model.generate_content(full_prompt)
+
             # Handle both string and structured responses
             if isinstance(response.text, str):
                 try:
@@ -84,9 +84,9 @@ Return ONLY a JSON array of selector strings."""
                 except json.JSONDecodeError:
                     # If not valid JSON, split by newlines and clean up
                     return [s.strip() for s in response.text.split('\n') if s.strip()]
-            
+
             return []
-            
+
         except Exception as e:
             print(f"Error generating selectors: {e}")
             return []
@@ -185,7 +185,7 @@ Respond ONLY with JSON in this format:
 }}"""
 
             # Generate the response
-            response = await self.generate_content(prompt)
+            response = self.generate_content(prompt)
             print("🔍 Raw LLM response:\n", response.text)
 
             # Parse the response

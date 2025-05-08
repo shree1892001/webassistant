@@ -10,7 +10,7 @@ class LLMProvider(ABC):
     """Abstract base class for LLM providers"""
 
     @abstractmethod
-    async def generate_content(self, prompt: str) -> Any:
+    def generate_content(self, prompt: str) -> Any:
         """Generate content using the LLM"""
         pass
 

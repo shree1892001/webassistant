@@ -2,6 +2,7 @@ import os
 import re
 import asyncio
 import pyttsx3
+import speech_recognition as sr
 from playwright.async_api import async_playwright
 from webassist.Common.constants import *
 from webassist.llm.provider import LLMProviderFactory
@@ -17,6 +18,9 @@ class VoiceAssistant:
         self.browser = None
         self.context = None
         self.page = None
+        self.recognizer = None
+        self.microphone = None
+        self.input_mode = "text"  # Default to text mode
 
         # Use provided config or create default
         self.config = config or AssistantConfig.from_env()
@@ -27,6 +31,14 @@ class VoiceAssistant:
         self.engine = pyttsx3.init()
         self.engine.setProperty('rate', self.config.speech_rate)
         self.engine.setProperty('volume', self.config.speech_volume)
+
+        # Initialize speech recognition
+        self.recognizer = sr.Recognizer()
+        self.microphone = sr.Microphone()
+
+        # Get initial input mode from user
+        self.input_mode = self._get_initial_mode()
+        print(f"🚀 Assistant initialized in {self.input_mode} mode")
 
         # Initialize LLM provider
         api_key = self.config.gemini_api_key or os.environ.get("GEMINI_API_KEY", DEFAULT_API_KEY)
@@ -42,6 +54,19 @@ class VoiceAssistant:
 
         # Navigate to start URL
         await self.browse_website(DEFAULT_START_URL)
+
+    def _get_initial_mode(self):
+        """Get the initial input mode from the user"""
+        print("\n🔊 Select input mode:")
+        print("1. Voice\n2. Text")
+        while True:
+            choice = input("Choice (1/2): ").strip()
+            if choice == "1":
+                return "voice"
+            elif choice == "2":
+                return "text"
+            else:
+                print("Invalid choice. Please enter 1 for Voice or 2 for Text.")
 
     async def close(self, keep_browser_open=True):
         """Close components"""
@@ -61,6 +86,63 @@ class VoiceAssistant:
         print(f"ASSISTANT: {text}")
         self.engine.say(text)
         self.engine.runAndWait()
+
+    async def listen(self):
+        """Listen for user input based on current mode"""
+        if self.input_mode == "voice":
+            return await self._listen_voice()
+        else:
+            return self._listen_text()
+
+    async def _listen_voice(self):
+        """Listen for voice input"""
+        try:
+            # Run the blocking speech recognition in a separate thread
+            return await asyncio.to_thread(self._listen_voice_sync)
+        except Exception as e:
+            print(f"Audio error: {e}")
+            return ""
+
+    def _listen_voice_sync(self):
+        """Synchronous voice listening method to run in a separate thread"""
+        try:
+            with self.microphone as source:
+                print("\n🎤 Listening...")
+                self.recognizer.adjust_for_ambient_noise(source)
+                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                text = self.recognizer.recognize_google(audio).lower()
+                print(f"Recognized: {text}")
+
+                # Check for mode switching command
+                if text.lower() in ["text", "text mode", "switch to text", "switch to text mode"]:
+                    self.input_mode = "text"
+                    self.speak("Switched to text mode")
+                    return self._listen_text()
+
+                return text
+        except sr.UnknownValueError:
+            print("Speech not recognized")
+            return ""
+        except Exception as e:
+            print(f"Audio error: {e}")
+            return ""
+
+    def _listen_text(self):
+        """Get input from text"""
+        try:
+            text = input("\n⌨️ Command: ").strip()
+
+            # Check for mode switching command
+            if text.lower() in ["voice", "voice mode", "switch to voice", "switch to voice mode"]:
+                self.input_mode = "voice"
+                self.speak("Switched to voice mode")
+                # Return empty string to trigger another listen cycle
+                return ""
+
+            return text
+        except Exception as e:
+            print(f"Input error: {e}")
+            return ""
 
     async def browse_website(self, url):
         """Navigate to URL"""
@@ -139,7 +221,37 @@ class VoiceAssistant:
             return False
 
     async def process_command(self, command):
-        """Process a command"""
+        """Process a voice command"""
+        # Add this to your existing command processing logic
+
+        # Handle mode switching commands
+        if command.lower() in ["voice", "voice mode", "switch to voice", "switch to voice mode"]:
+            if self.input_mode != "voice":
+                self.input_mode = "voice"
+                self.speak("Switched to voice mode")
+            else:
+                self.speak("Already in voice mode")
+            return True
+
+        if command.lower() in ["text", "text mode", "switch to text", "switch to text mode"]:
+            if self.input_mode != "text":
+                self.input_mode = "text"
+                self.speak("Switched to text mode")
+            else:
+                self.speak("Already in text mode")
+            return True
+
+        # Handle dropdown filter command
+        filter_dropdown_match = re.search(r'filter (?:dropdown|list) (?:for )?(.*)', command, re.IGNORECASE)
+        if filter_dropdown_match:
+            search_text = filter_dropdown_match.group(1).strip()
+            success = await self.handle_primeng_dropdown_filter(search_text)
+            if success:
+                self.speak(f"Successfully filtered dropdown for '{search_text}'")
+            else:
+                self.speak("Failed to filter dropdown")
+            return True
+
         print(f"DEBUG: Processing command: '{command}'")
 
         if command.lower() in EXIT_COMMANDS:
@@ -168,12 +280,67 @@ class VoiceAssistant:
 
     async def _handle_direct_commands(self, command):
         """Handle common commands directly, using LLM for complex selector generation"""
+        # Handle state selection command
+        state_match = re.search(r'(?:select|choose|pick)\s+(?:state\s+)?([A-Za-z\s]+)(?:\s+(?:state|as\s+state))?', command, re.IGNORECASE)
+        if state_match:
+            state_name = state_match.group(1).strip()
+            return await self._handle_state_selection(state_name)
+
+        # Handle state dropdown command (address form)
+        state_dropdown_match = re.search(r'(?:click|select|open)\s+(?:the\s+)?state(?:\s+dropdown)?', command, re.IGNORECASE)
+        if state_dropdown_match:
+            self.speak("Looking for state dropdown in address form...")
+            # Try to click the state dropdown using label and placeholder
+            clicked = await self.page.evaluate("""() => {
+                // Try to find the dropdown by label 'State' and placeholder 'Select a State'
+                const stateLabels = Array.from(document.querySelectorAll('.p-dropdown-label'))
+                    .filter(el => el.textContent.trim() === 'Select a State');
+                if (stateLabels.length > 0) {
+                    const dropdownContainer = stateLabels[0].closest('.p-dropdown');
+                    if (dropdownContainer) {
+                        dropdownContainer.click();
+                        return true;
+                    }
+                }
+                // Fallback: try by label text
+                const labels = Array.from(document.querySelectorAll('label, span, div'))
+                    .filter(el => el.textContent.trim().toLowerCase().includes('state'));
+                for (const label of labels) {
+                    let current = label;
+                    while (current.nextElementSibling) {
+                        current = current.nextElementSibling;
+                        if (current.classList.contains('p-dropdown')) {
+                            current.click();
+                            return true;
+                        }
+                    }
+                }
+                // Fallback: try by position (second dropdown in address form)
+                const dropdowns = document.querySelectorAll('.p-dropdown');
+                if (dropdowns.length >= 2) {
+                    dropdowns[1].click();
+                    return true;
+                }
+                return false;
+            }""")
+            if clicked:
+                self.speak("Clicked the State dropdown in address form.")
+                await self.page.wait_for_timeout(1000)
+                return True
+            else:
+                self.speak("Could not find the State dropdown in address form.")
+                return False
+
+        # Handle state dropdown command
+        state_dropdown_match = re.search(r'(?:click|select|open)\s+(?:the\s+)?state(?:\s+dropdown)?', command, re.IGNORECASE)
+        if state_dropdown_match:
+            self.speak("Looking for state dropdown...")
+            return await self._click_state_dropdown_direct()
+
         # Simple login pattern - similar to original Voice.py
         login_match = re.search(r'login with email\s+(\S+)\s+and password\s+(\S+)', command, re.IGNORECASE)
 
-        # More flexible login patterns if the simple one doesn't match
         if not login_match:
-            # Try more flexible patterns for login
             login_patterns = [
                 r'log[a-z]* w[a-z]* (?:email|email address)?\s+(\S+)\s+[a-z]* (?:password|pass|p[a-z]*)\s+(\S+)',
                 r'login\s+(?:with|using|w[a-z]*)\s+(?:email|email address)?\s*(\S+)\s+(?:and|with|[a-z]*)\s+(?:password|pass|p[a-z]*)\s*(\S+)',
@@ -374,7 +541,6 @@ class VoiceAssistant:
 
             # Try to click the login button if both fields were found
             if email_found and password_found:
-                # Try specific button selector first
                 button_clicked = False
                 try:
                     if await self.page.locator(specific_button_selector).count() > 0:
@@ -384,7 +550,6 @@ class VoiceAssistant:
                 except Exception as e:
                     print(f"Error with specific button selector: {e}")
 
-                # If specific selector didn't work, try LLM-generated selectors
                 if not button_clicked:
                     login_button_selectors = await self._get_llm_selectors("find login or sign in button", context)
                     # Add fallback selectors
@@ -829,12 +994,32 @@ class VoiceAssistant:
             self.speak("Checking all available products...")
             return await self._check_all_products()
 
-        # Handle product checkbox commands
+        # Handle uncheck all products command
+        uncheck_all_products_match = re.search(r'(?:uncheck|deselect|unmark)(?:\s+(?:all|every))(?:\s+(?:the|available))?\s+(?:products|services|checkboxes)', command, re.IGNORECASE)
+        if uncheck_all_products_match:
+            self.speak("Unchecking all available products...")
+            return await self._uncheck_all_products()
+
+        # Handle product checkbox commands (check)
         product_checkbox_match = re.search(r'(?:check|select|mark)(?:\s+the)?\s+(?:product|service)(?:\s+checkbox)?\s+(?:for)?\s*["\']?([^"\']+)["\']?', command, re.IGNORECASE)
         if product_checkbox_match:
             product_name = product_checkbox_match.group(1).strip()
             self.speak(f"Looking for product checkbox for {product_name}...")
             return await self._check_product_checkbox(product_name)
+
+        # Handle product checkbox commands (uncheck)
+        uncheck_product_match = re.search(r'(?:uncheck|deselect|unmark)(?:\s+the)?\s+(?:product|service)(?:\s+checkbox)?\s+(?:for)?\s*["\']?([^"\']+)["\']?', command, re.IGNORECASE)
+        if uncheck_product_match:
+            product_name = uncheck_product_match.group(1).strip()
+            self.speak(f"Looking to uncheck product {product_name}...")
+            return await self._uncheck_product_checkbox(product_name)
+
+        # Handle read product info command
+        read_product_info_match = re.search(r'(?:read|tell me about|what is|describe)(?:\s+the)?\s+(?:product|service)(?:\s+info|information)?\s+(?:for)?\s*["\']?([^"\']+)["\']?', command, re.IGNORECASE)
+        if read_product_info_match:
+            product_name = read_product_info_match.group(1).strip()
+            self.speak(f"Looking for information about product {product_name}...")
+            return await self._read_product_info(product_name)
 
         # Handle checkbox commands
         checkbox_match = re.search(r'(?:check|select|mark)(?:\s+the)?\s+(?:checkbox(?:\s+for)?|option(?:\s+for)?)\s+(.+?)$', command, re.IGNORECASE)
@@ -1859,6 +2044,373 @@ class VoiceAssistant:
         self.speak(f"I'm not sure how to handle: '{command}'")
         return False
 
+        # Handle entering zip code in the address form
+        zip_match = re.search(r'(?:enter|input|type|fill)\s+(?:zip|zip code|postal code)\s+([0-9A-Za-z\- ]+)', command, re.IGNORECASE)
+        if zip_match:
+            zip_value = zip_match.group(1).strip()
+            self.speak(f"Entering zip code: {zip_value}")
+            # Try to find the zip code input by placeholder or label
+            zip_selectors = [
+                'input[placeholder*="Zip Code" i]',
+                'input[placeholder*="zip" i]',
+                'input[name="zip"]',
+                'input[name="zipCode"]',
+                'input[name="postalCode"]',
+                'label:has-text("Zip") + input',
+                'label:has-text("Zip Code") + input',
+                'label:has-text("Zip") ~ input',
+                'label:has-text("Zip Code") ~ input',
+                'input[maxlength="5"]',
+                'input[type="text"]'
+            ]
+            for selector in zip_selectors:
+                try:
+                    if await self.page.locator(selector).count() > 0:
+                        await self.page.locator(selector).first.fill(zip_value)
+                        await self.page.locator(selector).first.dispatch_event('input')
+                        await self.page.locator(selector).first.dispatch_event('change')
+                        self.speak("Zip code entered successfully.")
+                        return True
+                except Exception as e:
+                    print(f"Error with selector {selector}: {e}")
+                    continue
+            self.speak("Could not find the Zip Code field.")
+            return False
+
+        # Handle clicking the submit button in forms
+        submit_match = re.search(r'(?:click|press|submit|send)\s+(?:the\s+)?submit(?:\s+button|\s+form)?', command, re.IGNORECASE)
+        if submit_match:
+            self.speak("Clicking the submit button...")
+            submit_selectors = [
+                'button[type="submit"]',
+                'button[aria-label="Submit"]',
+                'button.p-button-label:has-text("Submit")',
+                'button:has-text("Submit")',
+                'button.p-button',
+                'button.form-Btn-Label',
+                'button.vstate-button',
+                'button.text-center',
+                'button[role="button"]',
+                'input[type="submit"]',
+                'span.p-button-label:has-text("Submit")',
+                'button'
+            ]
+            for selector in submit_selectors:
+                try:
+                    if await self.page.locator(selector).count() > 0:
+                        await self.page.locator(selector).first.click()
+                        self.speak("Submit button clicked.")
+                        return True
+                except Exception as e:
+                    print(f"Error with selector {selector}: {e}")
+                    continue
+            self.speak("Could not find the submit button.")
+            return False
+
+        # --- Billing Details & Address Form Direct Handlers ---
+        # First Name
+        first_name_match = re.search(r'(?:enter|input|type|fill)\s+(?:first\s+name)\s+(.+)', command, re.IGNORECASE)
+        if first_name_match:
+            value = first_name_match.group(1).strip()
+            self.speak(f"Entering '{value}' in First Name...")
+            try:
+                await self._retry_type('#floating_outlined3001', value, "First Name")
+                self.speak("First Name entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter First Name: {e}")
+                return False
+
+        # Middle Name
+        middle_name_match = re.search(r'(?:enter|input|type|fill)\s+(?:middle\s+name)\s+(.+)', command, re.IGNORECASE)
+        if middle_name_match:
+            value = middle_name_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Middle Name...")
+            try:
+                await self._retry_type('#floating_outlined3003', value, "Middle Name")
+                self.speak("Middle Name entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Middle Name: {e}")
+                return False
+
+        # Last Name
+        last_name_match = re.search(r'(?:enter|input|type|fill)\s+(?:last\s+name)\s+(.+)', command, re.IGNORECASE)
+        if last_name_match:
+            value = last_name_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Last Name...")
+            try:
+                await self._retry_type('#floating_outlined3004', value, "Last Name")
+                self.speak("Last Name entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Last Name: {e}")
+                return False
+
+        # Suffix (Dropdown)
+        suffix_match = re.search(r'(?:select|choose|pick)\s+suffix\s+(.+)', command, re.IGNORECASE)
+        if suffix_match:
+            value = suffix_match.group(1).strip()
+            self.speak(f"Selecting suffix '{value}'...")
+            try:
+                # Click the Suffix dropdown
+                clicked = await self.page.evaluate("""() => {
+                    const labels = Array.from(document.querySelectorAll('.p-dropdown-label'));
+                    for (const label of labels) {
+                        if (label.textContent.trim() === 'Select Suffix') {
+                            const dropdown = label.closest('.p-dropdown');
+                            if (dropdown) { dropdown.click(); return true; }
+                        }
+                    }
+                    return false;
+                }""")
+                if not clicked:
+                    self.speak("Could not find Suffix dropdown.")
+                    return False
+                await self.page.wait_for_timeout(500)
+                # Select the option
+                selected = await self.page.evaluate("""(value) => {
+                    const items = Array.from(document.querySelectorAll('.p-dropdown-item'));
+                    const match = items.find(item => item.textContent.trim().toLowerCase() === value.toLowerCase());
+                    if (match) { match.click(); return true; }
+                    return false;
+                }""", value)
+                if selected:
+                    self.speak(f"Selected suffix '{value}'.")
+                    return True
+                else:
+                    self.speak(f"Could not find suffix option: {value}")
+                    return False
+            except Exception as e:
+                self.speak(f"Error selecting suffix: {e}")
+                return False
+
+        # Key Personnel Title
+        key_title_match = re.search(r'(?:enter|input|type|fill)\s+(?:key\s+personnel\s+title)\s+(.+)', command, re.IGNORECASE)
+        if key_title_match:
+            value = key_title_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Key Personnel Title...")
+            try:
+                await self._retry_type('#floating_outlined4', value, "Key Personnel Title")
+                self.speak("Key Personnel Title entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Key Personnel Title: {e}")
+                return False
+
+        # Email
+        email_match = re.search(r'(?:enter|input|type|fill)\s+(?:email|email\s+address)\s+([\w\.-]+@[\w\.-]+)', command, re.IGNORECASE)
+        if email_match:
+            value = email_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Email...")
+            try:
+                await self._retry_type('#floating_outlined7', value, "Email")
+                self.speak("Email entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Email: {e}")
+                return False
+
+        # Phone
+        phone_match = re.search(r'(?:enter|input|type|fill)\s+(?:phone|phone\s+number)\s+([\d\-\+\(\) ]+)', command, re.IGNORECASE)
+        if phone_match:
+            value = phone_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Phone...")
+            try:
+                await self._retry_type('#floating_outlined213', value, "Phone")
+                self.speak("Phone entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Phone: {e}")
+                return False
+
+        # Address Line 1
+        addr1_match = re.search(r'(?:enter|input|type|fill)\s+(?:address\s+line\s*1|first\s+address\s+line)\s+(.+)', command, re.IGNORECASE)
+        if addr1_match:
+            value = addr1_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Address Line 1...")
+            try:
+                await self._retry_type('#floating_outlined210001', value, "Address Line 1")
+                self.speak("Address Line 1 entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Address Line 1: {e}")
+                return False
+
+        # Address Line 2
+        addr2_match = re.search(r'(?:enter|input|type|fill)\s+(?:address\s+line\s*2|second\s+address\s+line)\s+(.+)', command, re.IGNORECASE)
+        if addr2_match:
+            value = addr2_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Address Line 2...")
+            try:
+                await self._retry_type('#floating_outlined210002', value, "Address Line 2")
+                self.speak("Address Line 2 entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Address Line 2: {e}")
+                return False
+
+        # City
+        city_match = re.search(r'(?:enter|input|type|fill)\s+(?:city)\s+(.+)', command, re.IGNORECASE)
+        if city_match:
+            value = city_match.group(1).strip()
+            self.speak(f"Entering '{value}' in City...")
+            try:
+                await self._retry_type('#floating_outlined210003', value, "City")
+                self.speak("City entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter City: {e}")
+                return False
+
+        # State (Dropdown)
+        state_match = re.search(r'(?:select|choose|pick)\s+state\s+(.+)', command, re.IGNORECASE)
+        if state_match:
+            value = state_match.group(1).strip()
+            self.speak(f"Selecting state '{value}'...")
+            try:
+                # Click the State dropdown (the .p-dropdown next to label 'State')
+                clicked = await self.page.evaluate("""() => {
+                    const labels = Array.from(document.querySelectorAll('label'));
+                    for (const label of labels) {
+                        if (label.textContent.trim().toLowerCase().startsWith('state')) {
+                            // Find the .p-dropdown in the same parent or next sibling
+                            let parent = label.parentElement;
+                            if (parent) {
+                                let dropdown = parent.querySelector('.p-dropdown');
+                                if (dropdown) { dropdown.click(); return true; }
+                                let sibling = parent.nextElementSibling;
+                                if (sibling && sibling.classList.contains('p-dropdown')) { sibling.click(); return true; }
+                            }
+                        }
+                    }
+                    // Fallback: second .p-dropdown in the form
+                    const dropdowns = document.querySelectorAll('.p-dropdown');
+                    if (dropdowns.length >= 2) { dropdowns[1].click(); return true; }
+                    return false;
+                }""")
+                if not clicked:
+                    self.speak("Could not find State dropdown.")
+                    return False
+                await self.page.wait_for_timeout(500)
+                # Select the option
+                selected = await self.page.evaluate("""(value) => {
+                    const items = Array.from(document.querySelectorAll('.p-dropdown-item'));
+                    const match = items.find(item => item.textContent.trim().toLowerCase() === value.toLowerCase());
+                    if (match) { match.click(); return true; }
+                    return false;
+                }""", value)
+                if selected:
+                    self.speak(f"Selected state '{value}'.")
+                    return True
+                else:
+                    self.speak(f"Could not find state option: {value}")
+                    return False
+            except Exception as e:
+                self.speak(f"Error selecting state: {e}")
+                return False
+
+        # Zip Code
+        zip_match = re.search(r'(?:enter|input|type|fill)\s+(?:zip|zip\s+code|postal\s+code)\s+([0-9A-Za-z\- ]+)', command, re.IGNORECASE)
+        if zip_match:
+            value = zip_match.group(1).strip()
+            self.speak(f"Entering '{value}' in Zip Code...")
+            try:
+                await self._retry_type('#floating_outlined210006', value, "Zip Code")
+                self.speak("Zip Code entered successfully.")
+                return True
+            except Exception as e:
+                self.speak(f"Could not enter Zip Code: {e}")
+                return False
+
+        # Submit Button
+        submit_match = re.search(r'(?:click|press|submit|send)\s+(?:the\s+)?submit(?:\s+button|\s+form)?', command, re.IGNORECASE)
+        if submit_match:
+            self.speak("Clicking the submit button...")
+            try:
+                # Try the most specific selector first
+                if await self.page.locator('button[type="submit"] .p-button-label:has-text("Submit")').count() > 0:
+                    await self.page.locator('button[type="submit"] .p-button-label:has-text("Submit")').first.click()
+                    self.speak("Submit button clicked.")
+                    return True
+                # Fallbacks
+                submit_selectors = [
+                    'button[type="submit"]',
+                    'button.p-button-label:has-text("Submit")',
+                    'button:has-text("Submit")',
+                    'button.form-Btn-Label',
+                    'button.vstate-button',
+                    'input[type="submit"]',
+                    'span.p-button-label:has-text("Submit")',
+                    'button'
+                ]
+                for selector in submit_selectors:
+                    if await self.page.locator(selector).count() > 0:
+                        await self.page.locator(selector).first.click()
+                        self.speak("Submit button clicked.")
+                        return True
+                self.speak("Could not find the submit button.")
+                return False
+            except Exception as e:
+                self.speak(f"Error clicking submit button: {e}")
+                return False
+
+        # Address Selection from Dropdown
+        address_select_match = re.search(r'(?:select|choose|pick)\s+(?:address)\s+(.+)', command, re.IGNORECASE)
+        if address_select_match:
+            address_value = address_select_match.group(1).strip()
+            self.speak(f"Selecting address '{address_value}'...")
+            try:
+                # First click the address dropdown
+                clicked = await self.page.evaluate("""() => {
+                    // Try to find dropdown by various means
+                    const dropdowns = Array.from(document.querySelectorAll('.p-dropdown'));
+                    for (const dropdown of dropdowns) {
+                        const label = dropdown.querySelector('.p-dropdown-label');
+                        if (label && (
+                            label.textContent.includes('Address') ||
+                            dropdown.closest('[aria-label*="Address"]') ||
+                            dropdown.closest('[id*="address"]')
+                        )) {
+                            dropdown.click();
+                            return true;
+                        }
+                    }
+                    return false;
+                }""")
+
+                if not clicked:
+                    self.speak("Could not find the address dropdown.")
+                    return False
+
+                # Wait for dropdown items to appear
+                await self.page.wait_for_timeout(500)
+
+                # Try to select the address
+                selected = await self.page.evaluate("""(address) => {
+                    const items = Array.from(document.querySelectorAll('.p-dropdown-item'));
+                    const match = items.find(item =>
+                        item.textContent.trim().toLowerCase() === address.toLowerCase() ||
+                        item.textContent.trim().toLowerCase().includes(address.toLowerCase())
+                    );
+                    if (match) {
+                        match.click();
+                        return true;
+                    }
+                    return false;
+                }""", address_value)
+
+                if selected:
+                    self.speak(f"Selected address '{address_value}'.")
+                    return True
+                else:
+                    self.speak(f"Could not find address option: {address_value}")
+                    return False
+
+            except Exception as e:
+                self.speak(f"Error selecting address: {e}")
+                return False
+
     async def _get_llm_selectors(self, task, context_dict):
         """Use LLM to generate selectors for a task based on page context"""
         try:
@@ -2651,794 +3203,169 @@ class VoiceAssistant:
         """Handle state selection from dropdown"""
         self.speak(f"Looking for state {state_name}...")
 
-        # First, make sure we're working with a clean state name
-        state_name = state_name.strip()
-
-        # Handle common state name variations
-        state_name_map = {
-            "new york": "New York",
-            "ny": "New York",
-            "california": "California",
-            "ca": "California",
-            "texas": "Texas",
-            "tx": "Texas",
-            "florida": "Florida",
-            "fl": "Florida",
-            "illinois": "Illinois",
-            "il": "Illinois",
-            "pennsylvania": "Pennsylvania",
-            "pa": "Pennsylvania",
-            "ohio": "Ohio",
-            "oh": "Ohio",
-            "georgia": "Georgia",
-            "ga": "Georgia",
-            "north carolina": "North Carolina",
-            "nc": "North Carolina",
-            "michigan": "Michigan",
-            "mi": "Michigan",
-            "new jersey": "New Jersey",
-            "nj": "New Jersey",
-            "virginia": "Virginia",
-            "va": "Virginia",
-            "washington": "Washington",
-            "wa": "Washington",
-            "arizona": "Arizona",
-            "az": "Arizona",
-            "massachusetts": "Massachusetts",
-            "ma": "Massachusetts",
-            "tennessee": "Tennessee",
-            "tn": "Tennessee",
-            "indiana": "Indiana",
-            "in": "Indiana",
-            "missouri": "Missouri",
-            "mo": "Missouri",
-            "maryland": "Maryland",
-            "md": "Maryland",
-            "wisconsin": "Wisconsin",
-            "wi": "Wisconsin",
-            "minnesota": "Minnesota",
-            "mn": "Minnesota",
-            "colorado": "Colorado",
-            "co": "Colorado",
-            "alabama": "Alabama",
-            "al": "Alabama",
-            "south carolina": "South Carolina",
-            "sc": "South Carolina",
-            "louisiana": "Louisiana",
-            "la": "Louisiana",
-            "kentucky": "Kentucky",
-            "ky": "Kentucky",
-            "oregon": "Oregon",
-            "or": "Oregon",
-            "oklahoma": "Oklahoma",
-            "ok": "Oklahoma",
-            "connecticut": "Connecticut",
-            "ct": "Connecticut",
-            "utah": "Utah",
-            "ut": "Utah",
-            "iowa": "Iowa",
-            "ia": "Iowa",
-            "nevada": "Nevada",
-            "nv": "Nevada",
-            "arkansas": "Arkansas",
-            "ar": "Arkansas",
-            "mississippi": "Mississippi",
-            "ms": "Mississippi",
-            "kansas": "Kansas",
-            "ks": "Kansas",
-            "new mexico": "New Mexico",
-            "nm": "New Mexico",
-            "nebraska": "Nebraska",
-            "ne": "Nebraska",
-            "west virginia": "West Virginia",
-            "wv": "West Virginia",
-            "idaho": "Idaho",
-            "id": "Idaho",
-            "hawaii": "Hawaii",
-            "hi": "Hawaii",
-            "new hampshire": "New Hampshire",
-            "nh": "New Hampshire",
-            "maine": "Maine",
-            "me": "Maine",
-            "montana": "Montana",
-            "mt": "Montana",
-            "rhode island": "Rhode Island",
-            "ri": "Rhode Island",
-            "delaware": "Delaware",
-            "de": "Delaware",
-            "south dakota": "South Dakota",
-            "sd": "South Dakota",
-            "north dakota": "North Dakota",
-            "nd": "North Dakota",
-            "alaska": "Alaska",
-            "ak": "Alaska",
-            "vermont": "Vermont",
-            "vt": "Vermont",
-            "wyoming": "Wyoming",
-            "wy": "Wyoming",
-            "district of columbia": "District of Columbia",
-            "dc": "District of Columbia",
-            "washington dc": "District of Columbia",
-            "washington d.c.": "District of Columbia",
-        }
-
-        # Normalize the state name
-        normalized_state_name = state_name.lower()
-        if normalized_state_name in state_name_map:
-            state_name = state_name_map[normalized_state_name]
-            print(f"Normalized state name to: {state_name}")
-
-        # Get the current page context
-        context = await self._get_page_context()
-
-        # First try using the LLM to generate actions
-        action_data = await self.llm_provider.get_actions(f"select state {state_name}", context)
-
-        if 'actions' in action_data and len(action_data['actions']) > 0:
-            # Try to execute the LLM-generated actions
-            success = await self._execute_actions(action_data)
-            if success:
-                self.speak(f"Selected state {state_name}")
-                return True
-            else:
-                self.speak("LLM-generated actions failed, trying fallback methods...")
-
-        # Try a direct approach for searching and selecting a state
         try:
-            # First try to find and click the search input in the dropdown
-            search_result = await self.page.evaluate("""(stateName) => {
-                // First check if the dropdown is already open
-                const dropdownPanel = document.querySelector('.p-dropdown-panel');
-                if (!dropdownPanel || window.getComputedStyle(dropdownPanel).display === 'none') {
-                    // Dropdown is not open, find and click it first
-                    console.log("Dropdown not open, opening it first");
+            # First try to click the state dropdown using JavaScript
+            clicked = await self.page.evaluate("""() => {
+                // STRATEGY 1: Find by exact "Select a State" text in dropdown label
+                const stateLabels = Array.from(document.querySelectorAll('.p-dropdown-label'))
+                    .filter(el => el.textContent.trim() === 'Select a State');
 
-                    // EXTREME DIRECT APPROACH: Force click on the second dropdown only
-                    console.log("EXTREME DIRECT APPROACH: Force click on the second dropdown only");
-
-                    // Get all dropdowns
-                    const allDropdowns = document.querySelectorAll('.p-dropdown');
-                    console.log(`Found ${allDropdowns.length} dropdowns total`);
-
-                    // Log all dropdowns for debugging
-                    for (let i = 0; i < allDropdowns.length; i++) {
-                        const dropdown = allDropdowns[i];
-                        const label = dropdown.querySelector('.p-dropdown-label');
-                        console.log(`Dropdown #${i}: label text="${label ? label.textContent.trim() : 'none'}"`);
+                if (stateLabels.length > 0) {
+                    const dropdownContainer = stateLabels[0].closest('.p-dropdown');
+                    if (dropdownContainer) {
+                        dropdownContainer.click();
+                        return true;
                     }
-
-                    // CRITICAL: We know the second dropdown is the State of Formation
-                    // So we'll directly click the second dropdown (index 1) if it exists
-                    if (allDropdowns.length > 1) {
-                        console.log("DIRECTLY clicking the SECOND dropdown (index 1)");
-                        return {
-                            success: true,
-                            message: "Directly clicking second dropdown",
-                            action: () => {
-                                allDropdowns[1].click();
-                                return true;
-                            }
-                        };
-                    }
-
-                    // If there's only one dropdown, we can't be sure which one it is
-                    console.log("Not enough dropdowns found");
-                    return { success: false, message: "Not enough dropdowns found" };
-
-                    // If we still haven't found the dropdown, try one last approach
-                    // Look for elements with "State of Formation" text
-                    const stateFormationElements = allLabels.filter(el =>
-                        el.textContent.toLowerCase().includes('state') &&
-                        el.textContent.toLowerCase().includes('formation'));
-
-                    if (stateFormationElements.length > 0) {
-                        console.log(`Found ${stateFormationElements.length} elements with "State of Formation" text`);
-
-                        // Try to find a dropdown near each element
-                        for (const element of stateFormationElements) {
-                            // Look for the closest dropdown
-                            let current = element;
-                            let foundDropdown = null;
-
-                            // Check siblings
-                            while (current.nextElementSibling) {
-                                current = current.nextElementSibling;
-                                if (current.classList.contains('p-dropdown')) {
-                                    foundDropdown = current;
-                                    break;
-                                }
-                                const nestedDropdown = current.querySelector('.p-dropdown');
-                                if (nestedDropdown) {
-                                    foundDropdown = nestedDropdown;
-                                    break;
-                                }
-                            }
-
-                            if (foundDropdown) {
-                                console.log("Found dropdown after State of Formation element");
-                                foundDropdown.click();
-                                return { success: true, message: "Opened dropdown after State of Formation element", needsSearch: true };
-                            }
-                        }
-                    }
-
-                    // TARGET APPROACH: Find dropdown with "Select State" text
-                    console.log("TARGET APPROACH: Finding dropdown with 'Select State' text");
-
-                    // Find all dropdown labels
-                    const allDropdownLabels = document.querySelectorAll('.p-dropdown-label');
-                    console.log(`Found ${allDropdownLabels.length} dropdown labels`);
-
-                    // Log all dropdown labels for debugging
-                    for (let i = 0; i < allDropdownLabels.length; i++) {
-                        const label = allDropdownLabels[i];
-                        console.log(`Dropdown label #${i}: text="${label.textContent.trim()}"`);
-                    }
-
-                    // Find the label with "Select State" text
-                    let stateLabel = null;
-                    for (let i = 0; i < allDropdownLabels.length; i++) {
-                        const label = allDropdownLabels[i];
-                        if (label.textContent.trim() === 'Select State') {
-                            console.log(`Found "Select State" label at index ${i}`);
-                            stateLabel = label;
-                            break;
-                        }
-                    }
-
-                    if (stateLabel) {
-                        // Find the parent dropdown container and click it
-                        const dropdownContainer = stateLabel.closest('.p-dropdown');
-                        if (dropdownContainer) {
-                            console.log(`Found and clicking dropdown container for "Select State"`);
-                            dropdownContainer.click();
-                            return { success: true, message: "Opened dropdown with 'Select State' text", needsSearch: true };
-                        } else {
-                            console.log(`Found "Select State" label but couldn't find parent dropdown`);
-                            // Try clicking the label directly as a fallback
-                            stateLabel.click();
-                            return { success: true, message: "Clicked 'Select State' label directly", needsSearch: true };
-                        }
-                    }
-
-                    // Fallback: If we can't find by text, try the second dropdown
-                    console.log("Couldn't find dropdown with 'Select State' text, trying second dropdown");
-                    const allDropdowns = document.querySelectorAll('.p-dropdown');
-                    if (allDropdowns.length > 1) {
-                        console.log(`Falling back to second dropdown (index 1) out of ${allDropdowns.length}`);
-                        allDropdowns[1].click();
-                        return { success: true, message: "Opened second dropdown as fallback", needsSearch: true };
-                    }
-
-                    console.log("Could not find state dropdown");
-                    return { success: false, message: "Could not find state dropdown" };
-                } else {
-                    console.log("Dropdown is already open");
-                    return { success: true, message: "Dropdown already open", needsSearch: true };
                 }
-            }""", state_name)
 
-            print(f"Search dropdown result: {search_result}")
+                // STRATEGY 2: Find by label with asterisk
+                const stateLabelsWithAsterisk = Array.from(document.querySelectorAll('label, span, div'))
+                    .filter(el => {
+                        const text = el.textContent.trim();
+                        return text.includes('State') && text.includes('*');
+                    });
 
-            if search_result and search_result.get('success'):
-                # Wait for dropdown panel to appear
-                await self.page.wait_for_selector('.p-dropdown-panel', timeout=2000)
-
-                # Now try to search for the state
-                search_and_select_result = await self.page.evaluate("""(stateName) => {
-                    // IMPORTANT: Make sure we're working with the State of Formation dropdown
-                    // First check if we're in the correct dropdown panel
-                    const dropdownPanels = document.querySelectorAll('.p-dropdown-panel');
-                    console.log(`Found ${dropdownPanels.length} dropdown panels`);
-
-                    // Check each panel to see which one is visible
-                    let visiblePanel = null;
-                    for (let i = 0; i < dropdownPanels.length; i++) {
-                        const panel = dropdownPanels[i];
-                        if (window.getComputedStyle(panel).display !== 'none') {
-                            console.log(`Panel #${i} is visible`);
-                            visiblePanel = panel;
-                            break;
-                        }
-                    }
-
-                    if (!visiblePanel) {
-                        console.log("No visible dropdown panel found");
-                        return { success: false, message: "No visible dropdown panel found" };
-                    }
-
-                    // Check if this is the State dropdown by looking for state names
-                    const stateNames = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-                        'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-                        'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-                        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-                        'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
-                        'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
-                        'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
-                        'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
-                        'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia'];
-
-                    const panelItems = visiblePanel.querySelectorAll('.p-dropdown-item');
-                    let isStateDropdown = false;
-
-                    // Check if any of the items match state names
-                    for (const item of panelItems) {
-                        const itemText = item.textContent.trim();
-                        if (stateNames.includes(itemText)) {
-                            isStateDropdown = true;
-                            console.log(`Found state name "${itemText}" in dropdown, confirming this is the state dropdown`);
-                            break;
-                        }
-                    }
-
-                    // If this doesn't appear to be the state dropdown, try to close it and open the correct one
-                    if (!isStateDropdown && dropdownPanels.length > 1) {
-                        console.log("This doesn't appear to be the state dropdown, trying to close it");
-
-                        // Click outside to close the current dropdown
-                        document.body.click();
-
-                        // Wait a moment for the dropdown to close
-                        console.log("Waiting for dropdown to close...");
-
-                        // Return a special result indicating we need to try again with the state dropdown
-                        return {
-                            success: false,
-                            message: "Wrong dropdown opened, need to try with state dropdown",
-                            needStateDropdown: true
-                        };
-                    }
-
-                    // Look for search input in the dropdown panel
-                    const searchInput = visiblePanel.querySelector('.p-dropdown-filter');
-                    if (searchInput) {
-                        console.log("Found search input, typing state name");
-                        // Clear any existing value
-                        searchInput.value = '';
-                        // Type the state name
-                        searchInput.value = stateName;
-                        searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-                        searchInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-                        console.log(`Typed "${stateName}" into search input`);
-
-                        // Wait a moment for filtering to take effect
-                        setTimeout(() => {}, 500);
-
-                        // Now find and click the matching state option
-                        const stateOptions = Array.from(visiblePanel.querySelectorAll('.p-dropdown-item'));
-                        console.log(`Found ${stateOptions.length} options after filtering`);
-
-                        // First try exact match
-                        let matchedOption = stateOptions.find(option =>
-                            option.textContent.trim().toLowerCase() === stateName.toLowerCase());
-
-                        // If no exact match, try starts with
-                        if (!matchedOption) {
-                            matchedOption = stateOptions.find(option =>
-                                option.textContent.trim().toLowerCase().startsWith(stateName.toLowerCase()));
-                        }
-
-                        // If still no match, try contains
-                        if (!matchedOption) {
-                            matchedOption = stateOptions.find(option =>
-                                option.textContent.trim().toLowerCase().includes(stateName.toLowerCase()));
-                        }
-
-                        if (matchedOption) {
-                            console.log(`Found matching state option: ${matchedOption.textContent.trim()}`);
-                            matchedOption.click();
-                            return { success: true, message: `Selected state ${matchedOption.textContent.trim()}` };
-                        } else {
-                            return { success: false, message: "No matching state found after search" };
-                        }
-                    } else {
-                        // No search input, try to find the state directly
-                        console.log("No search input found, looking for state directly");
-
-                        const stateOptions = Array.from(visiblePanel.querySelectorAll('.p-dropdown-item'));
-                        console.log(`Found ${stateOptions.length} state options`);
-
-                        // First try exact match
-                        let matchedOption = stateOptions.find(option =>
-                            option.textContent.trim().toLowerCase() === stateName.toLowerCase());
-
-                        // If no exact match, try starts with
-                        if (!matchedOption) {
-                            matchedOption = stateOptions.find(option =>
-                                option.textContent.trim().toLowerCase().startsWith(stateName.toLowerCase()));
-                        }
-
-                        // If still no match, try contains
-                        if (!matchedOption) {
-                            matchedOption = stateOptions.find(option =>
-                                option.textContent.trim().toLowerCase().includes(stateName.toLowerCase()));
-                        }
-
-                        if (matchedOption) {
-                            console.log(`Found matching state option: ${matchedOption.textContent.trim()}`);
-                            matchedOption.click();
-                            return { success: true, message: `Selected state ${matchedOption.textContent.trim()}` };
-                        } else {
-                            return { success: false, message: "No matching state found" };
-                        }
-                    }
-                }""", state_name)
-
-                print(f"Search and select result: {search_and_select_result}")
-
-                if search_and_select_result and search_and_select_result.get('success'):
-                    self.speak(search_and_select_result.get('message', f"Selected state {state_name}"))
-                    return True
-                elif search_and_select_result and search_and_select_result.get('needStateDropdown'):
-                    # Wrong dropdown was opened, try to close it and open the state dropdown
-                    self.speak("Opening the state dropdown instead...")
-
-                    # Wait a moment for the wrong dropdown to close
-                    await self.page.wait_for_timeout(1000)
-
-                    # Try to click the state dropdown specifically
-                    try:
-                        # TARGET APPROACH: Find dropdown with "Select State" text
-                        clicked = await self.page.evaluate("""() => {
-                            console.log("TARGET APPROACH: Finding dropdown with 'Select State' text");
-
-                            // Find all dropdown labels
-                            const allDropdownLabels = document.querySelectorAll('.p-dropdown-label');
-                            console.log(`Found ${allDropdownLabels.length} dropdown labels`);
-
-                            // Log all dropdown labels for debugging
-                            for (let i = 0; i < allDropdownLabels.length; i++) {
-                                const label = allDropdownLabels[i];
-                                console.log(`Dropdown label #${i}: text="${label.textContent.trim()}"`);
-                            }
-
-                            // Find the label with "Select State" text
-                            let stateLabel = null;
-                            for (let i = 0; i < allDropdownLabels.length; i++) {
-                                const label = allDropdownLabels[i];
-                                if (label.textContent.trim() === 'Select State') {
-                                    console.log(`Found "Select State" label at index ${i}`);
-                                    stateLabel = label;
-                                    break;
-                                }
-                            }
-
-                            if (stateLabel) {
-                                // Find the parent dropdown container and click it
-                                const dropdownContainer = stateLabel.closest('.p-dropdown');
-                                if (dropdownContainer) {
-                                    console.log(`Found and clicking dropdown container for "Select State"`);
-                                    dropdownContainer.click();
-                                    return true;
-                                } else {
-                                    console.log(`Found "Select State" label but couldn't find parent dropdown`);
-                                    // Try clicking the label directly as a fallback
-                                    stateLabel.click();
-                                    return true;
-                                }
-                            }
-
-                            // Fallback: If we can't find by text, try the second dropdown
-                            console.log("Couldn't find dropdown with 'Select State' text, trying second dropdown");
-                            const allDropdowns = document.querySelectorAll('.p-dropdown');
-                            if (allDropdowns.length > 1) {
-                                console.log(`Falling back to second dropdown (index 1) out of ${allDropdowns.length}`);
-                                allDropdowns[1].click();
+                if (stateLabelsWithAsterisk.length > 0) {
+                    for (const label of stateLabelsWithAsterisk) {
+                        let current = label;
+                        while (current.nextElementSibling) {
+                            current = current.nextElementSibling;
+                            if (current.classList.contains('p-dropdown')) {
+                                current.click();
                                 return true;
                             }
+                        }
+                    }
+                }
 
-                            console.log("Could not find state dropdown");
-                            return false;
-                        }""")
-
-                        if clicked:
-                            # Wait for dropdown panel to appear
-                            await self.page.wait_for_selector('.p-dropdown-panel', timeout=2000)
-
-                            # Try the search again
-                            return await self._handle_state_selection(state_name)
-                    except Exception as e:
-                        print(f"Error trying to click state dropdown: {e}")
-        except Exception as e:
-            print(f"Error with direct state search and selection: {e}")
-
-        # First try to find and click the state dropdown to open it
-        dropdown_selectors = await self._get_llm_selectors("find state dropdown", context)
-        dropdown_clicked = False
-
-        for selector in dropdown_selectors:
-            try:
-                if await self.page.locator(selector).count() > 0:
-                    await self._retry_click(selector, "state dropdown")
-                    self.speak("Clicked on state dropdown")
-                    await self.page.wait_for_timeout(1000)
-                    dropdown_clicked = True
-                    break
-            except Exception as e:
-                print(f"Error with dropdown selector {selector}: {e}")
-                continue
-
-        if not dropdown_clicked:
-            # Try JavaScript to find and click the state dropdown
-            try:
-                clicked = await self.page.evaluate("""() => {
-                    // Specifically looking for State of Formation dropdown
-                    console.log("Specifically looking for State of Formation dropdown");
-
-                    // First try to find the exact dropdown element with "Select State" text or a state name
-                    const stateNames = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-                        'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-                        'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-                        'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
-                        'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey',
-                        'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma',
-                        'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
-                        'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
-                        'West Virginia', 'Wisconsin', 'Wyoming', 'District of Columbia'];
-
-                    const selectStateElements = Array.from(document.querySelectorAll('.p-dropdown-label'))
-                        .filter(el => {
-                            const text = el.textContent.trim();
-                            return text === 'Select State' || stateNames.includes(text);
-                        });
-
-                    if (selectStateElements.length > 0) {
-                        console.log(`Found ${selectStateElements.length} elements with exact "Select State" text`);
-
-                        for (const element of selectStateElements) {
-                            console.log(`Found element with text: "${element.textContent.trim()}"`);
-
-                            // Find the parent dropdown container and click it
-                            const dropdownContainer = element.closest('.p-dropdown');
-                            if (dropdownContainer) {
-                                console.log(`Found dropdown container for "Select State"`);
-                                dropdownContainer.click();
-                                return true;
-                            }
-
-                            // If no parent dropdown container, try clicking the element itself
-                            console.log(`Clicking "Select State" element directly`);
-                            element.click();
+                // STRATEGY 3: Find dropdown by position (state is typically after city)
+                const cityField = document.querySelector('input[placeholder*="City" i]');
+                if (cityField) {
+                    let current = cityField.parentElement;
+                    while (current.nextElementSibling) {
+                        current = current.nextElementSibling;
+                        const dropdown = current.querySelector('.p-dropdown');
+                        if (dropdown) {
+                            dropdown.click();
                             return true;
                         }
                     }
+                }
 
-                    // If we couldn't find the exact "Select State" element, look for elements containing "State of Formation" text
-                    const stateLabels = Array.from(document.querySelectorAll('*'))
-                        .filter(el => {
-                            const text = el.textContent.trim().toLowerCase();
-                            return text.includes('state') && text.includes('formation');
-                        });
-
-                    console.log(`Found ${stateLabels.length} elements with "State of Formation" text`);
-
-                    // Try to find dropdowns near these state labels
-                    for (const label of stateLabels) {
-                        console.log(`Found state label with text: "${label.textContent.trim()}"`);
-
-                        // Check if this element is a label with a "for" attribute
-                        const forAttribute = label.getAttribute('for');
-                        if (forAttribute) {
-                            const associatedElement = document.getElementById(forAttribute);
-                            if (associatedElement) {
-                                console.log(`Found associated element by ID: ${forAttribute}`);
-                                associatedElement.click();
-                                return true;
-                            }
-                        }
-
-                        // Check next sibling
-                        let sibling = label.nextElementSibling;
-                        while (sibling) {
-                            if (sibling.classList.contains('p-dropdown') ||
-                                sibling.getAttribute('role') === 'combobox' ||
-                                sibling.tagName === 'SELECT') {
-                                console.log(`Found dropdown in next sibling of state label`);
-                                sibling.click();
-                                return true;
-                            }
-
-                            const dropdownInSibling = sibling.querySelector('.p-dropdown, [role="combobox"], select');
-                            if (dropdownInSibling) {
-                                console.log(`Found dropdown inside sibling of state label`);
-                                dropdownInSibling.click();
-                                return true;
-                            }
-
-                            sibling = sibling.nextElementSibling;
-                        }
-
-                        // Check parent element
-                        const parent = label.parentElement;
-                        if (parent) {
-                            // Look for dropdown in the parent element
-                            const dropdownInParent = parent.querySelector('.p-dropdown, [role="combobox"], select');
-                            if (dropdownInParent) {
-                                console.log(`Found dropdown in parent of state label`);
-                                dropdownInParent.click();
-                                return true;
-                            }
-
-                            // Look for siblings of the parent
-                            const parentSibling = parent.nextElementSibling;
-                            if (parentSibling) {
-                                const dropdownInParentSibling = parentSibling.querySelector('.p-dropdown, [role="combobox"], select');
-                                if (dropdownInParentSibling) {
-                                    console.log(`Found dropdown in parent's sibling of state label`);
-                                    dropdownInParentSibling.click();
-                                    return true;
-                                }
-                            }
-                        }
-                    }
-
-                    // If we still couldn't find the state dropdown by label, try by index
-                    const allDropdowns = document.querySelectorAll('.p-dropdown, [role="combobox"], select');
-                    console.log(`Found ${allDropdowns.length} total dropdowns on the page`);
-
-                    // Log all dropdowns for debugging
-                    for (let i = 0; i < allDropdowns.length; i++) {
-                        const dropdown = allDropdowns[i];
-                        console.log(`Dropdown #${i}: class=${dropdown.className}, text=${dropdown.textContent.trim()}`);
-                    }
-
-                    // For state of formation, use index 1 (second dropdown)
-                    if (allDropdowns.length > 1) {
-                        console.log(`Clicking the SECOND dropdown (state of formation) on the page`);
-                        allDropdowns[1].click();
-                        return true;
-                    } else if (allDropdowns.length > 0) {
-                        console.log(`Clicking first dropdown as last resort`);
-                        allDropdowns[0].click();
-                        return true;
-                    }
-
-                    return false;
-                }""")
-
-                if clicked:
-                    self.speak("Found and clicked state dropdown using JavaScript")
-                    await self.page.wait_for_timeout(1000)
-                    dropdown_clicked = True
-            except Exception as e:
-                print(f"Error with JavaScript dropdown click: {e}")
-
-        # Now try to select the state from the dropdown
-        # Wait for dropdown panel to appear
-        try:
-            await self.page.wait_for_selector('.p-dropdown-panel, .dropdown-menu, .select-dropdown', timeout=2000)
-            print("Dropdown panel appeared")
-        except Exception as e:
-            print(f"Dropdown panel did not appear: {e}")
-
-        # Try to find and click the state option
-        option_selectors = await self._get_llm_selectors(f"find option '{state_name}' in dropdown", context)
-
-        for selector in option_selectors:
-            try:
-                if await self.page.locator(selector).count() > 0:
-                    await self._retry_click(selector, f"state option '{state_name}'")
-                    self.speak(f"Selected state {state_name}")
-                    await self.page.wait_for_timeout(1000)
-                    return True
-            except Exception as e:
-                print(f"Error with option selector {selector}: {e}")
-                continue
-
-        # Try JavaScript to find and click the state
-        try:
-            clicked = await self.page.evaluate("""(stateName) => {
-                // Function to find state elements with exact and partial matching
-                const findStateOption = (text) => {
-                    // PrimeNG/PrimeReact specific selectors (most specific first)
-                    const primeItems = document.querySelectorAll('.p-dropdown-item, .p-dropdown-items li, li.p-dropdown-item');
-
-                    // Try exact match first
-                    for (const item of primeItems) {
-                        if (item.textContent.trim().toLowerCase() === text.toLowerCase() ||
-                            item.getAttribute('aria-label')?.toLowerCase() === text.toLowerCase()) {
-                            console.log('Found exact match PrimeNG/React state item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // Standard select options
-                    const options = document.querySelectorAll('option');
-                    for (const option of options) {
-                        if (option.textContent.trim().toLowerCase() === text.toLowerCase()) {
-                            console.log('Found exact match select option:', option.textContent);
-                            return option;
-                        }
-                    }
-
-                    // Generic dropdown items
-                    const items = document.querySelectorAll('li[role="option"], .dropdown-item');
-                    for (const item of items) {
-                        if (item.textContent.trim().toLowerCase() === text.toLowerCase()) {
-                            console.log('Found exact match dropdown item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // Any list item with matching text
-                    const listItems = document.querySelectorAll('li');
-                    for (const item of listItems) {
-                        if (item.textContent.trim().toLowerCase() === text.toLowerCase()) {
-                            console.log('Found exact match list item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // If no exact match, try partial matches
-
-                    // PrimeNG/PrimeReact items
-                    for (const item of primeItems) {
-                        if (item.textContent.trim().toLowerCase().includes(text.toLowerCase())) {
-                            console.log('Found partial match PrimeNG/React state item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // Standard select options
-                    for (const option of options) {
-                        if (option.textContent.trim().toLowerCase().includes(text.toLowerCase())) {
-                            console.log('Found partial match select option:', option.textContent);
-                            return option;
-                        }
-                    }
-
-                    // Generic dropdown items
-                    for (const item of items) {
-                        if (item.textContent.trim().toLowerCase().includes(text.toLowerCase())) {
-                            console.log('Found partial match dropdown item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // Any list item with matching text
-                    for (const item of listItems) {
-                        if (item.textContent.trim().toLowerCase().includes(text.toLowerCase())) {
-                            console.log('Found partial match list item:', item.textContent);
-                            return item;
-                        }
-                    }
-
-                    // If still no match, try any visible element with the text
-                    const allElements = document.querySelectorAll('*');
-                    for (const el of allElements) {
-                        if (el.textContent.trim().toLowerCase() === text.toLowerCase() &&
-                            window.getComputedStyle(el).display !== 'none' &&
-                            window.getComputedStyle(el).visibility !== 'hidden') {
-                            console.log('Found matching text in element:', el.tagName, el.textContent);
-                            return el;
-                        }
-                    }
-
-                    return null;
-                };
-
-                const stateOption = findStateOption(stateName);
-                if (stateOption) {
-                    console.log(`Clicking state option: ${stateOption.textContent.trim()}`);
-                    stateOption.click();
+                // STRATEGY 4: Find by class and position
+                const dropdowns = document.querySelectorAll('.p-dropdown');
+                if (dropdowns.length >= 2) {
+                    // State dropdown is typically the second dropdown in address forms
+                    dropdowns[1].click();
                     return true;
                 }
 
-                console.log(`Could not find state option: ${stateName}`);
+                return false;
+            }""")
+
+            if not clicked:
+                self.speak("Could not find state dropdown")
+                return False
+
+            # Wait for dropdown panel to appear
+            await self.page.wait_for_timeout(1000)
+
+            # Try to select the state using JavaScript
+            selected = await self.page.evaluate("""(stateName) => {
+                const items = Array.from(document.querySelectorAll('.p-dropdown-item'));
+                const stateItem = items.find(item => item.textContent.trim() === stateName);
+
+                if (stateItem) {
+                    stateItem.click();
+                    return true;
+                }
+
                 return false;
             }""", state_name)
 
-            if clicked:
+            if selected:
                 self.speak(f"Selected state {state_name}")
-                await self.page.wait_for_timeout(1000)
                 return True
             else:
-                self.speak(f"Could not find state {state_name} in the dropdown")
-        except Exception as e:
-            print(f"Error with JavaScript state selection: {e}")
+                self.speak(f"Could not find state option: {state_name}")
+                return False
 
-        return False
+        except Exception as e:
+            self.speak(f"Error selecting state: {str(e)}")
+            return False
+
+    async def _click_address_state_dropdown(self):
+        """Click the state dropdown in the address form"""
+        try:
+            # Use JavaScript to find and click the state dropdown
+            clicked = await self.page.evaluate("""() => {
+                // STRATEGY 1: Find by exact "Select a State" text in dropdown label
+                const stateLabels = Array.from(document.querySelectorAll('.p-dropdown-label'))
+                    .filter(el => el.textContent.trim() === 'Select a State');
+
+                if (stateLabels.length > 0) {
+                    const dropdownContainer = stateLabels[0].closest('.p-dropdown');
+                    if (dropdownContainer) {
+                        dropdownContainer.click();
+                        return true;
+                    }
+                }
+
+                // STRATEGY 2: Find by label with asterisk
+                const stateLabelsWithAsterisk = Array.from(document.querySelectorAll('label, span, div'))
+                    .filter(el => {
+                        const text = el.textContent.trim();
+                        return text.includes('State') && text.includes('*');
+                    });
+
+                if (stateLabelsWithAsterisk.length > 0) {
+                    for (const label of stateLabelsWithAsterisk) {
+                        let current = label;
+                        while (current.nextElementSibling) {
+                            current = current.nextElementSibling;
+                            if (current.classList.contains('p-dropdown')) {
+                                current.click();
+                                return true;
+                            }
+                        }
+                    }
+                }
+
+                // STRATEGY 3: Find dropdown by position (state is typically after city)
+                const cityField = document.querySelector('input[placeholder*="City" i]');
+                if (cityField) {
+                    let current = cityField.parentElement;
+                    while (current.nextElementSibling) {
+                        current = current.nextElementSibling;
+                        const dropdown = current.querySelector('.p-dropdown');
+                        if (dropdown) {
+                            dropdown.click();
+                            return true;
+                        }
+                    }
+                }
+
+                // STRATEGY 4: Find by class and position
+                const dropdowns = document.querySelectorAll('.p-dropdown');
+                if (dropdowns.length >= 2) {
+                    // State dropdown is typically the second dropdown in address forms
+                    dropdowns[1].click();
+                    return true;
+                }
+
+                return false;
+            }""")
+
+            if clicked:
+                print("Successfully clicked state dropdown")
+                return True
+            else:
+                print("Failed to click state dropdown using JavaScript")
+                return False
+
+        except Exception as e:
+            print(f"Error clicking state dropdown: {e}")
+            return False
 
     async def _get_page_context(self):
         """Get current page context"""
@@ -3755,6 +3682,84 @@ class VoiceAssistant:
                 print(f"Error with checkbox selector {selector}: {e}")
                 continue
 
+        error_message = f"Could not find checkbox to {purpose}"
+        self.speak(error_message)
+        return InteractionResult.failure_result(error_message).success
+
+    async def handle_primeng_dropdown_filter(self, search_text):
+        """
+        Handle PrimeNG dropdown filter input
+
+        Args:
+            search_text: Text to enter in the filter
+        """
+        try:
+            self.speak(f"Filtering dropdown for '{search_text}'...")
+
+            # First try using Playwright's fill method
+            filter_selector = '.p-dropdown-filter'
+            filter_count = await self.page.locator(filter_selector).count()
+
+            if filter_count > 0:
+                # Fill the filter input
+                await self.page.locator(filter_selector).first.fill(search_text)
+                await self.page.wait_for_timeout(500)  # Wait for filter to apply
+                self.speak(f"Entered '{search_text}' in dropdown filter")
+
+                # Wait for filtered items to appear
+                await self.page.wait_for_timeout(1000)
+
+                # Try to click the first matching item
+                item_selector = '.p-dropdown-item'
+                items_count = await self.page.locator(item_selector).count()
+
+                if items_count > 0:
+                    await self.page.locator(item_selector).first.click()
+                    self.speak("Selected first matching item")
+                    return True
+                else:
+                    self.speak("No matching items found after filtering")
+            else:
+                # If no filter found with Playwright, try JavaScript
+                result = await self.page.evaluate("""(searchText) => {
+                    // Find the filter input
+                    const filterInput = document.querySelector('.p-dropdown-filter');
+                    if (!filterInput) {
+                        return { success: false, message: "Filter input not found" };
+                    }
+
+                    // Set the value and dispatch events
+                    filterInput.value = searchText;
+                    filterInput.dispatchEvent(new Event('input', { bubbles: true }));
+                    filterInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+                    // Wait a bit for the filter to apply
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            // Try to find and click the first matching item
+                            const items = document.querySelectorAll('.p-dropdown-item');
+                            if (items.length > 0) {
+                                items[0].click();
+                                resolve({ success: true, message: "Filtered and selected first item" });
+                            } else {
+                                resolve({ success: false, message: "No items found after filtering" });
+                            }
+                        }, 500);
+                    });
+                }""", search_text)
+
+                if result.get('success'):
+                    self.speak(result.get('message'))
+                    return True
+                else:
+                    self.speak(f"JavaScript filter failed: {result.get('message')}")
+
+            return False
+        except Exception as e:
+            self.speak(f"Error with dropdown filter: {str(e)}")
+            print(f"Dropdown filter error: {e}")
+            return False
+
     async def _check_product_checkbox(self, product_name):
         """Specifically check a product checkbox from a product list
 
@@ -4025,14 +4030,14 @@ class VoiceAssistant:
                     # Try using JavaScript to find and fill the element
                     try:
                         # First try with the specific selector
-                        js_result = await self.page.evaluate("""(selector, text) => {
+                        js_code = """(params) => {
                             try {
-                                const element = document.querySelector(selector);
+                                const element = document.querySelector(params.selector);
                                 if (element) {
-                                    element.value = text;
+                                    element.value = params.text;
                                     element.dispatchEvent(new Event('input', { bubbles: true }));
                                     element.dispatchEvent(new Event('change', { bubbles: true }));
-                                    console.log('Filled element using selector:', selector);
+                                    console.log('Filled element using selector:', params.selector);
                                     return true;
                                 }
                                 return false;
@@ -4040,7 +4045,9 @@ class VoiceAssistant:
                                 console.error('Error filling element:', e);
                                 return false;
                             }
-                        }""", selector, text)
+                        }"""
+
+                        js_result = await self.page.evaluate(js_code, {"selector": selector, "text": text})
 
                         if js_result:
                             print(f"Successfully filled {purpose} using JavaScript with selector")
@@ -4049,30 +4056,19 @@ class VoiceAssistant:
 
                         # If specific selector didn't work, try a more aggressive approach
                         print(f"Specific selector not found, trying generic input")
-                        js_result = await self.page.evaluate("""(text, elementType) => {
+                        js_code = """(params) => {
                             // Try to find input elements by type or placeholder
                             const findInputs = () => {
                                 const inputs = [];
 
                                 // Get all input elements
                                 const allInputs = document.querySelectorAll('input, textarea');
-
-                                // Filter inputs based on element type
                                 for (const input of allInputs) {
-                                    if (elementType.toLowerCase().includes('email') &&
-                                        (input.type === 'email' ||
-                                         input.name?.toLowerCase().includes('email') ||
-                                         input.id?.toLowerCase().includes('email') ||
-                                         input.placeholder?.toLowerCase().includes('email'))) {
-                                        inputs.push(input);
-                                    } else if (elementType.toLowerCase().includes('password') &&
-                                               (input.type === 'password' ||
-                                                input.name?.toLowerCase().includes('password') ||
-                                                input.id?.toLowerCase().includes('password'))) {
-                                        inputs.push(input);
-                                    } else if (!elementType.toLowerCase().includes('email') &&
-                                               !elementType.toLowerCase().includes('password')) {
-                                        // For other types, just add all inputs
+                                    if (input.type === 'text' ||
+                                        input.type === 'search' ||
+                                        input.type === 'email' ||
+                                        input.tagName === 'TEXTAREA' ||
+                                        input.placeholder) {
                                         inputs.push(input);
                                     }
                                 }
@@ -4080,88 +4076,56 @@ class VoiceAssistant:
                                 return inputs;
                             };
 
-                            // Find inputs based on element type
+                            // Find all potential input elements
                             const inputs = findInputs();
-                            console.log(`Found ${inputs.length} potential ${elementType} inputs`);
+                            console.log(`Found ${inputs.length} potential input elements`);
 
-                            // Try to fill the first matching input
                             if (inputs.length > 0) {
-                                inputs[0].value = text;
+                                // Use the first visible input
+                                for (const input of inputs) {
+                                    const rect = input.getBoundingClientRect();
+                                    const style = window.getComputedStyle(input);
+
+                                    if (rect.width > 0 &&
+                                        rect.height > 0 &&
+                                        style.display !== 'none' &&
+                                        style.visibility !== 'hidden') {
+
+                                        // Fill the input
+                                        input.value = params.text;
+                                        input.dispatchEvent(new Event('input', { bubbles: true }));
+                                        input.dispatchEvent(new Event('change', { bubbles: true }));
+
+                                        console.log('Filled input element:', input);
+                                        return true;
+                                    }
+                                }
+
+                                // If no visible input found, use the first one anyway
+                                inputs[0].value = params.text;
                                 inputs[0].dispatchEvent(new Event('input', { bubbles: true }));
                                 inputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-                                console.log(`Filled ${elementType} input with:`, text);
+
+                                console.log('Filled first input element (not visible):', inputs[0]);
                                 return true;
                             }
 
-                            // If no inputs found, try to find inputs in iframes
-                            const iframes = document.querySelectorAll('iframe');
-                            for (let i = 0; i < iframes.length; i++) {
-                                try {
-                                    const iframe = iframes[i];
-                                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-                                    // Find inputs in iframe
-                                    const iframeInputs = [];
-                                    const allIframeInputs = iframeDoc.querySelectorAll('input, textarea');
-
-                                    // Filter inputs based on element type
-                                    for (const input of allIframeInputs) {
-                                        if (elementType.toLowerCase().includes('email') &&
-                                            (input.type === 'email' ||
-                                             input.name?.toLowerCase().includes('email') ||
-                                             input.id?.toLowerCase().includes('email') ||
-                                             input.placeholder?.toLowerCase().includes('email'))) {
-                                            iframeInputs.push(input);
-                                        } else if (elementType.toLowerCase().includes('password') &&
-                                                   (input.type === 'password' ||
-                                                    input.name?.toLowerCase().includes('password') ||
-                                                    input.id?.toLowerCase().includes('password'))) {
-                                            iframeInputs.push(input);
-                                        } else if (!elementType.toLowerCase().includes('email') &&
-                                                   !elementType.toLowerCase().includes('password')) {
-                                            // For other types, just add all inputs
-                                            iframeInputs.push(input);
-                                        }
-                                    }
-
-                                    console.log(`Found ${iframeInputs.length} potential ${elementType} inputs in iframe ${i}`);
-
-                                    // Try to fill the first matching input in iframe
-                                    if (iframeInputs.length > 0) {
-                                        iframeInputs[0].value = text;
-                                        iframeInputs[0].dispatchEvent(new Event('input', { bubbles: true }));
-                                        iframeInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-                                        console.log(`Filled ${elementType} input in iframe ${i} with:`, text);
-                                        return true;
-                                    }
-                                } catch (e) {
-                                    console.error(`Error accessing iframe ${i}:`, e);
-                                }
-                            }
-
-                            // If still no inputs found, try to find any visible element that might be an input
-                            console.log("No inputs found. Performing DOM inspection to find input fields...");
-
-                            // Count all input elements for debugging
-                            const allInputCount = document.querySelectorAll('input').length;
-                            console.log(`DOM inspection found ${allInputCount} input elements`);
-
-                            // Check if specific ID exists
-                            const specificInput = document.getElementById('floating_outlined3');
-                            console.log(`DOM inspection ${specificInput ? 'found' : 'did not find'} #floating_outlined3`);
-
                             return false;
-                        }""", text, purpose)
+                        }"""
+
+                        js_result = await self.page.evaluate(js_code, {"text": text})
 
                         if js_result:
                             print(f"Successfully filled {purpose} using JavaScript with generic approach")
                             self.speak(f"⌨️ Entered {purpose}")
                             return True
+                        else:
+                            print(f"Failed to find any suitable input element for {purpose}")
+                            return False
                     except Exception as js_error:
                         print(f"JavaScript injection failed: {js_error}")
-
-                    raise e
-                await self.page.wait_for_timeout(10000)
+                        return False
+                await self.page.wait_for_timeout(1000)
         return False
 
     async def _check_for_input_fields(self):
@@ -4424,12 +4388,206 @@ class VoiceAssistant:
         - "Enter [text] in zip code" - Fill in the zip code field
         - "Select [state] from state dropdown" - Select a state from the dropdown
 
+        Input Mode:
+        - "Voice mode" - Switch to voice input mode
+        - "Text mode" - Switch to text input mode
+
         General:
         - "Help" - Show this help message
         - "Exit" or "Quit" - Close the assistant
         """
         print(help_text)
         self.speak("Here's the help information. You can see the full list on screen.")
+
+    async def handle_dropdown_filter(self, search_text: str) -> bool:
+        """Handle typing into a PrimeNG dropdown filter input"""
+        try:
+            # First, find the dropdown filter input
+            filter_state = await self.page.evaluate("""() => {
+                const filterInput = document.querySelector('input.p-dropdown-filter');
+                if (!filterInput) return null;
+
+                return {
+                    is_visible: filterInput.offsetParent !== null,
+                    current_value: filterInput.value,
+                    is_enabled: !filterInput.disabled
+                };
+            }""")
+
+            if not filter_state:
+                self.speech.speak("Dropdown filter input not found")
+                return False
+
+            if not filter_state['is_visible']:
+                self.speech.speak("Dropdown filter input is not visible")
+                return False
+
+            if not filter_state['is_enabled']:
+                self.speech.speak("Dropdown filter input is disabled")
+                return False
+
+            # Generate actions for the filter input
+            actions = []
+
+            # Action 1: Click the input to focus
+            actions.append({
+                'type': 'click',
+                'selectors': [
+                    "//input[contains(@class, 'p-dropdown-filter')]",
+                    "//input[@type='text'][contains(@class, 'p-dropdown-filter')]"
+                ],
+                'purpose': 'Focus dropdown filter input'
+            })
+
+            # Action 2: Type the search text
+            actions.append({
+                'type': 'type',
+                'selectors': [
+                    "//input[contains(@class, 'p-dropdown-filter')]",
+                    "//input[@type='text'][contains(@class, 'p-dropdown-filter')]"
+                ],
+                'text': search_text,
+                'purpose': 'Type search text into filter'
+            })
+
+            # Execute actions
+            for action in actions:
+                if action['type'] == 'click':
+                    success = await self._try_selectors_for_click(action['selectors'], action['purpose'])
+                elif action['type'] == 'type':
+                    success = await self._try_selectors_for_type(
+                        action['selectors'],
+                        action['text'],
+                        action['purpose']
+                    )
+                
+                if not success:
+                    self.speech.speak(f"Failed to execute action: {action['purpose']}")
+                    return False
+                
+                await self.page.wait_for_timeout(500)
+
+            # Verify the text was entered
+            final_state = await self.page.evaluate("""() => {
+                const filterInput = document.querySelector('input.p-dropdown-filter');
+                return filterInput ? filterInput.value : null;
+            }""")
+
+            if final_state != search_text:
+                self.speech.speak("Failed to enter search text correctly")
+                return False
+
+            self.speech.speak(f"Successfully entered search text: {search_text}")
+            return True
+
+        except Exception as e:
+            self.speech.speak(f"Failed to handle dropdown filter: {str(e)}")
+            return False
+
+    async def clear_dropdown_filter(self) -> bool:
+        """Clear the PrimeNG dropdown filter input"""
+        try:
+            # First, check if the filter exists and is visible
+            filter_state = await self.page.evaluate("""() => {
+                const filterInput = document.querySelector('input.p-dropdown-filter');
+                if (!filterInput) return null;
+
+                return {
+                    is_visible: filterInput.offsetParent !== null,
+                    current_value: filterInput.value,
+                    is_enabled: !filterInput.disabled
+                };
+            }""")
+
+            if not filter_state:
+                self.speech.speak("Dropdown filter input not found")
+                return False
+
+            if not filter_state['is_visible']:
+                self.speech.speak("Dropdown filter input is not visible")
+                return False
+
+            if not filter_state['is_enabled']:
+                self.speech.speak("Dropdown filter input is disabled")
+                return False
+
+            # Generate actions to clear the filter
+            actions = []
+
+            # Action 1: Click the input to focus
+            actions.append({
+                'type': 'click',
+                'selectors': [
+                    "//input[contains(@class, 'p-dropdown-filter')]",
+                    "//input[@type='text'][contains(@class, 'p-dropdown-filter')]"
+                ],
+                'purpose': 'Focus dropdown filter input'
+            })
+
+            # Action 2: Clear the input
+            actions.append({
+                'type': 'type',
+                'selectors': [
+                    "//input[contains(@class, 'p-dropdown-filter')]",
+                    "//input[@type='text'][contains(@class, 'p-dropdown-filter')]"
+                ],
+                'text': '',
+                'purpose': 'Clear filter input'
+            })
+
+            # Execute actions
+            for action in actions:
+                if action['type'] == 'click':
+                    success = await self._try_selectors_for_click(action['selectors'], action['purpose'])
+                elif action['type'] == 'type':
+                    success = await self._try_selectors_for_type(
+                        action['selectors'],
+                        action['text'],
+                        action['purpose']
+                    )
+                
+                if not success:
+                    self.speech.speak(f"Failed to execute action: {action['purpose']}")
+                    return False
+                
+                await self.page.wait_for_timeout(500)
+
+            # Verify the input was cleared
+            final_state = await self.page.evaluate("""() => {
+                const filterInput = document.querySelector('input.p-dropdown-filter');
+                return filterInput ? filterInput.value : null;
+            }""")
+
+            if final_state != '':
+                self.speech.speak("Failed to clear filter input")
+                return False
+
+            self.speech.speak("Successfully cleared filter input")
+            return True
+
+        except Exception as e:
+            self.speech.speak(f"Failed to clear dropdown filter: {str(e)}")
+            return False
+
+    async def handle_primeng_dropdown_filter(self, search_text: str) -> bool:
+        """Handle PrimeNG dropdown filter with voice feedback"""
+        try:
+            # First try to clear any existing text
+            await self.clear_dropdown_filter()
+            
+            # Then enter the new search text
+            success = await self.handle_dropdown_filter(search_text)
+            
+            if success:
+                self.speech.speak(f"Successfully filtered dropdown with: {search_text}")
+            else:
+                self.speech.speak("Failed to filter dropdown")
+            
+            return success
+
+        except Exception as e:
+            self.speech.speak(f"Failed to handle PrimeNG dropdown filter: {str(e)}")
+            return False
 
 
 async def main():
@@ -4448,16 +4606,21 @@ async def main():
         assistant = VoiceAssistant(config)
         await assistant.initialize()
 
-        assistant.speak("Web Assistant ready. Say 'help' for available commands.")
+        assistant.speak("Voice Web Assistant ready. Say 'help' for available commands.")
 
         print("\nWelcome to Voice Web Assistant!")
-        print("Type 'help' for available commands or 'exit' to quit.")
+        if assistant.input_mode == "voice":
+            print("Say 'help' for available commands or 'exit' to quit.")
+            print("Say 'text mode' to switch to text input.")
+        else:
+            print("Type 'help' for available commands or 'exit' to quit.")
+            print("Type 'voice mode' to switch to voice input.")
 
         # Main command loop
         while True:
             try:
-                # Get user input directly
-                command = input("\nCommand: ").strip()
+                # Get user input using the appropriate mode (voice or text)
+                command = await assistant.listen()
 
                 # Handle empty command
                 if not command:
@@ -4484,8 +4647,21 @@ async def main():
         traceback.print_exc()
     finally:
         print("\nProgram ended. Browser will remain open.")
-            
 
 
 if __name__ == "__main__":
     asyncio.run(main())
+
+
+
+
+
+
+
+
+
+
+
+
+
+

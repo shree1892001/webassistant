@@ -118,21 +118,21 @@ class VoiceAssistant:
         - Navigation:
           * "go to [URL]" or "navigate to [URL]" or "open [URL]"
           * "search for [query]"
-        
+
         - Login:
           * "login with email [email] and password [password]"
-        
+
         - Form Interaction:
           * "select [option] from [dropdown]"
           * "check [checkbox]"
           * "uncheck [checkbox]"
           * "toggle [checkbox]"
-        
+
         - State Selection:
           * "select state [state name]"
           * "choose state [state name]"
           * "pick state [state name]"
-        
+
         - Other:
           * "help" - Show this help message
           * "exit" or "quit" - Exit the assistant
@@ -165,11 +165,11 @@ class VoiceAssistant:
             """
 
             # Get response from LLM
-            response = await self.llm_provider.generate_content(prompt)
-            
+            response = self.llm_provider.generate_content(prompt)
+
             # Get the text content from the response
             response_text = response.text
-            
+
             # Parse response into actions
             actions = []
             for line in response_text.split('\n'):
@@ -189,7 +189,7 @@ class VoiceAssistant:
                                 selector_match = re.search(r"selector':\s*'([^']*)'", line)
                                 value_match = re.search(r"value':\s*'([^']*)'", line)
                                 desc_match = re.search(r"description':\s*'([^']*)'", line)
-                                
+
                                 if type_match and selector_match:
                                     action = {
                                         'type': type_match.group(1),
@@ -263,11 +263,11 @@ class VoiceAssistant:
             """
 
             # Get response from LLM
-            response = await self.llm_provider.generate_content(prompt)
-            
+            response = self.llm_provider.generate_content(prompt)
+
             # Get the text content from the response
             response_text = response.text
-            
+
             # Parse response into selectors
             selectors = []
             for line in response_text.split('\n'):
@@ -304,7 +304,7 @@ class VoiceAssistant:
             # Get basic page information
             title = await self.page.title()
             url = self.page.url
-            
+
             # Get visible text content
             visible_text = await self.page.evaluate("""
                 () => {
@@ -317,7 +317,7 @@ class VoiceAssistant:
                     let text = '';
                     let node;
                     while (node = walker.nextNode()) {
-                        if (node.parentElement && 
+                        if (node.parentElement &&
                             window.getComputedStyle(node.parentElement).display !== 'none' &&
                             node.parentElement.offsetParent !== null) {
                             text += node.textContent + ' ';
@@ -326,7 +326,7 @@ class VoiceAssistant:
                     return text.trim();
                 }
             """)
-            
+
             # Get input fields
             input_fields = await self.page.evaluate("""
                 () => {
@@ -340,7 +340,7 @@ class VoiceAssistant:
                     }));
                 }
             """)
-            
+
             # Get buttons
             buttons = await self.page.evaluate("""
                 () => {
@@ -353,7 +353,7 @@ class VoiceAssistant:
                     }));
                 }
             """)
-            
+
             # Get links
             links = await self.page.evaluate("""
                 () => {
@@ -365,7 +365,7 @@ class VoiceAssistant:
                     }));
                 }
             """)
-            
+
             return {
                 "title": title,
                 "url": url,
@@ -417,7 +417,7 @@ class VoiceAssistant:
                     }));
                 }
             """)
-            
+
             # Group inputs by type
             input_fields = {
                 'text': [],
@@ -428,14 +428,14 @@ class VoiceAssistant:
                 'radio': [],
                 'other': []
             }
-            
+
             for input_elem in input_elements:
                 input_type = input_elem['type'].lower()
                 if input_type in input_fields:
                     input_fields[input_type].append(input_elem)
                 else:
                     input_fields['other'].append(input_elem)
-            
+
             return input_fields
         except Exception as e:
             print(f"Error checking for input fields: {e}")
@@ -453,7 +453,7 @@ async def main():
     """Main entry point"""
     assistant = VoiceAssistant()
     await assistant.initialize()
-    
+
     try:
         while True:
             command = input("Enter command (or 'exit' to quit): ")
@@ -463,4 +463,4 @@ async def main():
         await assistant.close(keep_browser_open=True)
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    asyncio.run(main())

@@ -2300,7 +2300,7 @@ Respond ONLY with JSON in this format:
         }}
         """
 
-        response = await self.llm_selector.generate_content(prompt)
+        response = self.llm_selector.generate_content(prompt)
         try:
             return json.loads(response.text)
         except Exception as e:
