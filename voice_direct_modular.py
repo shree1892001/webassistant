@@ -100,7 +100,7 @@ try:
 
     from webassist.Common.constants import *
 
-    from webassist.voice_assistant.speech.recognizer import create_recognizer
+    from webassist.voice_assistant.speech.enhanced_recognizer import create_enhanced_recognizer
     from webassist.voice_assistant.speech.synthesizer import create_synthesizer
 
     from webassist.voice_assistant.utils.browser_utils import BrowserUtils
@@ -111,6 +111,7 @@ try:
     from webassist.voice_assistant.interactions.selection import SelectionHandler
     from webassist.voice_assistant.interactions.specialized import SpecializedHandler
     from webassist.voice_assistant.interactions.member_manager import MemberManagerHandler
+    from webassist.voice_assistant.interactions.business_purpose import BusinessPurposeHandler
 
     modules_loaded = True
     print("Successfully imported all modules")
@@ -163,7 +164,7 @@ class SimpleVoiceAssistant:
                 try:
                     # First try to initialize in the requested mode
                     logger.info(f"Attempting to initialize speech recognizer in {input_mode} mode")
-                    self.recognizer = create_recognizer(config=self.speech_config, mode=input_mode, speak_func=self.speak)
+                    self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode=input_mode, speak_func=self.speak)
                     logger.info(f"Speech recognizer initialized in {input_mode} mode")
                 except Exception as rec_error:
                     logger.error(f"Error initializing speech recognizer in {input_mode} mode: {rec_error}")
@@ -173,7 +174,7 @@ class SimpleVoiceAssistant:
                         logger.info("Falling back to text mode")
                         input_mode = "text"
                         try:
-                            self.recognizer = create_recognizer(config=self.speech_config, mode="text", speak_func=self.speak)
+                            self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode="text", speak_func=self.speak)
                             logger.info("Speech recognizer initialized in text mode")
                         except Exception as text_error:
                             logger.error(f"Error initializing text mode recognizer: {text_error}")
@@ -194,6 +195,7 @@ class SimpleVoiceAssistant:
         self.form_filling_handler = None
         self.specialized_handler = None
         self.member_manager_handler = None
+        self.business_purpose_handler = None
 
         # Command history tracking
         self.command_history = []
@@ -347,6 +349,12 @@ class SimpleVoiceAssistant:
                     self.page, self.speak, self.llm_utils, self.browser_utils
                 )
                 logger.info("Member/Manager handler initialized")
+
+            if 'BusinessPurposeHandler' in globals():
+                self.business_purpose_handler = BusinessPurposeHandler(
+                    self.page, self.speak, self.llm_utils, self.browser_utils
+                )
+                logger.info("Business Purpose handler initialized")
 
             logger.info("All handlers initialized successfully")
         except Exception as e:
@@ -809,6 +817,18 @@ class SimpleVoiceAssistant:
                     return True
             except Exception as e:
                 logger.error(f"Error in form filling handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try business purpose handler
+        if self.business_purpose_handler:
+            logger.info("Delegating to business purpose handler")
+            try:
+                if await self.business_purpose_handler.handle_command(command):
+                    logger.info("Command handled by business purpose handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in business purpose handler: {e}")
                 import traceback
                 logger.error(traceback.format_exc())
 

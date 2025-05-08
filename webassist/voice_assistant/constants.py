@@ -513,6 +513,17 @@ PAYMENT_OPTION_SELECTORS = [
     '.p-checkbox'
 ]
 
+# Business purpose dropdown selectors
+BUSINESS_PURPOSE_DROPDOWN_SELECTORS = [
+    "#CD_Business_Purpose_Details",
+    "div[id='CD_Business_Purpose_Details']",
+    ".p-dropdown:has-text('Business Purpose')",
+    ".p-dropdown-label:has-text('Business Purpose')",
+    "div.p-dropdown:has(.p-dropdown-label:has-text('Business Purpose'))",
+    "span.p-float-label:has(div#CD_Business_Purpose_Details)",
+    "div.field:has(label:has-text('Business Purpose')) .p-dropdown"
+]
+
 # Billing info dropdown selectors
 BILLING_INFO_DROPDOWN_SELECTORS = [
     "#RA_Billing_Information",
@@ -677,6 +688,80 @@ JS_FIND_PAYMENT_OPTION = """
     }
 
     return { success: false, reason: 'not_found' };
+}
+"""
+
+# JavaScript for finding and clicking business purpose dropdown
+JS_FIND_BUSINESS_PURPOSE_DROPDOWN = """
+() => {
+    // Try to find by ID
+    const byId = document.getElementById('CD_Business_Purpose_Details');
+    if (byId) {
+        console.log('Found business purpose dropdown by ID');
+        byId.click();
+        return true;
+    }
+
+    // Try to find by text content
+    const labels = Array.from(document.querySelectorAll('label'));
+    for (const label of labels) {
+        if (label.textContent.includes('Business Purpose')) {
+            const field = label.closest('.field');
+            if (field) {
+                const dropdown = field.querySelector('.p-dropdown');
+                if (dropdown) {
+                    console.log('Found business purpose dropdown by label text');
+                    dropdown.click();
+                    return true;
+                }
+            }
+        }
+    }
+
+    // Try to find any dropdown with business purpose text
+    const dropdowns = document.querySelectorAll('.p-dropdown');
+    for (const dropdown of dropdowns) {
+        const label = dropdown.textContent.toLowerCase();
+        if (label.includes('business') || label.includes('purpose')) {
+            console.log('Found business purpose dropdown by text content');
+            dropdown.click();
+            return true;
+        }
+    }
+
+    return false;
+}
+"""
+
+# JavaScript for selecting a business purpose option
+JS_SELECT_BUSINESS_PURPOSE = """
+(purposeName) => {
+    // Find all dropdown items
+    const items = Array.from(document.querySelectorAll('.p-dropdown-item'));
+    console.log(`Found ${items.length} dropdown items`);
+
+    // Log all available options for debugging
+    items.forEach(item => console.log(`Option: ${item.textContent.trim()}`));
+
+    // Try to find an exact match first
+    let match = items.find(item =>
+        item.textContent.trim().toLowerCase() === purposeName.toLowerCase()
+    );
+
+    // If no exact match, try partial match
+    if (!match) {
+        match = items.find(item =>
+            item.textContent.trim().toLowerCase().includes(purposeName.toLowerCase())
+        );
+    }
+
+    if (match) {
+        console.log(`Clicking business purpose: ${match.textContent.trim()}`);
+        match.click();
+        return { success: true, selected: match.textContent.trim() };
+    }
+
+    return { success: false };
 }
 """
 

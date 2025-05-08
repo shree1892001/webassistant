@@ -2104,3 +2104,58 @@ Call log:
 2025-05-08 18:02:24,672 - __main__ - INFO - [voice_direct_modular.py:362] - ASSISTANT: Could not find element to click on business purpose details dropdown
 2025-05-08 18:02:25,698 - __main__ - INFO - [voice_direct_modular.py:844] - Command handled by navigation handler
 2025-05-08 18:02:25,700 - __main__ - INFO - [voice_direct_modular.py:4647] - Starting voice recognition...
+2025-05-08 18:30:48,779 - __main__ - WARNING - [voice_direct_modular.py:4659] - No speech detected
+2025-05-08 18:31:32,088 - __main__ - INFO - [voice_direct_modular.py:72] - Logging system initialized
+2025-05-08 18:31:34,263 - comtypes.client._code_cache - INFO - [_code_cache.py:107] - Imported existing <module 'comtypes.gen' from 'D:\\demo\\venv\\Lib\\site-packages\\comtypes\\gen\\__init__.py'>
+2025-05-08 18:31:34,266 - comtypes.client._code_cache - INFO - [_code_cache.py:81] - Using writeable comtypes cache directory: 'D:\demo\venv\Lib\site-packages\comtypes\gen'
+2025-05-08 18:31:35,423 - __main__ - INFO - [voice_direct_modular.py:150] - Speech synthesizer initialized
+2025-05-08 18:31:35,425 - __main__ - INFO - [voice_direct_modular.py:165] - Attempting to initialize speech recognizer in text mode
+2025-05-08 18:31:35,425 - __main__ - INFO - [voice_direct_modular.py:167] - Speech recognizer initialized in text mode
+2025-05-08 18:31:51,068 - __main__ - INFO - [voice_direct_modular.py:5104] - Initializing assistant...
+2025-05-08 18:31:51,070 - __main__ - INFO - [voice_direct_modular.py:215] - No .env file found, using environment variables
+2025-05-08 18:31:51,071 - __main__ - INFO - [voice_direct_modular.py:220] - Using default API key from constants.py
+2025-05-08 18:31:51,073 - __main__ - INFO - [voice_direct_modular.py:225] - Initializing browser...
+2025-05-08 18:31:51,520 - __main__ - INFO - [voice_direct_modular.py:279] - Starting Playwright
+2025-05-08 18:31:55,211 - __main__ - INFO - [voice_direct_modular.py:283] - Launching Chromium browser
+2025-05-08 18:31:59,923 - __main__ - INFO - [voice_direct_modular.py:229] - Browser initialized successfully
+2025-05-08 18:31:59,923 - __main__ - INFO - [voice_direct_modular.py:236] - Initializing browser utils...
+2025-05-08 18:31:59,927 - __main__ - INFO - [voice_direct_modular.py:241] - Browser utils initialized
+2025-05-08 18:31:59,927 - __main__ - INFO - [voice_direct_modular.py:247] - Initializing LLM utils...
+2025-05-08 18:32:51,324 - __main__ - INFO - [voice_direct_modular.py:256] - LLM utils initialized
+2025-05-08 18:32:51,325 - __main__ - INFO - [voice_direct_modular.py:314] - Initializing interaction handlers...
+2025-05-08 18:32:51,327 - __main__ - INFO - [voice_direct_modular.py:325] - Navigation handler initialized
+2025-05-08 18:32:51,329 - __main__ - INFO - [voice_direct_modular.py:331] - Selection handler initialized
+2025-05-08 18:32:51,330 - __main__ - INFO - [voice_direct_modular.py:337] - Form filling handler initialized
+2025-05-08 18:32:51,331 - __main__ - INFO - [voice_direct_modular.py:343] - Specialized handler initialized
+2025-05-08 18:32:51,332 - __main__ - INFO - [voice_direct_modular.py:349] - Member/Manager handler initialized
+2025-05-08 18:32:51,332 - __main__ - INFO - [voice_direct_modular.py:351] - All handlers initialized successfully
+2025-05-08 18:32:51,335 - __main__ - INFO - [voice_direct_modular.py:265] - Navigating to start URL: https://www.google.com
+2025-05-08 18:32:51,337 - __main__ - INFO - [voice_direct_modular.py:393] - Navigating to: https://www.google.com
+2025-05-08 18:33:00,331 - __main__ - INFO - [voice_direct_modular.py:397] - Page loaded successfully: Google
+2025-05-08 18:33:00,332 - __main__ - INFO - [voice_direct_modular.py:362] - ASSISTANT: Loaded: Google
+2025-05-08 18:33:00,334 - __main__ - INFO - [voice_direct_modular.py:269] - Voice assistant initialization complete
+2025-05-08 18:33:00,335 - __main__ - INFO - [voice_direct_modular.py:5119] - Assistant initialized successfully, running main loop...
+2025-05-08 18:33:13,442 - __main__ - INFO - [voice_direct_modular.py:1318] - Attempting to switch recognizer to voice mode
+2025-05-08 18:33:16,679 - __main__ - INFO - [voice_direct_modular.py:362] - ASSISTANT: Switched to voice mode. You can now speak commands.
+2025-05-08 18:33:16,682 - __main__ - INFO - [voice_direct_modular.py:366] - Speaking text in voice mode: 'Switched to voice mode. You ca...' (truncated)
+2025-05-08 18:34:33,415 - __main__ - INFO - [voice_direct_modular.py:414] - Processing command: payment
+2025-05-08 18:34:33,417 - __main__ - INFO - [voice_direct_modular.py:428] - Processing voice command: payment
+2025-05-08 18:34:33,427 - __main__ - INFO - [voice_direct_modular.py:666] - Direct email pattern didn't match, trying fallback patterns
+2025-05-08 18:34:33,430 - __main__ - INFO - [voice_direct_modular.py:673] - Trying flexible email+password patterns
+2025-05-08 18:34:33,440 - __main__ - INFO - [voice_direct_modular.py:690] - No email+password pattern matched, trying email-only patterns
+2025-05-08 18:34:33,448 - __main__ - INFO - [voice_direct_modular.py:739] - Checking for login pattern
+2025-05-08 18:34:33,454 - __main__ - INFO - [voice_direct_modular.py:744] - Simple login pattern didn't match, trying flexible patterns
+2025-05-08 18:34:33,470 - __main__ - INFO - [voice_direct_modular.py:773] - Checking for password-only command
+2025-05-08 18:34:33,476 - __main__ - INFO - [voice_direct_modular.py:793] - Delegating to specialized handler
+2025-05-08 18:34:33,487 - __main__ - INFO - [voice_direct_modular.py:805] - Delegating to form filling handler
+2025-05-08 18:34:33,508 - __main__ - INFO - [voice_direct_modular.py:817] - Delegating to member/manager handler
+2025-05-08 18:34:33,509 - __main__ - INFO - [voice_direct_modular.py:829] - Delegating to selection handler
+2025-05-08 18:34:33,520 - __main__ - INFO - [voice_direct_modular.py:841] - Delegating to navigation handler
+2025-05-08 18:34:33,532 - __main__ - INFO - [voice_direct_modular.py:362] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-08 18:34:33,535 - __main__ - INFO - [voice_direct_modular.py:366] - Speaking text in voice mode: 'I'm not sure how to process th...' (truncated)
+2025-05-08 18:34:34,544 - __main__ - INFO - [voice_direct_modular.py:4647] - Starting voice recognition...
+2025-05-08 18:34:41,131 - __main__ - INFO - [voice_direct_modular.py:4652] - Recognized text: retry_voice_recognition
+2025-05-08 18:34:41,133 - __main__ - INFO - [voice_direct_modular.py:4566] - Normalizing command with LLM: retry_voice_recognition
+2025-05-08 18:34:41,134 - __main__ - INFO - [voice_direct_modular.py:4614] - Using get_llm_response method for command normalization
+2025-05-08 18:34:41,698 - __main__ - INFO - [voice_direct_modular.py:4628] - LLM normalized command: 'retry_voice_recognition' → 'retry voice recognition'
+2025-05-08 19:04:31,332 - __main__ - INFO - [voice_direct_modular.py:72] - Logging system initialized
