@@ -1541,3 +1541,373 @@ Call log:
 2025-05-09 16:18:06,580 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
 2025-05-09 16:18:06,582 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
 2025-05-09 16:18:06,583 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:22:21,561 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: go to the video
+2025-05-09 16:22:21,575 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: go to the video
+2025-05-09 16:22:21,578 - __main__ - INFO - [voice_direct_modular.py:490] - Navigation command detected
+2025-05-09 16:22:21,579 - __main__ - INFO - [voice_direct_modular.py:509] - Navigating to URL: https://the video (original input: the video)
+2025-05-09 16:22:21,583 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://the video
+2025-05-09 16:22:23,008 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://the video: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://the video
+Call log:
+  - navigating to "https://the video", waiting until "load"
+
+2025-05-09 16:22:23,011 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://the video: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://the video
+Call log:
+  - navigating to "https://the video", waiting until "load"
+
+2025-05-09 16:23:27,021 - __main__ - INFO - [voice_direct_modular.py:73] - Logging system initialized
+2025-05-09 16:23:27,626 - webassist.voice_assistant.speech.enhanced_recognizer - WARNING - [enhanced_recognizer.py:19] - Optional dependencies (Whisper, PyDub) are disabled to avoid conflicts
+2025-05-09 16:23:31,056 - __main__ - ERROR - [voice_direct_modular.py:179] - Error initializing speech synthesizer: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 16:23:31,059 - __main__ - ERROR - [voice_direct_modular.py:180] - Speech synthesis will not be available
+2025-05-09 16:23:31,061 - __main__ - INFO - [voice_direct_modular.py:192] - Attempting to initialize speech recognizer in text mode
+2025-05-09 16:23:31,062 - __main__ - ERROR - [voice_direct_modular.py:196] - Error initializing speech recognizer in text mode: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 16:23:38,379 - __main__ - INFO - [voice_direct_modular.py:4993] - Initializing assistant...
+2025-05-09 16:24:00,391 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing interaction handlers...
+2025-05-09 16:24:00,392 - __main__ - INFO - [voice_direct_modular.py:321] - Navigation handler initialized
+2025-05-09 16:24:00,394 - __main__ - INFO - [voice_direct_modular.py:327] - Selection handler initialized
+2025-05-09 16:24:00,395 - __main__ - INFO - [voice_direct_modular.py:333] - Form filling handler initialized
+2025-05-09 16:24:00,396 - __main__ - INFO - [voice_direct_modular.py:339] - Specialized handler initialized
+2025-05-09 16:24:00,397 - __main__ - INFO - [voice_direct_modular.py:345] - Member/Manager handler initialized
+2025-05-09 16:24:00,400 - __main__ - INFO - [voice_direct_modular.py:351] - Business Purpose handler initialized
+2025-05-09 16:24:00,401 - __main__ - INFO - [voice_direct_modular.py:353] - All handlers initialized successfully
+2025-05-09 16:24:00,403 - __main__ - INFO - [voice_direct_modular.py:5008] - Assistant initialized successfully, running main loop...
+2025-05-09 16:24:55,464 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: www.facebook.in
+2025-05-09 16:24:55,468 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: www.facebook.in
+2025-05-09 16:24:55,474 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:24:55,477 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:24:55,485 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:24:55,492 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:24:55,493 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:24:55,504 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:24:55,507 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:24:55,523 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:24:55,530 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:24:55,533 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:24:55,536 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:24:55,555 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:24:55,575 - __main__ - INFO - [voice_direct_modular.py:1278] - Processing as direct URL: https://www.facebook.in (original input: www.facebook.in)
+2025-05-09 16:24:55,576 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://www.facebook.in
+2025-05-09 16:24:56,867 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://www.facebook.in: Page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.facebook.in/
+Call log:
+  - navigating to "https://www.facebook.in/", waiting until "load"
+
+2025-05-09 16:24:56,869 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://www.facebook.in: Page.goto: net::ERR_CERT_COMMON_NAME_INVALID at https://www.facebook.in/
+Call log:
+  - navigating to "https://www.facebook.in/", waiting until "load"
+
+2025-05-09 16:25:28,008 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: 82 www
+2025-05-09 16:25:28,011 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: 82 www
+2025-05-09 16:25:28,013 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:25:28,013 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:25:28,014 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:25:28,016 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:25:28,017 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:25:28,018 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:25:28,019 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:25:28,020 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:25:28,021 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:25:28,022 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:25:28,022 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:25:28,023 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:25:28,024 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:25:42,551 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: Go to www
+2025-05-09 16:25:42,553 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: Go to www
+2025-05-09 16:25:42,554 - __main__ - INFO - [voice_direct_modular.py:490] - Navigation command detected
+2025-05-09 16:25:42,555 - __main__ - INFO - [voice_direct_modular.py:509] - Navigating to URL: https://www (original input: www)
+2025-05-09 16:25:42,556 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://www
+2025-05-09 16:25:48,084 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www/
+Call log:
+  - navigating to "https://www/", waiting until "load"
+
+2025-05-09 16:25:48,085 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www/
+Call log:
+  - navigating to "https://www/", waiting until "load"
+
+2025-05-09 16:31:38,368 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: remittance
+2025-05-09 16:31:38,385 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: remittance
+2025-05-09 16:31:38,393 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:31:38,395 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:31:38,396 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:31:38,398 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:31:38,399 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:31:38,400 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:31:38,402 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:31:38,407 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:31:38,408 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:31:38,409 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:31:38,410 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:31:38,412 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:31:38,414 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:31:48,769 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: how to download
+2025-05-09 16:31:48,772 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: how to download
+2025-05-09 16:31:48,773 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:31:48,774 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:31:48,774 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:31:48,775 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:31:48,776 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:31:48,777 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:31:48,777 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:31:48,778 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:31:48,779 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:31:48,780 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:31:48,780 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:31:48,782 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:31:48,783 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:33:06,759 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: go to go to www
+2025-05-09 16:33:06,759 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: go to go to www
+2025-05-09 16:33:06,760 - __main__ - INFO - [voice_direct_modular.py:490] - Navigation command detected
+2025-05-09 16:33:06,761 - __main__ - INFO - [voice_direct_modular.py:509] - Navigating to URL: https://go to www (original input: go to www)
+2025-05-09 16:33:06,789 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://go to www
+2025-05-09 16:33:09,069 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://go to www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://go to www
+Call log:
+  - navigating to "https://go to www", waiting until "load"
+
+2025-05-09 16:33:09,070 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://go to www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://go to www
+Call log:
+  - navigating to "https://go to www", waiting until "load"
+
+2025-05-09 16:33:43,423 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: district
+2025-05-09 16:33:43,423 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: district
+2025-05-09 16:33:43,424 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:33:43,424 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:33:43,425 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:33:43,425 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:33:43,426 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:33:43,426 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:33:43,427 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:33:43,427 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:33:43,428 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:33:43,428 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:33:43,429 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:33:43,429 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:33:43,430 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:34:43,895 - __main__ - INFO - [voice_direct_modular.py:73] - Logging system initialized
+2025-05-09 16:34:44,190 - webassist.voice_assistant.speech.enhanced_recognizer - WARNING - [enhanced_recognizer.py:19] - Optional dependencies (Whisper, PyDub) are disabled to avoid conflicts
+2025-05-09 16:34:45,966 - __main__ - ERROR - [voice_direct_modular.py:179] - Error initializing speech synthesizer: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 16:34:45,968 - __main__ - ERROR - [voice_direct_modular.py:180] - Speech synthesis will not be available
+2025-05-09 16:34:45,969 - __main__ - INFO - [voice_direct_modular.py:192] - Attempting to initialize speech recognizer in text mode
+2025-05-09 16:34:45,970 - __main__ - ERROR - [voice_direct_modular.py:196] - Error initializing speech recognizer in text mode: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 16:34:48,869 - __main__ - INFO - [voice_direct_modular.py:4993] - Initializing assistant...
+2025-05-09 16:34:52,997 - __main__ - INFO - [voice_direct_modular.py:310] - Initializing interaction handlers...
+2025-05-09 16:34:52,998 - __main__ - INFO - [voice_direct_modular.py:321] - Navigation handler initialized
+2025-05-09 16:34:52,999 - __main__ - INFO - [voice_direct_modular.py:327] - Selection handler initialized
+2025-05-09 16:34:53,001 - __main__ - INFO - [voice_direct_modular.py:333] - Form filling handler initialized
+2025-05-09 16:34:53,002 - __main__ - INFO - [voice_direct_modular.py:339] - Specialized handler initialized
+2025-05-09 16:34:53,002 - __main__ - INFO - [voice_direct_modular.py:345] - Member/Manager handler initialized
+2025-05-09 16:34:53,003 - __main__ - INFO - [voice_direct_modular.py:351] - Business Purpose handler initialized
+2025-05-09 16:34:53,004 - __main__ - INFO - [voice_direct_modular.py:353] - All handlers initialized successfully
+2025-05-09 16:34:53,005 - __main__ - INFO - [voice_direct_modular.py:5008] - Assistant initialized successfully, running main loop...
+2025-05-09 16:35:25,976 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: goto www.redberyltest.in
+2025-05-09 16:35:25,977 - __main__ - INFO - [voice_direct_modular.py:490] - Navigation command detected
+2025-05-09 16:35:25,978 - __main__ - INFO - [voice_direct_modular.py:509] - Navigating to URL: https://www.redberyltest.in (original input: www.redberyltest.in)
+2025-05-09 16:35:25,979 - __main__ - INFO - [voice_direct_modular.py:518] - Detected attempt to navigate to redberyltest.in, corrected URL to: https://www.redberyltest.in
+2025-05-09 16:35:25,980 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://www.redberyltest.in
+2025-05-09 16:35:56,003 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://www.redberyltest.in: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.redberyltest.in/", waiting until "load"
+
+2025-05-09 16:35:56,003 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://www.redberyltest.in: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.redberyltest.in/", waiting until "load"
+
+2025-05-09 16:48:25,832 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: Urdu download list.in
+2025-05-09 16:48:25,839 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: Urdu download list.in
+2025-05-09 16:48:25,851 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:48:25,853 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:48:25,858 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:48:25,863 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:48:25,866 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:48:25,872 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:48:25,874 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:48:25,885 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:48:25,891 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:48:25,892 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:48:25,893 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:48:25,897 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:48:25,909 - __main__ - INFO - [voice_direct_modular.py:1278] - Processing as direct URL: https://Urdu download list.in (original input: Urdu download list.in)
+2025-05-09 16:48:25,910 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://Urdu download list.in
+2025-05-09 16:48:26,964 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://Urdu download list.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://Urdu download list.in
+Call log:
+  - navigating to "https://Urdu download list.in", waiting until "load"
+
+2025-05-09 16:48:26,967 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://Urdu download list.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://Urdu download list.in
+Call log:
+  - navigating to "https://Urdu download list.in", waiting until "load"
+
+2025-05-09 16:50:47,642 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: Go to www
+2025-05-09 16:50:47,648 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: Go to www
+2025-05-09 16:50:47,650 - __main__ - INFO - [voice_direct_modular.py:490] - Navigation command detected
+2025-05-09 16:50:47,650 - __main__ - INFO - [voice_direct_modular.py:509] - Navigating to URL: https://www (original input: www)
+2025-05-09 16:50:47,652 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://www
+2025-05-09 16:50:53,073 - __main__ - ERROR - [voice_direct_modular.py:403] - Error navigating to https://www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www/
+Call log:
+  - navigating to "https://www/", waiting until "load"
+
+2025-05-09 16:50:53,074 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Error navigating to https://www: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://www/
+Call log:
+  - navigating to "https://www/", waiting until "load"
+
+2025-05-09 16:51:05,851 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: Urdu
+2025-05-09 16:51:05,851 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: Urdu
+2025-05-09 16:51:05,852 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:51:05,853 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:51:05,854 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:51:05,854 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:51:05,855 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:51:05,855 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:51:05,856 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:51:05,858 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:51:05,858 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:51:05,859 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:51:05,860 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:51:05,860 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:51:05,861 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:51:31,773 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: photo edit
+2025-05-09 16:51:31,774 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: photo edit
+2025-05-09 16:51:31,775 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:51:31,775 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:51:31,776 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:51:31,776 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:51:31,777 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:51:31,777 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:51:31,778 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:51:31,778 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:51:31,779 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:51:31,780 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:51:31,780 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:51:31,781 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:51:31,781 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:52:46,637 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: Guddu ke bhajan
+2025-05-09 16:52:46,638 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: Guddu ke bhajan
+2025-05-09 16:52:46,639 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:52:46,640 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:52:46,640 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:52:46,641 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:52:46,641 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:52:46,642 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:52:46,642 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:52:46,643 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:52:46,644 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:52:46,644 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:52:46,645 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:52:46,646 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:52:46,646 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: I'm not sure how to process that command. Type 'help' for available commands.
+2025-05-09 16:59:27,868 - __main__ - INFO - [voice_direct_modular.py:416] - Processing command: www.xxx.in
+2025-05-09 16:59:28,101 - __main__ - INFO - [voice_direct_modular.py:430] - Processing voice command: www.xxx.in
+2025-05-09 16:59:28,166 - __main__ - INFO - [voice_direct_modular.py:668] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 16:59:28,167 - __main__ - INFO - [voice_direct_modular.py:675] - Trying flexible email+password patterns
+2025-05-09 16:59:28,168 - __main__ - INFO - [voice_direct_modular.py:692] - No email+password pattern matched, trying email-only patterns
+2025-05-09 16:59:28,168 - __main__ - INFO - [voice_direct_modular.py:741] - Checking for login pattern
+2025-05-09 16:59:28,169 - __main__ - INFO - [voice_direct_modular.py:746] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 16:59:28,196 - __main__ - INFO - [voice_direct_modular.py:775] - Checking for password-only command
+2025-05-09 16:59:28,197 - __main__ - INFO - [voice_direct_modular.py:795] - Delegating to specialized handler
+2025-05-09 16:59:28,326 - __main__ - INFO - [voice_direct_modular.py:807] - Delegating to form filling handler
+2025-05-09 16:59:28,361 - __main__ - INFO - [voice_direct_modular.py:819] - Delegating to business purpose handler
+2025-05-09 16:59:28,390 - __main__ - INFO - [voice_direct_modular.py:831] - Delegating to member/manager handler
+2025-05-09 16:59:28,391 - __main__ - INFO - [voice_direct_modular.py:843] - Delegating to selection handler
+2025-05-09 16:59:28,425 - __main__ - INFO - [voice_direct_modular.py:855] - Delegating to navigation handler
+2025-05-09 16:59:28,431 - __main__ - INFO - [voice_direct_modular.py:1278] - Processing as direct URL: https://www.xxx.in (original input: www.xxx.in)
+2025-05-09 16:59:28,435 - __main__ - INFO - [voice_direct_modular.py:395] - Navigating to: https://www.xxx.in
+2025-05-09 16:59:35,796 - __main__ - INFO - [voice_direct_modular.py:399] - Page loaded successfully: xxx.in is available for purchase - Sedo.com
+2025-05-09 16:59:35,798 - __main__ - INFO - [voice_direct_modular.py:364] - ASSISTANT: Loaded: xxx.in is available for purchase - Sedo.com
+2025-05-09 17:22:47,433 - __main__ - INFO - [voice_direct_modular.py:73] - Logging system initialized
+2025-05-09 17:22:47,675 - webassist.voice_assistant.speech.enhanced_recognizer - WARNING - [enhanced_recognizer.py:19] - Optional dependencies (Whisper, PyDub) are disabled to avoid conflicts
+2025-05-09 17:22:49,748 - __main__ - ERROR - [voice_direct_modular.py:179] - Error initializing speech synthesizer: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 17:22:49,749 - __main__ - ERROR - [voice_direct_modular.py:180] - Speech synthesis will not be available
+2025-05-09 17:22:49,849 - __main__ - INFO - [voice_direct_modular.py:195] - Attempting to initialize direct speech recognizer in text mode
+2025-05-09 17:22:49,850 - __main__ - INFO - [voice_direct_modular.py:199] - Direct speech recognizer initialized in text mode
+2025-05-09 17:22:49,852 - __main__ - ERROR - [voice_direct_modular.py:218] - Error initializing direct speech recognizer: 'SimpleVoiceAssistant' object has no attribute '_handle_recognized_command'
+2025-05-09 17:22:49,867 - __main__ - ERROR - [voice_direct_modular.py:220] - Traceback (most recent call last):
+  File "D:\webassist\voice_direct_modular.py", line 203, in __init__
+    self.recognizer.start_listening(self._handle_recognized_command)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SimpleVoiceAssistant' object has no attribute '_handle_recognized_command'
+
+2025-05-09 17:22:49,872 - __main__ - INFO - [voice_direct_modular.py:226] - Falling back to enhanced recognizer in text mode
+2025-05-09 17:22:49,882 - __main__ - ERROR - [voice_direct_modular.py:230] - Error initializing enhanced recognizer: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+2025-05-09 17:22:49,885 - __main__ - ERROR - [voice_direct_modular.py:231] - Traceback (most recent call last):
+  File "D:\webassist\voice_direct_modular.py", line 203, in __init__
+    self.recognizer.start_listening(self._handle_recognized_command)
+                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'SimpleVoiceAssistant' object has no attribute '_handle_recognized_command'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\webassist\voice_direct_modular.py", line 227, in __init__
+    self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode=input_mode, speak_func=self.speak)
+                                                        ^^^^^^^^^^^^^^^^^^
+AttributeError: 'SimpleVoiceAssistant' object has no attribute 'speech_config'
+
+2025-05-09 17:23:44,903 - __main__ - INFO - [voice_direct_modular.py:4877] - Initializing assistant...
+2025-05-09 17:23:55,221 - __main__ - INFO - [voice_direct_modular.py:347] - Initializing interaction handlers...
+2025-05-09 17:23:55,222 - __main__ - INFO - [voice_direct_modular.py:358] - Navigation handler initialized
+2025-05-09 17:23:55,223 - __main__ - INFO - [voice_direct_modular.py:364] - Selection handler initialized
+2025-05-09 17:23:55,224 - __main__ - INFO - [voice_direct_modular.py:370] - Form filling handler initialized
+2025-05-09 17:23:55,224 - __main__ - INFO - [voice_direct_modular.py:376] - Specialized handler initialized
+2025-05-09 17:23:55,228 - __main__ - INFO - [voice_direct_modular.py:382] - Member/Manager handler initialized
+2025-05-09 17:23:55,230 - __main__ - INFO - [voice_direct_modular.py:388] - Business Purpose handler initialized
+2025-05-09 17:23:55,230 - __main__ - INFO - [voice_direct_modular.py:390] - All handlers initialized successfully
+2025-05-09 17:23:55,230 - __main__ - INFO - [voice_direct_modular.py:4892] - Assistant initialized successfully, running main loop...
+2025-05-09 17:26:07,682 - __main__ - INFO - [voice_direct_modular.py:453] - Processing command: go to www.redberyltest.in
+2025-05-09 17:26:07,711 - __main__ - INFO - [voice_direct_modular.py:531] - Navigation command detected
+2025-05-09 17:26:07,712 - __main__ - INFO - [voice_direct_modular.py:536] - Extracted URL using regex pattern: www.redberyltest.in
+2025-05-09 17:26:07,714 - __main__ - INFO - [voice_direct_modular.py:557] - Detected attempt to navigate to redberyltest.in, corrected URL to: redberyltest.in
+2025-05-09 17:26:07,715 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Navigating to redberyltest.in
+2025-05-09 17:26:07,716 - __main__ - INFO - [voice_direct_modular.py:570] - Final navigation URL: https://redberyltest.in (original input: www.redberyltest.in)
+2025-05-09 17:26:07,717 - __main__ - INFO - [voice_direct_modular.py:432] - Navigating to: https://redberyltest.in
+2025-05-09 17:26:09,949 - __main__ - ERROR - [voice_direct_modular.py:440] - Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:26:09,950 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:26:27,856 - __main__ - INFO - [voice_direct_modular.py:453] - Processing command: goto www.redberyltest.in
+2025-05-09 17:26:27,857 - __main__ - INFO - [voice_direct_modular.py:531] - Navigation command detected
+2025-05-09 17:26:27,858 - __main__ - INFO - [voice_direct_modular.py:536] - Extracted URL using regex pattern: www.redberyltest.in
+2025-05-09 17:26:27,859 - __main__ - INFO - [voice_direct_modular.py:557] - Detected attempt to navigate to redberyltest.in, corrected URL to: redberyltest.in
+2025-05-09 17:26:27,894 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Navigating to redberyltest.in
+2025-05-09 17:26:27,895 - __main__ - INFO - [voice_direct_modular.py:570] - Final navigation URL: https://redberyltest.in (original input: www.redberyltest.in)
+2025-05-09 17:26:27,896 - __main__ - INFO - [voice_direct_modular.py:432] - Navigating to: https://redberyltest.in
+2025-05-09 17:26:28,534 - __main__ - ERROR - [voice_direct_modular.py:440] - Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:26:28,538 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:27:29,917 - __main__ - INFO - [voice_direct_modular.py:453] - Processing command: go to  www.redberyltest.in
+2025-05-09 17:27:29,918 - __main__ - INFO - [voice_direct_modular.py:531] - Navigation command detected
+2025-05-09 17:27:29,919 - __main__ - INFO - [voice_direct_modular.py:536] - Extracted URL using regex pattern: www.redberyltest.in
+2025-05-09 17:27:29,920 - __main__ - INFO - [voice_direct_modular.py:557] - Detected attempt to navigate to redberyltest.in, corrected URL to: redberyltest.in
+2025-05-09 17:27:29,921 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Navigating to redberyltest.in
+2025-05-09 17:27:29,921 - __main__ - INFO - [voice_direct_modular.py:570] - Final navigation URL: https://redberyltest.in (original input: www.redberyltest.in)
+2025-05-09 17:27:29,922 - __main__ - INFO - [voice_direct_modular.py:432] - Navigating to: https://redberyltest.in
+2025-05-09 17:27:30,118 - __main__ - ERROR - [voice_direct_modular.py:440] - Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:27:30,119 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Error navigating to https://redberyltest.in: Page.goto: net::ERR_NAME_NOT_RESOLVED at https://redberyltest.in/
+Call log:
+  - navigating to "https://redberyltest.in/", waiting until "load"
+
+2025-05-09 17:36:27,133 - __main__ - INFO - [voice_direct_modular.py:453] - Processing command: enter email shreyas.deodhare@redberyltech.com
+2025-05-09 17:36:27,191 - __main__ - INFO - [voice_direct_modular.py:662] - Email command detected. Extracted email: 'shreyas.deodhare@redberyltech.com', password: None
+2025-05-09 17:36:27,193 - __main__ - INFO - [voice_direct_modular.py:672] - Only email provided in command
+2025-05-09 17:36:27,198 - __main__ - INFO - [voice_direct_modular.py:720] - Processing email-only command with email: shreyas.deodhare@redberyltech.com
+2025-05-09 17:36:27,199 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Entering email: shreyas.deodhare@redberyltech.com
+2025-05-09 17:36:50,884 - __main__ - INFO - [voice_direct_modular.py:724] - Successfully filled email field
+2025-05-09 17:36:50,884 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Email entered successfully
+2025-05-09 17:42:06,710 - __main__ - INFO - [voice_direct_modular.py:453] - Processing command: enter password Shreyas@123
+2025-05-09 17:42:06,723 - __main__ - INFO - [voice_direct_modular.py:677] - Direct email pattern didn't match, trying fallback patterns
+2025-05-09 17:42:06,728 - __main__ - INFO - [voice_direct_modular.py:684] - Trying flexible email+password patterns
+2025-05-09 17:42:06,743 - __main__ - INFO - [voice_direct_modular.py:701] - No email+password pattern matched, trying email-only patterns
+2025-05-09 17:42:06,751 - __main__ - INFO - [voice_direct_modular.py:750] - Checking for login pattern
+2025-05-09 17:42:06,752 - __main__ - INFO - [voice_direct_modular.py:755] - Simple login pattern didn't match, trying flexible patterns
+2025-05-09 17:42:06,759 - __main__ - INFO - [voice_direct_modular.py:784] - Checking for password-only command
+2025-05-09 17:42:06,761 - __main__ - INFO - [voice_direct_modular.py:791] - Password-only command detected
+2025-05-09 17:42:06,761 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Entering password
+2025-05-09 17:42:07,624 - __main__ - INFO - [voice_direct_modular.py:795] - Successfully filled password field
+2025-05-09 17:42:07,625 - __main__ - INFO - [voice_direct_modular.py:401] - ASSISTANT: Password entered successfully

@@ -7,6 +7,7 @@ that works directly with the speech_recognition library without complex async op
 
 import sys
 import time
+import re
 import speech_recognition as sr
 import logging
 import threading
@@ -23,30 +24,30 @@ class DirectVoiceRecognizer:
         self.mode = "voice"
         self.is_listening = False
         self.command_callback = None
-        
+
         # Initialize recognizer
         self.recognizer = sr.Recognizer()
-        
+
         # Configure recognizer settings for better recognition
         self.recognizer.dynamic_energy_threshold = True
         self.recognizer.energy_threshold = 300  # Lower threshold for better sensitivity
         self.recognizer.pause_threshold = 0.3   # Shorter pause threshold for faster recognition
         self.recognizer.phrase_threshold = 0.1  # Lower phrase threshold for better recognition
         self.recognizer.non_speaking_duration = 0.1  # Shorter non-speaking duration
-        
+
         # Initialize microphone
         try:
             logger.info("Initializing microphone...")
-            
+
             # List available microphones
             logger.info("Available microphones:")
             for index, name in enumerate(sr.Microphone.list_microphone_names()):
                 logger.info(f"Microphone {index}: {name}")
-            
+
             # Initialize microphone with default device
             self.microphone = sr.Microphone()
             logger.info("Microphone initialized successfully")
-            
+
             # Test the microphone
             with self.microphone as source:
                 logger.info("Testing microphone...")
@@ -60,38 +61,38 @@ class DirectVoiceRecognizer:
 
     def start_listening(self, command_callback):
         """Start listening for commands in a separate thread
-        
+
         Args:
             command_callback: Function to call when a command is recognized
         """
         if self.is_listening:
             logger.warning("Already listening")
             return
-            
+
         self.is_listening = True
         self.command_callback = command_callback
-        
+
         # Start listening thread
         self.listen_thread = threading.Thread(target=self._listen_loop)
         self.listen_thread.daemon = True
         self.listen_thread.start()
-        
+
         logger.info("Started listening thread")
-        
+
     def stop_listening(self):
         """Stop listening for commands"""
         self.is_listening = False
         logger.info("Stopped listening")
-        
+
     def _listen_loop(self):
         """Main listening loop that runs in a separate thread"""
         logger.info("Listening loop started")
-        
+
         while self.is_listening:
             try:
                 # Listen for speech
                 text = self._listen_once()
-                
+
                 # Process the recognized text
                 if text:
                     # Check for mode switching command
@@ -100,20 +101,20 @@ class DirectVoiceRecognizer:
                         if self.command_callback:
                             self.command_callback("switch_to_text_mode")
                         continue
-                        
+
                     # Call the command callback with the recognized text
                     if self.command_callback:
                         self.command_callback(text)
-                
+
                 # Small delay to prevent CPU hogging
                 time.sleep(0.1)
-                
+
             except Exception as e:
                 logger.error(f"Error in listening loop: {e}")
                 import traceback
                 logger.error(traceback.format_exc())
                 time.sleep(1)  # Delay before retrying
-                
+
     def _listen_once(self):
         """Listen for speech once and return the recognized text"""
         try:
@@ -130,7 +131,7 @@ class DirectVoiceRecognizer:
                     self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
                 except Exception as e:
                     logger.warning(f"Error adjusting for ambient noise: {e}")
-                
+
                 # Listen for audio
                 try:
                     audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
@@ -150,7 +151,7 @@ class DirectVoiceRecognizer:
 
                 # Try to recognize the speech
                 return self._recognize_speech(audio)
-                
+
         except Exception as e:
             logger.error(f"Error in voice recognition: {e}")
             import traceback
@@ -167,14 +168,14 @@ class DirectVoiceRecognizer:
                 language="en-US",
                 show_all=False
             ).lower()
-            
+
             logger.info(f"Google recognition successful: {text}")
             self._display_recognized_text(text, "Google Speech Recognition")
-            
+
             # Process common command patterns
             processed_text = self._process_command(text)
             return processed_text
-            
+
         except sr.UnknownValueError:
             logger.warning("Google speech recognition could not understand audio")
             # Continue to next engine
@@ -182,30 +183,30 @@ class DirectVoiceRecognizer:
             logger.error(f"Google speech recognition service error: {e}")
             print(f"\n⚠️ Google speech recognition service error: {e}")
             # Continue to next engine
-            
+
         # Try Google again with different settings
         try:
             logger.info("Trying Google recognition with different settings...")
             # Adjust settings for another attempt
             original_energy = self.recognizer.energy_threshold
             self.recognizer.energy_threshold = 4000  # Higher threshold
-            
+
             text = self.recognizer.recognize_google(
                 audio,
                 language="en-US",
                 show_all=False
             ).lower()
-            
+
             # Restore original settings
             self.recognizer.energy_threshold = original_energy
-            
+
             logger.info(f"Google recognition (second attempt) successful: {text}")
             self._display_recognized_text(text, "Google Speech Recognition (Retry)")
-            
+
             # Process common command patterns
             processed_text = self._process_command(text)
             return processed_text
-            
+
         except Exception:
             logger.warning("Google speech recognition (second attempt) failed")
             # Continue to next engine
@@ -216,18 +217,18 @@ class DirectVoiceRecognizer:
             text = self.recognizer.recognize_sphinx(audio).lower()
             logger.info(f"Sphinx recognition successful: {text}")
             self._display_recognized_text(text, "Sphinx (Offline)")
-            
+
             # Process common command patterns
             processed_text = self._process_command(text)
             return processed_text
-            
+
         except Exception as e:
             logger.error(f"Error with Sphinx recognition: {e}")
-            
+
         # If all recognition engines fail
         self._display_recognition_failure()
         return None
-    
+
     def _process_command(self, text):
         """Process common command patterns and normalize the text"""
         # Handle common URL recognition issues
@@ -237,7 +238,7 @@ class DirectVoiceRecognizer:
         text = text.replace("dot net", ".net")
         text = text.replace("dot co", ".co")
         text = text.replace("dot", ".")
-        
+
         # Handle common command variations with proper spacing
         if "go to" in text:
             text = text.replace("go to", "goto ")
@@ -247,20 +248,35 @@ class DirectVoiceRecognizer:
             text = text.replace("open", "goto ")
         if "visit" in text:
             text = text.replace("visit", "goto ")
-            
-        # Handle domain name corrections
+
+        # Enhanced domain name corrections with more variations
         domain_corrections = {
-            "redberyl": "redberyltest",
-            "red beryl": "redberyltest",
-            "redberyl test": "redberyltest",
-            "red beryl test": "redberyltest"
+            "redberyl": "redberyltest.in",
+            "red beryl": "redberyltest.in",
+            "redberyl test": "redberyltest.in",
+            "red beryl test": "redberyltest.in",
+            "red berry": "redberyltest.in",
+            "redberry": "redberyltest.in",
+            "red berry test": "redberyltest.in",
+            "redberry test": "redberyltest.in",
+            "red barrel": "redberyltest.in",
+            "redbarrel": "redberyltest.in",
+            "red barrel test": "redberyltest.in",
+            "redbarreltest": "redberyltest.in",
+            "red very": "redberyltest.in",
+            "redvery": "redberyltest.in",
+            "red very test": "redberyltest.in",
+            "redverytest": "redberyltest.in"
         }
-        
+
+        # Check for redberyltest variations in the text
         for wrong, correct in domain_corrections.items():
-            if wrong in text:
-                text = text.replace(wrong, correct)
+            if wrong in text.lower():
+                # Replace the wrong domain with the correct one
+                pattern = re.compile(re.escape(wrong), re.IGNORECASE)
+                text = pattern.sub(correct, text)
                 print(f"\nℹ️ Corrected domain name from '{wrong}' to '{correct}'")
-                
+
         # Ensure proper spacing in URLs
         if "goto" in text:
             # Split the command and URL
@@ -270,9 +286,21 @@ class DirectVoiceRecognizer:
                 url = parts[1].strip()
                 # Ensure there's a space after goto
                 text = f"{command}goto {url}"
-                
+
+        # Special handling for navigation commands
+        goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+)', re.IGNORECASE)
+        goto_match = goto_pattern.search(text)
+
+        if goto_match:
+            domain = goto_match.group(1).strip()
+            # Check if this is a redberyltest.in variation that wasn't caught earlier
+            if any(variation in domain.lower() for variation in ["red", "beryl", "berry", "barrel", "very"]):
+                # Replace the entire command with a clean version
+                text = f"goto redberyltest.in"
+                print(f"\nℹ️ Detected possible redberyltest.in reference, normalized command to: '{text}'")
+
         return text
-        
+
     def _display_recognized_text(self, text, engine_name):
         """Display the recognized text with enhanced visibility"""
         print("\n" + "#" * 80)
@@ -282,7 +310,7 @@ class DirectVoiceRecognizer:
         print("#" * 80)
         print("#" * 80)
         sys.stdout.flush()
-        
+
     def _display_recognition_failure(self):
         """Display recognition failure message with helpful tips"""
         print("\n" + "=" * 80)
@@ -312,38 +340,38 @@ class DirectTextRecognizer:
 
     def start_listening(self, command_callback):
         """Start listening for commands in a separate thread
-        
+
         Args:
             command_callback: Function to call when a command is recognized
         """
         if self.is_listening:
             logger.warning("Already listening")
             return
-            
+
         self.is_listening = True
         self.command_callback = command_callback
-        
+
         # Start listening thread
         self.listen_thread = threading.Thread(target=self._listen_loop)
         self.listen_thread.daemon = True
         self.listen_thread.start()
-        
+
         logger.info("Started text input thread")
-        
+
     def stop_listening(self):
         """Stop listening for commands"""
         self.is_listening = False
         logger.info("Stopped text input")
-        
+
     def _listen_loop(self):
         """Main listening loop that runs in a separate thread"""
         logger.info("Text input loop started")
-        
+
         while self.is_listening:
             try:
                 # Get text input
                 text = self._get_text_input()
-                
+
                 # Process the input text
                 if text:
                     # Check for mode switching command
@@ -352,20 +380,20 @@ class DirectTextRecognizer:
                         if self.command_callback:
                             self.command_callback("switch_to_voice_mode")
                         continue
-                        
+
                     # Call the command callback with the input text
                     if self.command_callback:
                         self.command_callback(text)
-                
+
                 # Small delay to prevent CPU hogging
                 time.sleep(0.1)
-                
+
             except Exception as e:
                 logger.error(f"Error in text input loop: {e}")
                 import traceback
                 logger.error(traceback.format_exc())
                 time.sleep(1)  # Delay before retrying
-                
+
     def _get_text_input(self):
         """Get input from text"""
         try:
@@ -377,7 +405,7 @@ class DirectTextRecognizer:
             text = input().strip()
             print(f"Received text input: '{text}'")
             return text
-            
+
         except Exception as e:
             print(f"Input error: {e}")
             import traceback

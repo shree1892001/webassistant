@@ -186,25 +186,61 @@ class SimpleVoiceAssistant:
             # Initialize speech recognizer with fallback to text mode if voice fails
             global input_mode  # Declare global at the beginning of the block
 
-            if 'create_enhanced_recognizer' in globals():
-                try:
-                    # First try to initialize in the requested mode
-                    logger.info(f"Attempting to initialize speech recognizer in {input_mode} mode")
-                    self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode=input_mode, speak_func=self.speak)
-                    logger.info(f"Speech recognizer initialized in {input_mode} mode")
-                except Exception as rec_error:
-                    logger.error(f"Error initializing speech recognizer in {input_mode} mode: {rec_error}")
+            # Try to use direct_recognizer first, then fall back to enhanced_recognizer if needed
+            try:
+                # Import the direct recognizer explicitly to ensure it's available
+                from webassist.voice_assistant.speech.direct_recognizer import create_direct_recognizer
 
-                    # If voice mode failed, fall back to text mode
+                # First try to initialize in the requested mode
+                logger.info(f"Attempting to initialize direct speech recognizer in {input_mode} mode")
+
+                # Create the recognizer with the speak function
+                self.recognizer = create_direct_recognizer(mode=input_mode, speak_func=self.speak)
+                logger.info(f"Direct speech recognizer initialized in {input_mode} mode")
+
+                # Start listening for commands
+                if hasattr(self.recognizer, 'start_listening'):
+                    self.recognizer.start_listening(self._handle_recognized_command)
+                    logger.info(f"Started listening for commands in {input_mode} mode")
+
+                    # Make the voice prompt extremely visible if in voice mode
                     if input_mode == "voice":
-                        logger.info("Falling back to text mode")
-                        input_mode = "text"
-                        try:
-                            self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode="text", speak_func=self.speak)
-                            logger.info("Speech recognizer initialized in text mode")
-                        except Exception as text_error:
-                            logger.error(f"Error initializing text mode recognizer: {text_error}")
-                            self.recognizer = None
+                        print("\n\n\n")
+                        print("!" * 100)
+                        print("!" * 100)
+                        print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS".center(100))
+                        print("!" * 100)
+                        print(f"\n{VOICE_PROMPT}".center(100))
+                        print("!" * 100)
+                        print("!" * 100)
+                        sys.stdout.flush()
+            except Exception as direct_error:
+                logger.error(f"Error initializing direct speech recognizer: {direct_error}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+                # Fall back to enhanced recognizer if available
+                if 'create_enhanced_recognizer' in globals():
+                    try:
+                        # First try to initialize in the requested mode
+                        logger.info(f"Falling back to enhanced recognizer in {input_mode} mode")
+                        self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode=input_mode, speak_func=self.speak)
+                        logger.info(f"Enhanced speech recognizer initialized in {input_mode} mode")
+                    except Exception as rec_error:
+                        logger.error(f"Error initializing enhanced recognizer: {rec_error}")
+                        logger.error(traceback.format_exc())
+
+                        # If voice mode failed, fall back to text mode
+                        if input_mode == "voice":
+                            logger.info("Falling back to text mode")
+                            input_mode = "text"
+                            try:
+                                self.recognizer = create_enhanced_recognizer(config=self.speech_config, mode="text", speak_func=self.speak)
+                                logger.info("Enhanced recognizer initialized in text mode")
+                            except Exception as text_error:
+                                logger.error(f"Error initializing text mode recognizer: {text_error}")
+                                logger.error(traceback.format_exc())
+                                self.recognizer = None
             else:
                 logger.warning("Speech recognizer creation function not found")
                 self.recognizer = None
@@ -283,8 +319,9 @@ class SimpleVoiceAssistant:
                     "--disable-dev-shm-usage"
                 ]
             }
-            playwright = await async_playwright().start()
-            self.browser = await playwright.chromium.launch(**browser_options)
+            # Store the playwright instance as an instance variable
+            self.playwright = await async_playwright().start()
+            self.browser = await self.playwright.chromium.launch(**browser_options)
             self.context = await self.browser.new_context()
 
             # Create a new page
@@ -485,18 +522,42 @@ class SimpleVoiceAssistant:
             await self.switch_recognizer_mode("text")
             return True
 
-        # Process navigation commands directly
-        if command.lower().startswith("go to ") or command.lower().startswith("navigate to ") or command.lower().startswith("goto "):
+        # Process navigation commands with improved pattern matching
+        # Define a more comprehensive regex pattern for navigation commands
+        goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+(?:\.\w+)+)', re.IGNORECASE)
+        goto_match = goto_pattern.search(command)
+
+        if goto_match or command.lower().startswith("go to ") or command.lower().startswith("navigate to ") or command.lower().startswith("goto "):
             logger.info("Navigation command detected")
 
             # Extract the URL part
-            if command.lower().startswith("goto "):
+            if goto_match:
+                url = goto_match.group(1).strip()
+                logger.info(f"Extracted URL using regex pattern: {url}")
+            elif command.lower().startswith("goto "):
                 url = command[5:].strip()
             else:
                 url = command.split(" ", 2)[-1].strip()
 
             # Preserve the exact domain name as specified by the user
             original_domain = url
+
+            # Special handling for redberyltest.in with more variations
+            redberyl_variations = [
+                "red beryl test", "redberyl test", "redberyltest", "red beryl", "redberyl",
+                "red berry test", "redberry test", "redberry", "red berry",
+                "red barrel test", "red barrel", "redbarrel", "redbarreltest",
+                "red very test", "red very", "redvery", "redverytest"
+            ]
+
+            # Check if any variation is in the domain
+            if any(variation in original_domain.lower() for variation in redberyl_variations):
+                # User is likely trying to go to redberyltest.in
+                url = "redberyltest.in"
+                logger.info(f"Detected attempt to navigate to redberyltest.in, corrected URL to: {url}")
+                await self.speak(f"Navigating to redberyltest.in")
+            else:
+                await self.speak(f"Navigating to {url}")
 
             # Ensure the URL is properly formatted
             if not url.startswith(("http://", "https://")):
@@ -505,62 +566,10 @@ class SimpleVoiceAssistant:
             # Remove any trailing slashes or spaces
             url = url.rstrip('/ ')
 
-            # Log the exact URL we're navigating to
-            logger.info(f"Navigating to URL: {url} (original input: {original_domain})")
+            # Log the final URL we're navigating to
+            logger.info(f"Final navigation URL: {url} (original input: {original_domain})")
 
-            # Special handling for redberyltest.in
-            if any(variant in original_domain.lower() for variant in [
-                "red beryl test", "redberyl test", "redberyltest",
-                "red berry test", "redberry test"
-            ]):
-                # User is likely trying to go to redberyltest.in
-                url = "https://www.redberyltest.in"
-                logger.info(f"Detected attempt to navigate to redberyltest.in, corrected URL to: {url}")
-
-            # Use LLM to verify the domain if available
-            if hasattr(self, 'llm_utils') and self.llm_utils:
-                try:
-                    # Create a prompt to verify the domain
-                    prompt = f"""
-                    The user is trying to navigate to: "{original_domain}"
-
-                    Analyze if this is likely a speech recognition error for a common domain.
-
-                    If it's clearly a speech recognition error for "redberyltest.in", respond with ONLY "redberyltest.in".
-                    If it's a legitimate domain like "redbus.in" or any other valid domain, respond with ONLY the original domain: "{original_domain}".
-
-                    Return ONLY the domain name without any explanations.
-                    """
-
-                    # Get the verified domain from the LLM
-                    verified_domain = None
-
-                    # Try different LLM methods based on what's available
-                    if hasattr(self.llm_utils, 'get_llm_response'):
-                        logger.info("Using LLM to verify domain...")
-                        verified_domain = await self.llm_utils.get_llm_response(prompt)
-                    elif hasattr(self.llm_utils.llm_provider, 'generate_content'):
-                        logger.info("Using LLM to verify domain...")
-                        response = self.llm_utils.llm_provider.generate_content(prompt)
-                        verified_domain = response.text
-                    elif hasattr(self.llm_utils.llm_provider, 'generate'):
-                        logger.info("Using LLM to verify domain...")
-                        verified_domain = await self.llm_utils.llm_provider.generate(prompt)
-
-                    # Clean up the verified domain
-                    if verified_domain:
-                        verified_domain = verified_domain.strip().strip('"\'').strip().lower()
-
-                        if verified_domain == "redberyltest.in":
-                            url = "https://www.redberyltest.in"
-                            logger.info(f"LLM verified domain as redberyltest.in, corrected URL to: {url}")
-                        else:
-                            logger.info(f"LLM verified domain as: {verified_domain}, keeping original URL")
-
-                except Exception as e:
-                    logger.error(f"Error verifying domain with LLM: {e}")
-                    # Continue with the current URL if verification fails
-
+            # Navigate to the URL
             await self.navigate_to(url)
             return True
 
@@ -4739,29 +4748,49 @@ def voice_input_thread(assistant):
     # Wait for initialization to complete
     assistant.ready_event.wait()
 
-    # Initialize microphone at the start
+    # Initialize with the direct recognizer
     try:
-        import speech_recognition as sr
-        if not hasattr(assistant.recognizer, 'microphone'):
-            print("🎤 Initializing microphone...")
-            # Create a new recognizer instance for microphone handling
-            mic_recognizer = sr.Recognizer()
-            assistant.recognizer.microphone = sr.Microphone()
-            with assistant.recognizer.microphone as source:
-                mic_recognizer.adjust_for_ambient_noise(source, duration=1)
-                print("✅ Microphone initialized successfully")
+        # Import the direct recognizer explicitly
+        from webassist.voice_assistant.speech.direct_recognizer import create_direct_recognizer
+
+        # Check if we need to create a new recognizer
+        if not hasattr(assistant, 'recognizer') or not assistant.recognizer or not hasattr(assistant.recognizer, 'mode') or assistant.recognizer.mode != "voice":
+            print("🎤 Initializing direct voice recognizer...")
+
+            # Create a new direct recognizer in voice mode
+            assistant.recognizer = create_direct_recognizer(mode="voice", speak_func=assistant.speak)
+            print("✅ Direct voice recognizer initialized")
+
+            # Start listening for commands
+            if hasattr(assistant.recognizer, 'start_listening'):
+                assistant.recognizer.start_listening(assistant._handle_recognized_command)
+                print("✅ Started listening for commands in voice mode")
+
+                # Make the voice prompt extremely visible
+                print("\n\n\n")
+                print("!" * 100)
+                print("!" * 100)
+                print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS".center(100))
+                print("!" * 100)
+                print(f"\n{VOICE_PROMPT}".center(100))
+                print("!" * 100)
+                print("!" * 100)
+                sys.stdout.flush()
     except Exception as e:
-        print(f"❌ Failed to initialize microphone: {e}")
+        print(f"❌ Failed to initialize direct voice recognizer: {e}")
+        import traceback
+        traceback.print_exc()
         print("⚠️ Switching to text mode...")
         input_mode = "text"
         display_prompt()
         return
 
-    # Main voice input loop
+    # Main voice input loop - with direct recognizer, we just need to display the prompt
+    # and wait for the recognizer to call the callback function
     while running:
         try:
             if input_mode == "voice" and assistant.recognizer:
-                # Display voice mode banner
+                # Display voice mode banner periodically
                 print("\n" + "=" * 80)
                 print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS")
                 print("=" * 80)
@@ -4769,155 +4798,15 @@ def voice_input_thread(assistant):
                 print("=" * 80)
                 sys.stdout.flush()
 
-                try:
-                    # Create a new recognizer instance each time
-                    import speech_recognition as sr
-                    recognizer = sr.Recognizer()
-                    microphone = sr.Microphone()
+                # With the direct recognizer, we don't need to manually listen
+                # The recognizer is already listening in a separate thread
+                # and will call the _handle_recognized_command method when it recognizes speech
 
-                    with microphone as source:
-                        print("\n🎤 LISTENING NOW... (Speak your command clearly)")
-                        print("-" * 80)
-                        sys.stdout.flush()
-
-                        # Optimize recognition settings for better responsiveness
-                        recognizer.energy_threshold = 300  # Much lower threshold for better sensitivity
-                        recognizer.dynamic_energy_threshold = True
-                        recognizer.dynamic_energy_adjustment_damping = 0.15
-                        recognizer.dynamic_energy_ratio = 1.5
-                        recognizer.pause_threshold = 0.3  # Shorter pause threshold
-                        recognizer.phrase_threshold = 0.1  # Shorter phrase threshold
-                        recognizer.non_speaking_duration = 0.1  # Shorter non-speaking duration
-
-                        # Quick ambient noise adjustment
-                        recognizer.adjust_for_ambient_noise(source, duration=0.5)
-
-                        # Listen for command with shorter timeouts
-                        audio = recognizer.listen(
-                            source,
-                            timeout=3,  # Shorter timeout
-                            phrase_time_limit=5  # Shorter phrase time limit
-                        )
-
-                        print("\n🔍 RECOGNIZING SPEECH...")
-                        print("-" * 80)
-                        sys.stdout.flush()
-
-                        # Try Google's speech recognition service with optimized settings
-                        text = recognizer.recognize_google(
-                            audio,
-                            language="en-US",
-                            show_all=False
-                        ).lower()
-
-                        # Clean up and normalize the recognized text
-                        text = text.strip()
-
-                        # Handle common URL recognition issues
-                        text = text.replace("dot com", ".com")
-                        text = text.replace("dot in", ".in")
-                        text = text.replace("dot org", ".org")
-                        text = text.replace("dot net", ".net")
-                        text = text.replace("dot co", ".co")
-                        text = text.replace("dot", ".")
-
-                        # Handle common command variations with proper spacing
-                        if "go to" in text:
-                            text = text.replace("go to", "goto ")
-                        if "navigate to" in text:
-                            text = text.replace("navigate to", "goto ")
-                        if "open" in text:
-                            text = text.replace("open", "goto ")
-                        if "visit" in text:
-                            text = text.replace("visit", "goto ")
-
-                        # Apply domain name corrections only for actual misrecognitions of redberyltest
-                        for wrong, correct in DOMAIN_CORRECTIONS.items():
-                            if wrong in text:
-                                text = text.replace(wrong, correct)
-                                print(f"\nℹ️ Corrected domain name from '{wrong}' to '{correct}'")
-
-                        # Ensure proper spacing in URLs
-                        if "goto" in text:
-                            # Split the command and URL
-                            parts = text.split("goto")
-                            if len(parts) == 2:
-                                command = parts[0].strip()
-                                url = parts[1].strip()
-                                # Ensure there's a space after goto
-                                text = f"{command}goto {url}"
-
-                        # Display the recognized text
-                        print("\n" + "*" * 60)
-                        print("*" + " " * 58 + "*")
-                        print("*" + f"🎯 RECOGNIZED COMMAND: \"{text}\"".center(58) + "*")
-                        print("*" + " " * 58 + "*")
-                        print("*" * 60)
-                        sys.stdout.flush()
-
-                        if text:
-                            # Handle mode switching commands
-                            if text.lower() in ["text", "switch to text", "switch to text mode"]:
-                                input_mode = "text"
-                                print(f"\n{TEXT_MODE_SWITCH_MESSAGE}")
-                                display_prompt()
-                                continue
-
-                            # Add command to queue for processing
-                            command_queue.put(text)
-                            print(f"📥 Added to command queue: \"{text}\"")
-                            print(f"⏱️ Command will be processed momentarily...")
-                            sys.stdout.flush()
-
-                except sr.UnknownValueError:
-                    print("\n❌ SPEECH NOT RECOGNIZED. Please try again.")
-                    print("\nTips for better recognition:")
-                    print("- Speak clearly and directly into the microphone")
-                    print("- Reduce background noise if possible")
-                    print("- Try speaking at a moderate pace")
-                    print("- Make sure you're speaking within 3 seconds of seeing 'LISTENING NOW...'")
-                    print("- For URLs, say 'dot' instead of '.' (e.g., 'redberyltest dot in')")
-                    print("- For 'redberyltest', say it slowly and clearly")
-                    sys.stdout.flush()
-
-                    # Try one more time with different settings
-                    try:
-                        print("\n🔄 Trying again with different settings...")
-                        # Adjust settings for another attempt
-                        recognizer.energy_threshold = 4000  # Higher threshold
-                        recognizer.dynamic_energy_threshold = True
-
-                        with microphone as source:
-                            print("Please speak your command again...")
-                            audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
-                            text = recognizer.recognize_google(audio).lower()
-                            print(f"🎯 Successfully recognized on retry: \"{text}\"")
-
-                            # Process the retry command
-                            if text:
-                                command_queue.put(text)
-                                print(f"📥 Added to command queue: \"{text}\"")
-                                print(f"⏱️ Command will be processed momentarily...")
-                                sys.stdout.flush()
-                    except:
-                        print("\nRetry failed. Please try again.")
-
-                except sr.RequestError as e:
-                    print(f"\n❌ SPEECH RECOGNITION SERVICE ERROR: {e}")
-                    print("This could be due to network issues or problems with the Google Speech API.")
-                    sys.stdout.flush()
-
-                except Exception as e:
-                    print(f"\n⚠️ Error in voice recognition: {e}")
-                    import traceback
-                    traceback.print_exc()
-                    sys.stdout.flush()
-
-                # Add a small delay to prevent CPU overload
-                time.sleep(0.1)
+                # Just sleep to prevent CPU overload
+                time.sleep(3)  # Display the prompt every 3 seconds
             else:
                 # If not in voice mode, just sleep a bit
-                time.sleep(0.1)
+                time.sleep(0.5)
 
         except KeyboardInterrupt:
             print("\nKeyboard interrupt detected. Exiting...")
@@ -4951,16 +4840,11 @@ async def process_commands(assistant):
             # Process the command
             await assistant.process_command(command)
 
-            # Force the recognizer to start listening immediately
-            if assistant.recognizer:
-                print("\n🎤 LISTENING NOW... (Speak your command)", flush=True)
-                try:
-                    # Start listening in a non-blocking way
-                    await assistant._listen_voice()
-                except Exception as e:
-                    print(f"Error in voice recognition: {e}")
-                    import traceback
-                    traceback.print_exc()
+            # With the direct recognizer, we don't need to manually start listening
+            # The recognizer is already listening in a separate thread
+            # Just display a prompt to let the user know we're ready for the next command
+            if input_mode == "voice" and assistant.recognizer:
+                print("\n🎤 READY FOR NEXT COMMAND...", flush=True)
 
         except Exception as e:
             print(f"Error processing command: {e}")
