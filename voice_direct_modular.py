@@ -12,6 +12,7 @@ import re
 import datetime
 import queue
 from playwright.async_api import async_playwright
+
 # Import constants
 from webassist.voice_assistant.constants import (
     LOGIN_URL, NAVIGATION_TIMEOUT, PAGE_LOAD_WAIT, DROPDOWN_OPEN_WAIT,FILTER_WAIT, SELECTION_WAIT,
@@ -233,49 +234,34 @@ class SimpleVoiceAssistant:
     async def initialize(self):
         """Initialize the assistant"""
         try:
-            print("\n==== Initializing Browser and Components ====")
-            print("This may take a moment...")
-            logger.info("Initializing assistant...")
+            # Initialize speech recognition components first
+            import speech_recognition as sr
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
 
-            # Initialize browser first
-            browser_success = await self._initialize_browser()
-            if not browser_success:
-                logger.error("Failed to initialize browser")
-                return False
+            # Configure recognizer settings
+            self.recognizer.dynamic_energy_threshold = True
+            self.recognizer.energy_threshold = 300  # Lower threshold for better sensitivity
+            self.recognizer.pause_threshold = 0.8  # Shorter pause threshold
+            self.recognizer.phrase_threshold = 0.3  # More sensitive phrase detection
+            self.recognizer.non_speaking_duration = 0.5  # Shorter non-speaking duration
+
+            # Test microphone
+            with self.microphone as source:
+                print("Testing microphone...")
+                self.recognizer.adjust_for_ambient_noise(source, duration=1)
+                print(f"Microphone initialized with energy threshold: {self.recognizer.energy_threshold}")
+
+            # Initialize browser
+            await self._initialize_browser()
 
             # Initialize handlers
             await self._initialize_handlers()
 
-            # Initialize LLM utilities
-            try:
-                self.llm_utils = LLMUtils()
-                logger.info("LLM utilities initialized")
-            except Exception as e:
-                logger.error(f"Failed to initialize LLM utilities: {e}")
-                return False
-
-        logger.info("Initializing LLM utils...")
-        try:
-            if 'LLMUtils' in globals():
-                # Create a simple LLM provider for the LLMUtils
-                from webassist.llm.gemini import GeminiProvider
-                llm_provider = GeminiProvider(api_key)
-
-                # Initialize LLMUtils with the correct parameters
-                self.llm_utils = LLMUtils(llm_provider, self.page, self.speak, self.browser_utils)
-                logger.info("LLM utils initialized")
-        except Exception as e:
-            logger.error(f"Error initializing LLM utils: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-
-        await self._initialize_handlers()
-
-            logger.info("Assistant initialized successfully")
             return True
 
         except Exception as e:
-            logger.error(f"Error during initialization: {e}")
+            print(f"Error during initialization: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -297,7 +283,6 @@ class SimpleVoiceAssistant:
                     "--disable-dev-shm-usage"
                 ]
             }
-
             playwright = await async_playwright().start()
             self.browser = await playwright.chromium.launch(**browser_options)
             self.context = await self.browser.new_context()
@@ -306,6 +291,7 @@ class SimpleVoiceAssistant:
             self.page = await self.context.new_page()
 
             # Set default timeout
+            self.page.setDefaultTimeout(30000)  # 30 seconds
 
             # Enable request interception for better performance
             await self.page.route("**/*", lambda route: route.continue_())
@@ -4665,106 +4651,31 @@ Voice commands require confirmation for critical actions like exiting the applic
             logger.error(traceback.format_exc())
             return text  # Return original text if normalization fails
 
-    async def _initialize_voice(self):
-        """Initialize voice recognition components"""
-        try:
-            import speech_recognition as sr
-            self.recognizer = sr.Recognizer()
-            self.microphone = sr.Microphone()
-
-            # Configure recognizer settings for better accuracy
-            self.recognizer.dynamic_energy_threshold = True
-            self.recognizer.energy_threshold = 200  # Lower threshold for better sensitivity
-            self.recognizer.pause_threshold = 1.5  # Longer pause threshold
-            self.recognizer.phrase_threshold = 0.5  # More sensitive phrase detection
-            self.recognizer.non_speaking_duration = 1.0  # Longer non-speaking duration
-
-            # Test microphone
-            with self.microphone as source:
-                print("Testing microphone...")
-                self.recognizer.adjust_for_ambient_noise(source, duration=2)
-                print(f"Microphone initialized with energy threshold: {self.recognizer.energy_threshold}")
-
-            return True
-
-        except Exception as e:
-            print(f"Error initializing voice components: {e}")
-            import traceback
-            traceback.print_exc()
-            return False
-
     async def _listen_voice(self):
-        """Listen for voice commands with improved settings"""
+        """Listen for voice input and return the recognized text"""
+        if not self.recognizer:
+            logger.error("No speech recognizer available")
+            return None
+
         try:
-            if not self.microphone or not self.recognizer:
-                success = await self._initialize_voice()
-                if not success:
-                    return None
+            logger.info("Starting voice recognition...")
+            # Use the recognizer's listen method
+            text = await self.recognizer.listen()
 
-            with self.microphone as source:
-                print("\n🎤 Initializing microphone...")
-                sys.stdout.flush()
+            if text:
+                logger.info(f"Recognized text: {text}")
 
-                # Adjust for ambient noise with longer duration
-                print("Adjusting for ambient noise (3 seconds)...")
-                self.recognizer.adjust_for_ambient_noise(source, duration=3)
-                print(f"Energy threshold set to: {self.recognizer.energy_threshold}")
-                sys.stdout.flush()
+                # Use LLM to normalize the command if available
+                normalized_text = await self._normalize_command_with_llm(text)
 
-                # Clear visual prompt
-                print("\n" + "=" * 80)
-                print("🎤 READY FOR VOICE COMMAND...".center(80))
-                print("Speak clearly and slowly into your microphone".center(80))
-                print("=" * 80 + "\n")
-                sys.stdout.flush()
-
-                try:
-                    # Listen for command with longer timeouts
-                    audio = self.recognizer.listen(
-                        source,
-                        timeout=8,  # Increased timeout
-                        phrase_time_limit=15  # Increased phrase time limit
-                    )
-
-                    # Process the audio
-                    try:
-                        command = self.recognizer.recognize_google(
-                            audio,
-                            language="en-US"
-                        )
-
-                        if command:
-                            print(f"\n🎤 Recognized: {command}")
-                            # Normalize the command before processing
-                            normalized_command = await self._normalize_command_with_llm(command)
-                            if normalized_command:
-                                print(f"Normalized command: {normalized_command}")
-                                return normalized_command
-                            else:
-                                print("Could not understand the command. Please try again.")
-                                return None
-
-                    except sr.UnknownValueError:
-                        print("\n❌ Could not understand audio")
-                        print("Please try speaking more clearly and slowly")
-                        sys.stdout.flush()
-                        return None
-                    except sr.RequestError as e:
-                        print(f"\n❌ Error with speech recognition service: {e}")
-                        sys.stdout.flush()
-                        return None
-
-                except sr.WaitTimeoutError:
-                    print("\n⏱️ No speech detected")
-                    print("Please try speaking again")
-                    sys.stdout.flush()
-                    return None
-
+                return normalized_text
+            else:
+                logger.warning("No speech detected")
+                return None
         except Exception as e:
-            print(f"\n❌ Error with microphone: {e}")
-            print("Trying to reinitialize...")
-            sys.stdout.flush()
-            await asyncio.sleep(1)
+            logger.error(f"Error in voice recognition: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
             return None
 
 def text_input_thread(assistant):
