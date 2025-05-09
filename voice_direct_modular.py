@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 import re
 import datetime
 import queue
-
+from playwright.async_api import async_playwright
 # Import constants
 from webassist.voice_assistant.constants import (
     LOGIN_URL, NAVIGATION_TIMEOUT, PAGE_LOAD_WAIT, DROPDOWN_OPEN_WAIT,FILTER_WAIT, SELECTION_WAIT,
@@ -112,6 +112,8 @@ try:
     from webassist.voice_assistant.interactions.specialized import SpecializedHandler
     from webassist.voice_assistant.interactions.member_manager import MemberManagerHandler
     from webassist.voice_assistant.interactions.business_purpose import BusinessPurposeHandler
+    import speech_recognition as sr
+
 
     modules_loaded = True
     print("Successfully imported all modules")
@@ -122,25 +124,48 @@ except ImportError as e:
 
 class SimpleVoiceAssistant:
     def __init__(self):
-        """Initialize the assistant"""
+        """Initialize the voice assistant"""
         self.browser = None
         self.page = None
-        self.synthesizer = None
+        self.context = None
+        self.ready_event = asyncio.Event()
+        self.command_history = []
+        self.last_command = None
         self.recognizer = None
-        self.ready_event = threading.Event()
+        self.microphone = None
+        self.synthesizer = None
+        self.input_mode = "text"  # Default to text mode
+        self.running = True
+        self.llm_utils = None
+        self.browser_utils = None
+        self.handlers = {}
+        self.logger = logging.getLogger(__name__)
 
-        # Initialize speech configuration
+        # Initialize speech recognition components
         try:
-            from webassist.core.config import AssistantConfig
-            from webassist.Common.constants import DEFAULT_SPEECH_RATE, DEFAULT_SPEECH_VOLUME
+            import speech_recognition as sr
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
 
-            self.speech_config = AssistantConfig()
-            self.speech_config.speech_rate = int(os.environ.get("TTS_RATE", DEFAULT_SPEECH_RATE))
-            self.speech_config.speech_volume = float(os.environ.get("TTS_VOLUME", DEFAULT_SPEECH_VOLUME))
-            self.speech_config.speech_voice_id = int(os.environ.get("TTS_VOICE_ID", "1"))
+            # Configure recognizer settings
+            self.recognizer.dynamic_energy_threshold = True
+            self.recognizer.energy_threshold = 300  # Lower threshold for better sensitivity
+            self.recognizer.pause_threshold = 0.8  # Shorter pause threshold
+            self.recognizer.phrase_threshold = 0.3  # More sensitive phrase detection
+            self.recognizer.non_speaking_duration = 0.5  # Shorter non-speaking duration
+
+            # Test microphone
+            with self.microphone as source:
+                print("Testing microphone...")
+                self.recognizer.adjust_for_ambient_noise(source, duration=1)
+                print(f"Microphone initialized with energy threshold: {self.recognizer.energy_threshold}")
+
         except Exception as e:
-            logger.error(f"Error initializing speech config: {e}")
-            self.speech_config = None
+            print(f"Error initializing speech components: {e}")
+            import traceback
+            traceback.print_exc()
+            self.recognizer = None
+            self.microphone = None
 
         # Initialize speech components
         try:
@@ -160,7 +185,7 @@ class SimpleVoiceAssistant:
             # Initialize speech recognizer with fallback to text mode if voice fails
             global input_mode  # Declare global at the beginning of the block
 
-            if 'create_recognizer' in globals():
+            if 'create_enhanced_recognizer' in globals():
                 try:
                     # First try to initialize in the requested mode
                     logger.info(f"Attempting to initialize speech recognizer in {input_mode} mode")
@@ -206,45 +231,28 @@ class SimpleVoiceAssistant:
         self.confirmation_timeout = 30  # seconds
 
     async def initialize(self):
-        """Initialize assistant components with proper dependencies"""
-        # Declare global variables at the beginning of the function
-        global input_mode
-
-        if os.path.exists(".env"):
-            load_dotenv()
-            logger.info("Loaded environment variables from .env file")
-        else:
-            logger.info("No .env file found, using environment variables")
-
-        api_key = os.environ.get("GEMINI_API_KEY")
-        if not api_key and 'DEFAULT_API_KEY' in globals():
-            api_key = DEFAULT_API_KEY
-            logger.info("Using default API key from constants.py")
-        elif not api_key:
-            logger.warning("No API key found. Some features may not work.")
-            api_key = "dummy_key"
-
-        logger.info("Initializing browser...")
+        """Initialize the assistant"""
         try:
-            self.browser = await self._initialize_browser()
-            self.page = await self.browser.new_page()
-            logger.info("Browser initialized successfully")
-        except Exception as e:
-            logger.error(f"Error initializing browser: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return False
+            print("\n==== Initializing Browser and Components ====")
+            print("This may take a moment...")
+            logger.info("Initializing assistant...")
 
-        logger.info("Initializing browser utils...")
-        try:
-            if 'BrowserUtils' in globals():
-                speak_func = self.speak
-                self.browser_utils = BrowserUtils(self.page, speak_func)
-                logger.info("Browser utils initialized")
-        except Exception as e:
-            logger.error(f"Error initializing browser utils: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
+            # Initialize browser first
+            browser_success = await self._initialize_browser()
+            if not browser_success:
+                logger.error("Failed to initialize browser")
+                return False
+
+            # Initialize handlers
+            await self._initialize_handlers()
+
+            # Initialize LLM utilities
+            try:
+                self.llm_utils = LLMUtils()
+                logger.info("LLM utilities initialized")
+            except Exception as e:
+                logger.error(f"Failed to initialize LLM utilities: {e}")
+                return False
 
         logger.info("Initializing LLM utils...")
         try:
@@ -263,53 +271,53 @@ class SimpleVoiceAssistant:
 
         await self._initialize_handlers()
 
-        start_url = os.environ.get("START_URL", "https://www.google.com")
-        logger.info(f"Navigating to start URL: {start_url}")
-        await self.navigate_to(start_url)
+            logger.info("Assistant initialized successfully")
+            return True
 
-        self.ready_event.set()
-        logger.info("Voice assistant initialization complete")
-        return True
-
-    async def _initialize_browser(self):
-        """Initialize the browser with playwright"""
-        try:
-            print("Importing Playwright...")
-            from playwright.async_api import async_playwright
-
-            print("Starting Playwright...")
-            logger.info("Starting Playwright")
-            playwright = await async_playwright().start()
-
-            print("Launching Chromium browser...")
-            logger.info("Launching Chromium browser")
-            # Launch browser with specific options to ensure it opens visibly
-            browser = await playwright.chromium.launch(
-                headless=False,
-                args=[
-                    '--start-maximized',
-                    '--disable-extensions',
-                    '--disable-popup-blocking',
-                    '--disable-infobars'
-                ]
-            )
-
-            print("Browser launched successfully!")
-            return browser
-        except ImportError as e:
-            error_msg = f"Playwright not installed: {e}"
-            print(f"\n❌ {error_msg}")
-            logger.error(error_msg)
-            logger.error("Please install it with: pip install playwright")
-            logger.error("Then install browsers with: playwright install")
-            raise
         except Exception as e:
-            error_msg = f"Error initializing browser: {e}"
-            print(f"\n❌ {error_msg}")
-            logger.error(error_msg)
+            logger.error(f"Error during initialization: {e}")
             import traceback
             traceback.print_exc()
-            raise
+            return False
+
+    async def _initialize_browser(self):
+        """Initialize the browser with proper settings"""
+        try:
+            print("Initializing browser...")
+            browser_options = {
+                "headless": False,  # Set to True for headless mode
+                "args": [
+                    "--start-maximized",
+                    "--disable-notifications",
+                    "--disable-popup-blocking",
+                    "--disable-infobars",
+                    "--disable-extensions",
+                    "--disable-gpu",
+                    "--no-sandbox",
+                    "--disable-dev-shm-usage"
+                ]
+            }
+
+            playwright = await async_playwright().start()
+            self.browser = await playwright.chromium.launch(**browser_options)
+            self.context = await self.browser.new_context()
+
+            # Create a new page
+            self.page = await self.context.new_page()
+
+            # Set default timeout
+
+            # Enable request interception for better performance
+            await self.page.route("**/*", lambda route: route.continue_())
+
+            print("Browser initialized successfully")
+            return True
+
+        except Exception as e:
+            print(f"Error initializing browser: {e}")
+            import traceback
+            traceback.print_exc()
+            return False
 
     async def _initialize_handlers(self):
         """Initialize all interaction handlers"""
@@ -751,7 +759,7 @@ class SimpleVoiceAssistant:
         if not login_match:
             logger.info("Simple login pattern didn't match, trying flexible patterns")
             login_patterns = [
-                r'log[a-z]* w[a-z]* (?:email|email address)?\s+(\S+)\s+[a-z]* (?:password|pass|p[a-z]*)\s+(\S+)',
+                r'log[a-z]* w[a-z]* (?:email|email address)?\s+(\S+)\s+[a-z]*xxxxx (?:password|pass|p[a-z]*)\s+(\S+)',
                 r'login\s+(?:with|using|w[a-z]*)\s+(?:email|email address)?\s*(\S+)\s+(?:and|with|[a-z]*)\s+(?:password|pass|p[a-z]*)\s*(\S+)',
                 r'(?:login|sign in|signin)\s+(?:with|using|w[a-z]*)?\s*(?:email|username)?\s*(\S+)\s+(?:and|with|[a-z]*)\s*(?:password|pass|p[a-z]*)?\s*(\S+)',
                 r'log[a-z]*.*?(\S+@\S+).*?(\S+)'
@@ -1350,7 +1358,7 @@ Voice commands require confirmation for critical actions like exiting the applic
                             return False
 
                     # Create new recognizer in the requested mode
-                    self.recognizer = create_recognizer(
+                    self.recognizer = create_enhanced_recognizer(
                         config=self.speech_config,
                         mode=mode,
                         speak_func=self.speak
@@ -4657,31 +4665,106 @@ Voice commands require confirmation for critical actions like exiting the applic
             logger.error(traceback.format_exc())
             return text  # Return original text if normalization fails
 
-    async def _listen_voice(self):
-        """Listen for voice input and return the recognized text"""
-        if not self.recognizer:
-            logger.error("No speech recognizer available")
-            return None
-
+    async def _initialize_voice(self):
+        """Initialize voice recognition components"""
         try:
-            logger.info("Starting voice recognition...")
-            # Use the recognizer's listen method
-            text = await self.recognizer.listen()
+            import speech_recognition as sr
+            self.recognizer = sr.Recognizer()
+            self.microphone = sr.Microphone()
 
-            if text:
-                logger.info(f"Recognized text: {text}")
+            # Configure recognizer settings for better accuracy
+            self.recognizer.dynamic_energy_threshold = True
+            self.recognizer.energy_threshold = 200  # Lower threshold for better sensitivity
+            self.recognizer.pause_threshold = 1.5  # Longer pause threshold
+            self.recognizer.phrase_threshold = 0.5  # More sensitive phrase detection
+            self.recognizer.non_speaking_duration = 1.0  # Longer non-speaking duration
 
-                # Use LLM to normalize the command if available
-                normalized_text = await self._normalize_command_with_llm(text)
+            # Test microphone
+            with self.microphone as source:
+                print("Testing microphone...")
+                self.recognizer.adjust_for_ambient_noise(source, duration=2)
+                print(f"Microphone initialized with energy threshold: {self.recognizer.energy_threshold}")
 
-                return normalized_text
-            else:
-                logger.warning("No speech detected")
-                return None
+            return True
+
         except Exception as e:
-            logger.error(f"Error in voice recognition: {e}")
+            print(f"Error initializing voice components: {e}")
             import traceback
-            logger.error(traceback.format_exc())
+            traceback.print_exc()
+            return False
+
+    async def _listen_voice(self):
+        """Listen for voice commands with improved settings"""
+        try:
+            if not self.microphone or not self.recognizer:
+                success = await self._initialize_voice()
+                if not success:
+                    return None
+
+            with self.microphone as source:
+                print("\n🎤 Initializing microphone...")
+                sys.stdout.flush()
+
+                # Adjust for ambient noise with longer duration
+                print("Adjusting for ambient noise (3 seconds)...")
+                self.recognizer.adjust_for_ambient_noise(source, duration=3)
+                print(f"Energy threshold set to: {self.recognizer.energy_threshold}")
+                sys.stdout.flush()
+
+                # Clear visual prompt
+                print("\n" + "=" * 80)
+                print("🎤 READY FOR VOICE COMMAND...".center(80))
+                print("Speak clearly and slowly into your microphone".center(80))
+                print("=" * 80 + "\n")
+                sys.stdout.flush()
+
+                try:
+                    # Listen for command with longer timeouts
+                    audio = self.recognizer.listen(
+                        source,
+                        timeout=8,  # Increased timeout
+                        phrase_time_limit=15  # Increased phrase time limit
+                    )
+
+                    # Process the audio
+                    try:
+                        command = self.recognizer.recognize_google(
+                            audio,
+                            language="en-US"
+                        )
+
+                        if command:
+                            print(f"\n🎤 Recognized: {command}")
+                            # Normalize the command before processing
+                            normalized_command = await self._normalize_command_with_llm(command)
+                            if normalized_command:
+                                print(f"Normalized command: {normalized_command}")
+                                return normalized_command
+                            else:
+                                print("Could not understand the command. Please try again.")
+                                return None
+
+                    except sr.UnknownValueError:
+                        print("\n❌ Could not understand audio")
+                        print("Please try speaking more clearly and slowly")
+                        sys.stdout.flush()
+                        return None
+                    except sr.RequestError as e:
+                        print(f"\n❌ Error with speech recognition service: {e}")
+                        sys.stdout.flush()
+                        return None
+
+                except sr.WaitTimeoutError:
+                    print("\n⏱️ No speech detected")
+                    print("Please try speaking again")
+                    sys.stdout.flush()
+                    return None
+
+        except Exception as e:
+            print(f"\n❌ Error with microphone: {e}")
+            print("Trying to reinitialize...")
+            sys.stdout.flush()
+            await asyncio.sleep(1)
             return None
 
 def text_input_thread(assistant):
@@ -4734,31 +4817,16 @@ def voice_input_thread(assistant):
     """Thread for handling voice input"""
     global running, input_mode
 
-    # Common speech recognition patterns for redberyltest.in
-    # These are used to identify when the user is likely trying to go to redberyltest.in
-    REDBERYLTEST_PATTERNS = [
-        "red beryl test", "redberyl test", "redberyltest",
-        "red berry test", "redberry test", "redberry",
-        "red barely test", "red belly test", "red very test"
-    ]
+    # Common domain name corrections - only for actual misrecognitions of redberyltest
+    DOMAIN_CORRECTIONS = {
+        "redberyl": "redberyltest",
+        "red beryl": "redberyltest",
+        "redberyl test": "redberyltest",
+        "red beryl test": "redberyltest"
+    }
 
     # Wait for initialization to complete
     assistant.ready_event.wait()
-
-    # Display voice mode banner with EXTREME visibility immediately if in voice mode
-    if input_mode == "voice":
-        print("\n\n\n")
-        print("!" * 100)
-        print("!" * 100)
-        print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS".center(100))
-        print("!" * 100)
-        print(f"\n{VOICE_PROMPT}".center(100))
-        print("!" * 100)
-        print("!" * 100)
-        # Force flush to ensure output is displayed immediately
-        sys.stdout.flush()
-        # Add a longer delay to ensure the output is visible
-        time.sleep(1.0)
 
     # Initialize microphone at the start
     try:
@@ -4782,19 +4850,13 @@ def voice_input_thread(assistant):
     while running:
         try:
             if input_mode == "voice" and assistant.recognizer:
-                # Display voice mode banner with EXTREME visibility
-                print("\n\n\n")
-                print("!" * 100)
-                print("!" * 100)
-                print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS".center(100))
-                print("!" * 100)
-                print(f"\n{VOICE_PROMPT}".center(100))
-                print("!" * 100)
-                print("!" * 100)
-                # Force flush to ensure output is displayed immediately
+                # Display voice mode banner
+                print("\n" + "=" * 80)
+                print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS")
+                print("=" * 80)
+                print(f"\n{VOICE_PROMPT}")
+                print("=" * 80)
                 sys.stdout.flush()
-                # Add a longer delay to ensure the output is visible
-                time.sleep(1.0)
 
                 try:
                     # Create a new recognizer instance each time
@@ -4803,26 +4865,18 @@ def voice_input_thread(assistant):
                     microphone = sr.Microphone()
 
                     with microphone as source:
-                        # Make the listening prompt EXTREMELY visible
-                        print("\n\n\n")
-                        print("*" * 100)
-                        print("*" * 100)
-                        print("🎤 LISTENING NOW... (Speak your command clearly)".center(100))
-                        print("*" * 100)
-                        print("*" * 100)
-                        # Force flush to ensure output is displayed immediately
+                        print("\n🎤 LISTENING NOW... (Speak your command clearly)")
+                        print("-" * 80)
                         sys.stdout.flush()
-                        # Add a longer delay to ensure the output is visible
-                        time.sleep(1.0)
 
                         # Optimize recognition settings for better responsiveness
-                        recognizer.energy_threshold = 1000
+                        recognizer.energy_threshold = 300  # Much lower threshold for better sensitivity
                         recognizer.dynamic_energy_threshold = True
                         recognizer.dynamic_energy_adjustment_damping = 0.15
                         recognizer.dynamic_energy_ratio = 1.5
-                        recognizer.pause_threshold = 0.5
-                        recognizer.phrase_threshold = 0.3
-                        recognizer.non_speaking_duration = 0.3
+                        recognizer.pause_threshold = 0.3  # Shorter pause threshold
+                        recognizer.phrase_threshold = 0.1  # Shorter phrase threshold
+                        recognizer.non_speaking_duration = 0.1  # Shorter non-speaking duration
 
                         # Quick ambient noise adjustment
                         recognizer.adjust_for_ambient_noise(source, duration=0.5)
@@ -4830,21 +4884,13 @@ def voice_input_thread(assistant):
                         # Listen for command with shorter timeouts
                         audio = recognizer.listen(
                             source,
-                            timeout=5,
-                            phrase_time_limit=10
+                            timeout=3,  # Shorter timeout
+                            phrase_time_limit=5  # Shorter phrase time limit
                         )
 
-                        # Make the recognition prompt EXTREMELY visible
-                        print("\n\n\n")
-                        print("@" * 100)
-                        print("@" * 100)
-                        print("🔍 RECOGNIZING SPEECH...".center(100))
-                        print("@" * 100)
-                        print("@" * 100)
-                        # Force flush to ensure output is displayed immediately
+                        print("\n🔍 RECOGNIZING SPEECH...")
+                        print("-" * 80)
                         sys.stdout.flush()
-                        # Add a longer delay to ensure the output is visible
-                        time.sleep(1.0)
 
                         # Try Google's speech recognition service with optimized settings
                         text = recognizer.recognize_google(
@@ -4856,129 +4902,29 @@ def voice_input_thread(assistant):
                         # Clean up and normalize the recognized text
                         text = text.strip()
 
-                        # Use LLM for command normalization if available
-                        if hasattr(assistant, 'llm_utils') and assistant.llm_utils:
-                            try:
-                                # Create a prompt for the LLM to normalize the command
-                                prompt = f"""
-                                You are a voice command interpreter for a web assistant. Normalize the following voice command to make it more processable:
+                        # Handle common URL recognition issues
+                        text = text.replace("dot com", ".com")
+                        text = text.replace("dot in", ".in")
+                        text = text.replace("dot org", ".org")
+                        text = text.replace("dot net", ".net")
+                        text = text.replace("dot co", ".co")
+                        text = text.replace("dot", ".")
 
-                                "{text}"
+                        # Handle common command variations with proper spacing
+                        if "go to" in text:
+                            text = text.replace("go to", "goto ")
+                        if "navigate to" in text:
+                            text = text.replace("navigate to", "goto ")
+                        if "open" in text:
+                            text = text.replace("open", "goto ")
+                        if "visit" in text:
+                            text = text.replace("visit", "goto ")
 
-                                Apply these transformations based on command type:
-
-                                1. NAVIGATION COMMANDS:
-                                   - Convert "go to", "navigate to", "open", "visit", "browse to", "load" to "goto " format
-                                   - Convert spoken URL formats (e.g., "dot com", "dot in") to proper URL notation
-                                   - IMPORTANT: For domain corrections, follow these rules:
-                                     * ONLY correct domains when the user is clearly trying to go to a specific site
-                                     * If the user says something like "red beryl test" or similar variations, they likely mean "redberyltest.in"
-                                     * Do NOT convert legitimate domains like "redbus.in" to other domains unless it's clear from context
-                                     * Respect the user's intent - don't change domains unless you're confident it's a speech recognition error
-
-                                2. CLICK COMMANDS:
-                                   - Standardize "click on", "press", "tap", "select", "choose" to "click " format
-                                   - Preserve the element name to be clicked (e.g., "click login button" → "click login button")
-
-                                3. FORM FILLING COMMANDS:
-                                   - Standardize "enter", "input", "type", "fill", "put" to "enter " format
-                                   - Preserve field names and values (e.g., "enter john@example.com as email" → "enter email john@example.com")
-                                   - For login commands, format as "login with email [email] and password [password]"
-
-                                4. PAGE COMMANDS:
-                                   - Standardize "refresh", "reload", "update" to "refresh" format
-                                   - Standardize "back", "go back", "previous" to "back" format
-                                   - Standardize "forward", "go forward", "next" to "forward" format
-                                   - Standardize scroll commands to "scroll up/down/top/bottom" format
-
-                                5. GENERAL IMPROVEMENTS:
-                                   - Fix spacing and formatting issues
-                                   - Correct typos in command keywords
-                                   - Preserve the original intent of the command
-                                   - Make sure email addresses and passwords are properly formatted
-
-                                Return ONLY the normalized command text without any explanations or additional text.
-                                """
-
-                                # Get the normalized command from the LLM
-                                normalized_text = None
-
-                                # Try different LLM methods based on what's available
-                                if hasattr(assistant.llm_utils, 'get_llm_response'):
-                                    print("Using LLM to normalize command...", flush=True)
-                                    normalized_text = asyncio.run(assistant.llm_utils.get_llm_response(prompt))
-                                elif hasattr(assistant.llm_utils.llm_provider, 'generate_content'):
-                                    print("Using LLM to normalize command...", flush=True)
-                                    response = assistant.llm_utils.llm_provider.generate_content(prompt)
-                                    normalized_text = response.text
-                                elif hasattr(assistant.llm_utils.llm_provider, 'generate'):
-                                    print("Using LLM to normalize command...", flush=True)
-                                    normalized_text = asyncio.run(assistant.llm_utils.llm_provider.generate(prompt))
-
-                                # Clean up the normalized text
-                                if normalized_text:
-                                    # Remove any quotes or extra whitespace
-                                    normalized_text = normalized_text.strip().strip('"\'').strip()
-                                    print(f"\nℹ️ LLM normalized command: '{text}' → '{normalized_text}'", flush=True)
-                                    text = normalized_text
-                            except Exception as e:
-                                print(f"Error normalizing command with LLM: {e}", flush=True)
-                                # Fall back to basic normalization if LLM fails
-                                print("Falling back to basic command normalization", flush=True)
-
-                                # Basic URL normalization
-                                text = text.replace("dot com", ".com")
-                                text = text.replace("dot in", ".in")
-                                text = text.replace("dot org", ".org")
-                                text = text.replace("dot net", ".net")
-                                text = text.replace("dot co", ".co")
-                                text = text.replace("dot", ".")
-
-                                # Basic command normalization
-                                if "go to" in text:
-                                    text = text.replace("go to", "goto ")
-                                if "navigate to" in text:
-                                    text = text.replace("navigate to", "goto ")
-                                if "open" in text:
-                                    text = text.replace("open", "goto ")
-                                if "visit" in text:
-                                    text = text.replace("visit", "goto ")
-
-                                # Let the LLM handle domain corrections in its normalization
-                                # We'll just add a hint for redberyltest.in if it's clearly that
-                                if any(pattern in text.lower() for pattern in REDBERYLTEST_PATTERNS):
-                                    print(f"\nℹ️ Detected possible reference to redberyltest.in", flush=True)
-                        else:
-                            # Fall back to basic normalization if LLM is not available
-                            print("LLM not available, using basic command normalization", flush=True)
-
-                            # Basic URL normalization
-                            text = text.replace("dot com", ".com")
-                            text = text.replace("dot in", ".in")
-                            text = text.replace("dot org", ".org")
-                            text = text.replace("dot net", ".net")
-                            text = text.replace("dot co", ".co")
-                            text = text.replace("dot", ".")
-
-                            # Basic command normalization
-                            if "go to" in text:
-                                text = text.replace("go to", "goto ")
-                            if "navigate to" in text:
-                                text = text.replace("navigate to", "goto ")
-                            if "open" in text:
-                                text = text.replace("open", "goto ")
-                            if "visit" in text:
-                                text = text.replace("visit", "goto ")
-
-                            # Basic handling for redberyltest.in
-                            if any(pattern in text.lower() for pattern in REDBERYLTEST_PATTERNS):
-                                print(f"\nℹ️ Detected possible reference to redberyltest.in", flush=True)
-
-                                # If this is a navigation command to redberyltest, add .in
-                                if any(cmd in text.lower() for cmd in ["goto", "go to", "navigate", "open", "visit"]):
-                                    if "redberyltest" in text.lower() and ".in" not in text.lower():
-                                        text = text.replace("redberyltest", "redberyltest.in")
-                                        print(f"\nℹ️ Added .in extension to redberyltest", flush=True)
+                        # Apply domain name corrections only for actual misrecognitions of redberyltest
+                        for wrong, correct in DOMAIN_CORRECTIONS.items():
+                            if wrong in text:
+                                text = text.replace(wrong, correct)
+                                print(f"\nℹ️ Corrected domain name from '{wrong}' to '{correct}'")
 
                         # Ensure proper spacing in URLs
                         if "goto" in text:
@@ -4990,18 +4936,13 @@ def voice_input_thread(assistant):
                                 # Ensure there's a space after goto
                                 text = f"{command}goto {url}"
 
-                        # Display the recognized text with EXTREME visibility
-                        print("\n\n\n")
-                        print("#" * 100)
-                        print("#" * 100)
-                        print("🎯 RECOGNIZED COMMAND:".center(100))
-                        print(f"\"{text}\"".center(100))
-                        print("#" * 100)
-                        print("#" * 100)
-                        # Force flush to ensure output is displayed immediately
+                        # Display the recognized text
+                        print("\n" + "*" * 60)
+                        print("*" + " " * 58 + "*")
+                        print("*" + f"🎯 RECOGNIZED COMMAND: \"{text}\"".center(58) + "*")
+                        print("*" + " " * 58 + "*")
+                        print("*" * 60)
                         sys.stdout.flush()
-                        # Add a longer delay to ensure the output is visible
-                        time.sleep(1.0)
 
                         if text:
                             # Handle mode switching commands
@@ -5023,10 +4964,32 @@ def voice_input_thread(assistant):
                     print("- Speak clearly and directly into the microphone")
                     print("- Reduce background noise if possible")
                     print("- Try speaking at a moderate pace")
-                    print("- Make sure you're speaking within 5 seconds of seeing 'LISTENING NOW...'")
+                    print("- Make sure you're speaking within 3 seconds of seeing 'LISTENING NOW...'")
                     print("- For URLs, say 'dot' instead of '.' (e.g., 'redberyltest dot in')")
                     print("- For 'redberyltest', say it slowly and clearly")
                     sys.stdout.flush()
+
+                    # Try one more time with different settings
+                    try:
+                        print("\n🔄 Trying again with different settings...")
+                        # Adjust settings for another attempt
+                        recognizer.energy_threshold = 4000  # Higher threshold
+                        recognizer.dynamic_energy_threshold = True
+
+                        with microphone as source:
+                            print("Please speak your command again...")
+                            audio = recognizer.listen(source, timeout=5, phrase_time_limit=10)
+                            text = recognizer.recognize_google(audio).lower()
+                            print(f"🎯 Successfully recognized on retry: \"{text}\"")
+
+                            # Process the retry command
+                            if text:
+                                command_queue.put(text)
+                                print(f"📥 Added to command queue: \"{text}\"")
+                                print(f"⏱️ Command will be processed momentarily...")
+                                sys.stdout.flush()
+                    except:
+                        print("\nRetry failed. Please try again.")
 
                 except sr.RequestError as e:
                     print(f"\n❌ SPEECH RECOGNITION SERVICE ERROR: {e}")
@@ -5105,18 +5068,13 @@ async def main():
         assistant = SimpleVoiceAssistant()
         print("Assistant instance created")
 
-        # Get user's choice of input mode
+        # Get input mode from user
         print("\n🔊 Select input mode:")
         print("1. Voice")
         print("2. Text")
         choice = input("Choice (1/2): ").strip()
-
-        if choice == "1":
-            input_mode = "voice"
-            print("\n🚀 Starting in voice mode")
-        else:
-            input_mode = "text"
-            print("\n⌨️  Starting in text mode")
+        input_mode = "voice" if choice == "1" else "text"
+        print(f"\n⌨️  Starting in {input_mode} mode")
 
         # Initialize the assistant first
         print("\n==== Initializing Browser and Components ====")
@@ -5141,22 +5099,99 @@ async def main():
         # Run the assistant
         print("\n==== Starting Main Loop ====")
 
-        # Force display of the voice prompt with EXTREME visibility if in voice mode
-        if input_mode == "voice":
-            print("\n\n\n")
-            print("!" * 100)
-            print("!" * 100)
-            print("🎤 VOICE MODE ACTIVE - READY FOR COMMANDS".center(100))
-            print("!" * 100)
-            print(f"\n{VOICE_PROMPT}".center(100))
-            print("!" * 100)
-            print("!" * 100)
-            # Force flush to ensure output is displayed immediately
-            sys.stdout.flush()
-            # Add a longer delay to ensure the output is visible
-            time.sleep(1.0)
+        # Set the ready event
+        assistant.ready_event.set()
+        print("\n✅ Assistant ready event set")
 
-        await assistant.run()
+        # Main loop for commands
+        running = True
+        while running:
+            try:
+                if input_mode == "voice":
+                    # Initialize microphone for each attempt
+                    try:
+                        with assistant.microphone as source:
+                            print("\n🎤 Initializing microphone...")
+                            sys.stdout.flush()
+
+                            # Adjust for ambient noise
+                            print("Adjusting for ambient noise (2 seconds)...")
+                            assistant.recognizer.adjust_for_ambient_noise(source, duration=2)
+                            print(f"Energy threshold set to: {assistant.recognizer.energy_threshold}")
+                            sys.stdout.flush()
+
+                            # Clear visual prompt
+                            print("\n" + "=" * 80)
+                            print("🎤 READY FOR VOICE COMMAND...".center(80))
+                            print("Speak clearly into your microphone".center(80))
+                            print("=" * 80 + "\n")
+                            sys.stdout.flush()
+
+                            try:
+                                # Listen for command with shorter timeouts
+                                audio = assistant.recognizer.listen(
+                                    source,
+                                    timeout=5,
+                                    phrase_time_limit=10
+                                )
+
+                                # Process the audio
+                                try:
+                                    command = assistant.recognizer.recognize_google(
+                                        audio,
+                                        language="en-US"
+                                    )
+
+                                    if command:
+                                        print(f"\n🎤 Recognized: {command}")
+                                        await assistant.process_command(command)
+
+                                        # Show ready prompt
+                                        print("\n" + "=" * 80)
+                                        print("🎤 READY FOR NEXT COMMAND...".center(80))
+                                        print("=" * 80 + "\n")
+                                        sys.stdout.flush()
+
+                                except sr.UnknownValueError:
+                                    print("\n❌ Could not understand audio")
+                                    print("Please try speaking more clearly")
+                                    sys.stdout.flush()
+                                except sr.RequestError as e:
+                                    print(f"\n❌ Error with speech recognition service: {e}")
+                                    sys.stdout.flush()
+
+                            except sr.WaitTimeoutError:
+                                print("\n⏱️ No speech detected")
+                                print("Please try speaking again")
+                                sys.stdout.flush()
+
+                    except Exception as e:
+                        print(f"\n❌ Error with microphone: {e}")
+                        print("Trying to reinitialize...")
+                        sys.stdout.flush()
+                        await asyncio.sleep(1)
+
+                else:
+                    # Text mode
+                    print("\nType your command (or 'help' for available commands):")
+                    command = input("> ").strip()
+
+                    if command.lower() == "exit":
+                        print("\nExiting...")
+                        running = False
+                        break
+                    elif command.lower() == "voice":
+                        print("\nSwitching to voice mode...")
+                        input_mode = "voice"
+                        continue
+                    elif command:
+                        await assistant.process_command(command)
+
+            except Exception as e:
+                print(f"\n❌ Error in main loop: {e}")
+                import traceback
+                traceback.print_exc()
+                await asyncio.sleep(1)
 
     except Exception as e:
         print(f"Error in main: {e}")
@@ -5164,6 +5199,7 @@ async def main():
         traceback.print_exc()
     finally:
         running = False
+        print("\n🛑 Shutting down...")
 
 if __name__ == "__main__":
     try:

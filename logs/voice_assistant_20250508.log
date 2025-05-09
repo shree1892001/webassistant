@@ -2159,3 +2159,4 @@ Call log:
 2025-05-08 18:34:41,134 - __main__ - INFO - [voice_direct_modular.py:4614] - Using get_llm_response method for command normalization
 2025-05-08 18:34:41,698 - __main__ - INFO - [voice_direct_modular.py:4628] - LLM normalized command: 'retry_voice_recognition' → 'retry voice recognition'
 2025-05-08 19:04:31,332 - __main__ - INFO - [voice_direct_modular.py:72] - Logging system initialized
+2025-05-08 19:06:01,083 - __main__ - INFO - [voice_direct_modular.py:72] - Logging system initialized
