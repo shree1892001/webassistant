@@ -25,6 +25,15 @@ class DirectVoiceRecognizer:
         self.is_listening = False
         self.command_callback = None
 
+        # Initialize LLM utilities if available
+        try:
+            from webassist.voice_assistant.utils.llm_utils import LLMUtils
+            self.llm_utils = LLMUtils()
+            logger.info("LLM utilities initialized successfully")
+        except Exception as e:
+            logger.warning(f"Could not initialize LLM utilities: {e}")
+            self.llm_utils = None
+
         # Initialize recognizer
         self.recognizer = sr.Recognizer()
 
@@ -230,76 +239,84 @@ class DirectVoiceRecognizer:
         return None
 
     def _process_command(self, text):
-        """Process common command patterns and normalize the text"""
-        # Handle common URL recognition issues
-        text = text.replace("dot com", ".com")
-        text = text.replace("dot in", ".in")
-        text = text.replace("dot org", ".org")
-        text = text.replace("dot net", ".net")
-        text = text.replace("dot co", ".co")
-        text = text.replace("dot", ".")
+        """Process common command patterns and normalize the text using LLM"""
+        try:
+            # First handle basic URL formatting
+            text = text.replace("dot com", ".com")
+            text = text.replace("dot in", ".in")
+            text = text.replace("dot org", ".org")
+            text = text.replace("dot net", ".net")
+            text = text.replace("dot co", ".co")
+            text = text.replace("dot", ".")
 
-        # Handle common command variations with proper spacing
-        if "go to" in text:
-            text = text.replace("go to", "goto ")
-        if "navigate to" in text:
-            text = text.replace("navigate to", "goto ")
-        if "open" in text:
-            text = text.replace("open", "goto ")
-        if "visit" in text:
-            text = text.replace("visit", "goto ")
+            # Handle basic command variations
+            if "go to" in text:
+                text = text.replace("go to", "goto ")
+            if "navigate to" in text:
+                text = text.replace("navigate to", "goto ")
+            if "open" in text:
+                text = text.replace("open", "goto ")
+            if "visit" in text:
+                text = text.replace("visit", "goto ")
 
-        # Enhanced domain name corrections with more variations
-        domain_corrections = {
-            "redberyl": "redberyltest.in",
-            "red beryl": "redberyltest.in",
-            "redberyl test": "redberyltest.in",
-            "red beryl test": "redberyltest.in",
-            "red berry": "redberyltest.in",
-            "redberry": "redberyltest.in",
-            "red berry test": "redberyltest.in",
-            "redberry test": "redberyltest.in",
-            "red barrel": "redberyltest.in",
-            "redbarrel": "redberyltest.in",
-            "red barrel test": "redberyltest.in",
-            "redbarreltest": "redberyltest.in",
-            "red very": "redberyltest.in",
-            "redvery": "redberyltest.in",
-            "red very test": "redberyltest.in",
-            "redverytest": "redberyltest.in"
-        }
+            # Use LLM to normalize the command
+            if hasattr(self, 'llm_utils') and self.llm_utils:
+                prompt = f"""
+                You are a voice command interpreter for a web assistant. Normalize the following voice command to make it more processable:
 
-        # Check for redberyltest variations in the text
-        for wrong, correct in domain_corrections.items():
-            if wrong in text.lower():
-                # Replace the wrong domain with the correct one
-                pattern = re.compile(re.escape(wrong), re.IGNORECASE)
-                text = pattern.sub(correct, text)
-                print(f"\nℹ️ Corrected domain name from '{wrong}' to '{correct}'")
+                "{text}"
 
-        # Ensure proper spacing in URLs
-        if "goto" in text:
-            # Split the command and URL
-            parts = text.split("goto")
-            if len(parts) == 2:
-                command = parts[0].strip()
-                url = parts[1].strip()
-                # Ensure there's a space after goto
-                text = f"{command}goto {url}"
+                Apply these transformations:
+                1. For navigation commands:
+                   - Convert "go to", "navigate to", "open", "visit" to "goto" format
+                   - Convert spoken URL formats (e.g., "dot com", "dot in") to proper URL notation
+                   - If the user is trying to go to redberyltest.in (or any variation of it), normalize to "goto www.redberyltest.in"
+                   - For other domains, preserve the user's intent but ensure proper URL formatting
 
-        # Special handling for navigation commands
-        goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+)', re.IGNORECASE)
-        goto_match = goto_pattern.search(text)
+                2. For other commands:
+                   - Preserve the original intent
+                   - Fix any obvious speech recognition errors
+                   - Ensure proper spacing and formatting
 
-        if goto_match:
-            domain = goto_match.group(1).strip()
-            # Check if this is a redberyltest.in variation that wasn't caught earlier
-            if any(variation in domain.lower() for variation in ["red", "beryl", "berry", "barrel", "very"]):
-                # Replace the entire command with a clean version
-                text = f"goto redberyltest.in"
-                print(f"\nℹ️ Detected possible redberyltest.in reference, normalized command to: '{text}'")
+                Return ONLY the normalized command text without any explanations.
+                """
 
-        return text
+                try:
+                    # Try different LLM methods based on what's available
+                    if hasattr(self.llm_utils, 'get_llm_response'):
+                        normalized_text = self.llm_utils.get_llm_response(prompt)
+                    elif hasattr(self.llm_utils.llm_provider, 'generate_content'):
+                        response = self.llm_utils.llm_provider.generate_content(prompt)
+                        normalized_text = response.text
+                    elif hasattr(self.llm_utils.llm_provider, 'generate'):
+                        normalized_text = self.llm_utils.llm_provider.generate(prompt)
+
+                    if normalized_text:
+                        # Clean up the normalized text
+                        normalized_text = normalized_text.strip().strip('"\'').strip()
+                        logger.info(f"LLM normalized command: '{text}' → '{normalized_text}'")
+                        print(f"\nℹ️ LLM normalized command: '{text}' → '{normalized_text}'")
+                        return normalized_text
+                except Exception as e:
+                    logger.error(f"Error using LLM for command normalization: {e}")
+                    # Fall back to original text if LLM fails
+
+            # If LLM is not available or failed, use basic pattern matching
+            goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+)', re.IGNORECASE)
+            goto_match = goto_pattern.search(text)
+
+            if goto_match:
+                domain = goto_match.group(1).strip()
+                # Basic check for redberyltest.in variations
+                if any(variation in domain.lower() for variation in ["red", "beryl", "berry", "barrel", "very"]):
+                    text = f"goto www.redberyltest.in"
+                    print(f"\nℹ️ Detected possible redberyltest.in reference, normalized command to: '{text}'")
+
+            return text
+
+        except Exception as e:
+            logger.error(f"Error processing command: {e}")
+            return text
 
     def _display_recognized_text(self, text, engine_name):
         """Display the recognized text with enhanced visibility"""

@@ -12,6 +12,7 @@ import re
 import datetime
 import queue
 from playwright.async_api import async_playwright
+import speech_recognition as sr
 
 # Import constants
 from webassist.voice_assistant.constants import (
@@ -452,6 +453,26 @@ class SimpleVoiceAssistant:
 
         logger.info(f"Processing command: {command}")
 
+        # HIGHEST PRIORITY HANDLER: Check for redberyltest.in at the very beginning
+        # This catches the command before any other processing
+        command_lower = command.lower()
+
+        # Direct check for redberyltest.in or variations
+        if any(term in command_lower for term in ["redberyltest.in", "redberyl test", "red beryl test", "railway station"]):
+            logger.info(f"TOP-LEVEL EXACT MATCH for redberyltest.in: '{command}'")
+            await self.navigate_to("https://www.redberyltest.in")
+            await self.speak("Navigating to redberyltest.in")
+            return True
+
+        # Check for "go to" + anything containing "red" and "test" or similar combinations
+        if (("go to" in command_lower or "goto" in command_lower or "navigate to" in command_lower) and
+            (("red" in command_lower and any(term in command_lower for term in ["test", "beryl", "berry", "barrel"])) or
+             "railway" in command_lower)):
+            logger.info(f"TOP-LEVEL GO TO + KEYWORDS MATCH for redberyltest.in: '{command}'")
+            await self.navigate_to("https://www.redberyltest.in")
+            await self.speak("Navigating to redberyltest.in")
+            return True
+
         # Log the command for history tracking
         self._add_to_command_history(command)
 
@@ -463,30 +484,20 @@ class SimpleVoiceAssistant:
             return await self._process_text_command(command)
 
     async def _process_voice_command(self, command):
-        """Process a voice command with enhanced handling"""
-        logger.info(f"Processing voice command: {command}")
-
-        # First check if there's a pending confirmation
-        if self.pending_confirmation:
-            confirmation_result = await self._check_confirmation(command)
-            if confirmation_result is not None:
-                return confirmation_result
-
-        # Handle exit commands - require confirmation
-        if any(exit_cmd in command.lower() for exit_cmd in ["exit", "quit", "goodbye", "bye", "stop"]):
-            logger.info("Exit command received via voice - requesting confirmation")
-            return await self._request_confirmation("exit the assistant", timeout=15)
-
-        # Handle help command
-        if command.lower() in ["help", "help me", "what can you do", "show commands", "available commands"]:
-            logger.info("Help command received via voice")
-            await self.help_command()
+        """Process voice commands with improved accuracy and generic handling"""
+        if not command:
             return True
 
-        # Handle command history request
-        if any(history_cmd in command.lower() for history_cmd in ["show history", "command history", "previous commands", "what did i say"]):
-            logger.info("Command history request received")
-            await self._show_command_history()
+        logger.info(f"Processing voice command: {command}")
+        original_command = command  # Keep the original for reference
+        command_lower = command.lower()
+
+        # SPECIAL CASE: Direct check for redberyltest.in BEFORE any other processing
+        # This is a completely separate handler that runs before any other processing
+        if any(term in command_lower for term in ["redberyltest.in", "redberyl", "red beryl", "red barrel", "red berry", "railway station"]):
+            logger.info(f"EXACT MATCH for redberyltest.in: '{command}'")
+            await self.navigate_to("https://www.redberyltest.in")
+            await self.speak("Navigating to redberyltest.in")
             return True
 
         # Handle repeat last command
@@ -522,42 +533,18 @@ class SimpleVoiceAssistant:
             await self.switch_recognizer_mode("text")
             return True
 
-        # Process navigation commands with improved pattern matching
-        # Define a more comprehensive regex pattern for navigation commands
-        goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+(?:\.\w+)+)', re.IGNORECASE)
-        goto_match = goto_pattern.search(command)
-
-        if goto_match or command.lower().startswith("go to ") or command.lower().startswith("navigate to ") or command.lower().startswith("goto "):
+        # Process navigation commands directly
+        if command.lower().startswith("go to ") or command.lower().startswith("navigate to ") or command.lower().startswith("goto "):
             logger.info("Navigation command detected")
 
             # Extract the URL part
-            if goto_match:
-                url = goto_match.group(1).strip()
-                logger.info(f"Extracted URL using regex pattern: {url}")
-            elif command.lower().startswith("goto "):
+            if command.lower().startswith("goto "):
                 url = command[5:].strip()
             else:
                 url = command.split(" ", 2)[-1].strip()
 
             # Preserve the exact domain name as specified by the user
             original_domain = url
-
-            # Special handling for redberyltest.in with more variations
-            redberyl_variations = [
-                "red beryl test", "redberyl test", "redberyltest", "red beryl", "redberyl",
-                "red berry test", "redberry test", "redberry", "red berry",
-                "red barrel test", "red barrel", "redbarrel", "redbarreltest",
-                "red very test", "red very", "redvery", "redverytest"
-            ]
-
-            # Check if any variation is in the domain
-            if any(variation in original_domain.lower() for variation in redberyl_variations):
-                # User is likely trying to go to redberyltest.in
-                url = "redberyltest.in"
-                logger.info(f"Detected attempt to navigate to redberyltest.in, corrected URL to: {url}")
-                await self.speak(f"Navigating to redberyltest.in")
-            else:
-                await self.speak(f"Navigating to {url}")
 
             # Ensure the URL is properly formatted
             if not url.startswith(("http://", "https://")):
@@ -566,10 +553,62 @@ class SimpleVoiceAssistant:
             # Remove any trailing slashes or spaces
             url = url.rstrip('/ ')
 
-            # Log the final URL we're navigating to
-            logger.info(f"Final navigation URL: {url} (original input: {original_domain})")
+            # Log the exact URL we're navigating to
+            logger.info(f"Navigating to URL: {url} (original input: {original_domain})")
 
-            # Navigate to the URL
+            # Special handling for redberyltest.in
+            if any(variant in original_domain.lower() for variant in [
+                "red beryl test", "redberyl test", "redberyltest",
+                "red berry test", "redberry test"
+            ]):
+                # User is likely trying to go to redberyltest.in
+                url = "https://www.redberyltest.in"
+                logger.info(f"Detected attempt to navigate to redberyltest.in, corrected URL to: {url}")
+
+            # Use LLM to verify the domain if available
+            if hasattr(self, 'llm_utils') and self.llm_utils:
+                try:
+                    # Create a prompt to verify the domain
+                    prompt = f"""
+                    The user is trying to navigate to: "{original_domain}"
+
+                    Analyze if this is likely a speech recognition error for a common domain.
+
+                    If it's clearly a speech recognition error for "redberyltest.in", respond with ONLY "redberyltest.in".
+                    If it's a legitimate domain like "redbus.in" or any other valid domain, respond with ONLY the original domain: "{original_domain}".
+
+                    Return ONLY the domain name without any explanations.
+                    """
+
+                    # Get the verified domain from the LLM
+                    verified_domain = None
+
+                    # Try different LLM methods based on what's available
+                    if hasattr(self.llm_utils, 'get_llm_response'):
+                        logger.info("Using LLM to verify domain...")
+                        verified_domain = await self.llm_utils.get_llm_response(prompt)
+                    elif hasattr(self.llm_utils.llm_provider, 'generate_content'):
+                        logger.info("Using LLM to verify domain...")
+                        response = self.llm_utils.llm_provider.generate_content(prompt)
+                        verified_domain = response.text
+                    elif hasattr(self.llm_utils.llm_provider, 'generate'):
+                        logger.info("Using LLM to verify domain...")
+                        verified_domain = await self.llm_utils.llm_provider.generate(prompt)
+
+                    # Clean up the verified domain
+                    if verified_domain:
+                        verified_domain = verified_domain.strip().strip('"\'').strip().lower()
+
+                        if verified_domain == "redberyltest.in":
+                            url = "https://www.redberyltest.in"
+                            logger.info(f"LLM verified domain as redberyltest.in, corrected URL to: {url}")
+                        else:
+                            logger.info(f"LLM verified domain as: {verified_domain}, keeping original URL")
+
+                except Exception as e:
+                    logger.error(f"Error verifying domain with LLM: {e}")
+                    # Continue with the current URL if verification fails
+
             await self.navigate_to(url)
             return True
 
@@ -4599,11 +4638,17 @@ Voice commands require confirmation for critical actions like exiting the applic
             1. NAVIGATION COMMANDS:
                - Convert "go to", "navigate to", "open", "visit", "browse to", "load" to "goto " format
                - Convert spoken URL formats (e.g., "dot com", "dot in") to proper URL notation
-               - IMPORTANT: For domain corrections, follow these rules:
-                 * ONLY correct domains when the user is clearly trying to go to a specific site
-                 * If the user says something like "red beryl test" or similar variations, they likely mean "redberyltest.in"
-                 * Do NOT convert legitimate domains like "redbus.in" to other domains unless it's clear from context
-                 * Respect the user's intent - don't change domains unless you're confident it's a speech recognition error
+               - CRITICAL DOMAIN CORRECTION RULES:
+                 * HIGHEST PRIORITY: If the command contains ANY of these patterns, ALWAYS convert to "go to redberyltest.in":
+                   - "red beryl test", "red berry test", "red barrel test", "redberry test", "redberyl test"
+                   - "railway station", "railway test", "railway", "red way", "red rail"
+                   - "red test", "red desk", "red best", "red rest"
+                   - ANY phrase containing both "red" and "test" or "desk" or "best" or "rest"
+                   - ANY phrase containing both "red" and "beryl" or "berry" or "barrel" or "very"
+                   - ANY phrase containing "railway" or "red way" or "red rail"
+                   - ANY phrase that sounds remotely like "redberyltest" or "railway station"
+                 * EXTREMELY IMPORTANT: For this specific application, prioritize detecting "redberyltest.in" over all other domains
+                 * For other domains, only correct when you're confident it's a speech recognition error
 
             2. CLICK COMMANDS:
                - Standardize "click on", "press", "tap", "select", "choose" to "click " format
@@ -4661,31 +4706,853 @@ Voice commands require confirmation for critical actions like exiting the applic
             return text  # Return original text if normalization fails
 
     async def _listen_voice(self):
-        """Listen for voice input and return the recognized text"""
-        if not self.recognizer:
-            logger.error("No speech recognizer available")
-            return None
-
+        """Listen for voice commands with improved recognition"""
         try:
-            logger.info("Starting voice recognition...")
-            # Use the recognizer's listen method
-            text = await self.recognizer.listen()
+            with sr.Microphone() as source:
+                logger.info("Listening for voice command...")
+                # Adjust for ambient noise
+                self.recognizer.adjust_for_ambient_noise(source, duration=0.5)
+                # Increase timeout and phrase time limit for better recognition
+                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=5)
 
-            if text:
-                logger.info(f"Recognized text: {text}")
+                try:
+                    # Use Google's speech recognition with language specification
+                    text = self.recognizer.recognize_google(audio, language='en-US')
+                    logger.info(f"Recognized text: {text}")
 
-                # Use LLM to normalize the command if available
-                normalized_text = await self._normalize_command_with_llm(text)
+                    # Normalize the recognized text
+                    text = text.lower().strip()
 
-                return normalized_text
-            else:
-                logger.warning("No speech detected")
-                return None
+                    # Log the raw recognition for debugging
+                    logger.debug(f"Raw voice recognition: {text}")
+
+                    return text
+                except sr.UnknownValueError:
+                    logger.warning("Could not understand audio")
+                    await self.speak("I couldn't understand that. Could you please repeat?")
+                except sr.RequestError as e:
+                    logger.error(f"Could not request results; {e}")
+                    await self.speak("Sorry, there was an error with the speech recognition service.")
         except Exception as e:
             logger.error(f"Error in voice recognition: {e}")
-            import traceback
-            logger.error(traceback.format_exc())
-            return None
+            await self.speak("Sorry, there was an error with the microphone.")
+        return None
+
+    async def _process_voice_command(self, command):
+        """Process voice commands with improved accuracy"""
+        if not command:
+            return True
+
+        logger.info(f"Processing voice command: {command}")
+
+        # First, try to normalize the command using LLM
+        try:
+            normalized_command = await self._normalize_command_with_llm(command)
+            if normalized_command:
+                logger.info(f"LLM normalized command: {normalized_command}")
+                command = normalized_command
+        except Exception as e:
+            logger.warning(f"Error in command normalization: {e}")
+
+        # Process navigation commands with improved pattern matching
+        goto_pattern = re.compile(r'(?:goto|go\s+to|navigate\s+to|open|visit)\s+([\w\.-]+(?:\.\w+)+)', re.IGNORECASE)
+        goto_match = goto_pattern.search(command)
+
+        if goto_match or command.lower().startswith(("go to ", "navigate to ", "goto ", "open ", "visit ")):
+            logger.info("Navigation command detected")
+
+            # Extract the URL part
+            if goto_match:
+                url = goto_match.group(1).strip()
+            else:
+                # Split on common navigation verbs
+                parts = re.split(r'(?:go\s+to|navigate\s+to|goto|open|visit)\s+', command, flags=re.IGNORECASE)
+                url = parts[-1].strip() if len(parts) > 1 else command
+
+            logger.info(f"Extracted URL: {url}")
+
+            # Use LLM to normalize the domain name with improved prompting
+            try:
+                prompt = f"""You are a domain name normalization expert. Given a voice command for website navigation, extract and normalize the domain name.
+
+                Voice Command: "{command}"
+                Extracted URL: "{url}"
+
+                Common patterns to recognize:
+                - "railway station", "railway", "railway test" → "redberyltest.in"
+                - "red berry test", "redberry", "red beryl" → "redberyltest.in"
+                - "red barrel test", "redbarrel" → "redberyltest.in"
+                - Any variation of "redberyltest" → "redberyltest.in"
+
+                Please provide:
+                1. The normalized domain name
+                2. A confidence score (0-1)
+                3. An explanation of the correction
+
+                Format your response as JSON:
+                {{
+                    "normalized_domain": "domain.com",
+                    "confidence": 0.95,
+                    "explanation": "brief explanation of the correction"
+                }}"""
+
+                llm_response = await self.llm_utils.get_completion(prompt)
+                try:
+                    response_data = json.loads(llm_response)
+                    if response_data.get("confidence", 0) > 0.6:  # Lowered threshold for better coverage
+                        url = response_data["normalized_domain"]
+                        logger.info(f"LLM corrected domain: {url} (confidence: {response_data['confidence']})")
+                        logger.info(f"Correction explanation: {response_data['explanation']}")
+                        await self.speak(f"Navigating to {url}")
+                    else:
+                        logger.info(f"LLM confidence too low ({response_data.get('confidence', 0)}), using original URL")
+                        await self.speak(f"Navigating to {url}")
+                except json.JSONDecodeError:
+                    logger.warning("Failed to parse LLM response as JSON, using original URL")
+                    await self.speak(f"Navigating to {url}")
+            except Exception as e:
+                logger.warning(f"Error using LLM for domain normalization: {e}")
+                await self.speak(f"Navigating to {url}")
+
+            # Ensure the URL is properly formatted
+            if not url.startswith(("http://", "https://")):
+                url = "https://" + url
+
+            # Remove any trailing slashes or spaces
+            url = url.rstrip('/ ')
+
+            # Log the final URL we're navigating to
+            logger.info(f"Final navigation URL: {url}")
+
+            # Navigate to the URL
+            await self.navigate_to(url)
+            return True
+
+        # Handle state search commands
+        state_search_match = re.search(STATE_SEARCH_PATTERN, command.lower())
+        if state_search_match:
+            state_name = state_search_match.group(1).strip()
+            logger.info(f"State search command detected for state: {state_name}")
+            await self.speak(f"Searching for state: {state_name}")
+            success = await self.search_state(state_name)
+            if success:
+                logger.info(f"Successfully found and selected state: {state_name}")
+                await self.speak(f"Found and selected state: {state_name}")
+            else:
+                logger.warning(f"Could not find state: {state_name}")
+                await self.speak(f"Could not find state: {state_name}")
+            return True
+
+        # Handle tab click commands
+        tab_match = re.search(TAB_PATTERN, command.lower())
+        if tab_match:
+            tab_name = tab_match.group(1)
+            logger.info(f"Tab click command detected for tab: {tab_name}")
+            await self.speak(f"Looking for {tab_name} tab...")
+            success = await self.click_tab(tab_name)
+            if success:
+                logger.info(f"Successfully clicked {tab_name} tab")
+                await self.speak(f"Clicked {tab_name} tab")
+            else:
+                logger.warning(f"Could not find {tab_name} tab")
+                await self.speak(f"Could not find {tab_name} tab")
+            return True
+
+        # Handle login commands with improved pattern matching
+        login_patterns = [
+            r'(?:login|log in|signin|sign in)',
+            r'(?:click|press|tap|select)(?:\s+(?:the|on))?\s+(?:login|log in|signin|sign in)(?:\s+button)?',
+            r'(?:find|locate)(?:\s+(?:the))?\s+(?:login|log in|signin|sign in)(?:\s+button)?'
+        ]
+
+        if any(re.search(pattern, command.lower()) for pattern in login_patterns):
+            logger.info("Login command detected")
+            await self.speak("Looking for login button...")
+
+            # Get the raw LLM response for login button selectors if available
+            raw_llm_response = None
+            if hasattr(self, 'llm_utils') and self.llm_utils:
+                try:
+                    # Get the current page context
+                    context = await self._get_page_context()
+                    logger.info(f"Got page context: URL={context.get('url', '')}, Title={context.get('title', '')}")
+
+                    # Ask the LLM for login button selectors
+                    prompt = f"Generate CSS selectors for finding a login button on this page. Return ONLY a JSON array of selector strings. Context: {context.get('url', '')}, {context.get('title', '')}"
+                    logger.info("Requesting login button selectors from LLM")
+
+                    if hasattr(self.llm_utils.llm_provider, 'generate_content'):
+                        response = self.llm_utils.llm_provider.generate_content(prompt)
+                        raw_llm_response = response.text
+                    else:
+                        # Fallback to a simple method if generate_content is not available
+                        logger.warning("LLM provider doesn't have generate_content method, using fallback selectors")
+                        raw_llm_response = '["#signInButton", "button:has-text(\\"Login\\")", "button:has-text(\\"Sign in\\")"]'
+
+                    logger.info(f"Raw LLM response for selectors: {raw_llm_response[:100]}..." if len(raw_llm_response) > 100 else raw_llm_response)
+                except Exception as e:
+                    logger.error(f"Error getting LLM response: {e}")
+
+            # Try to click the login button with parsed selectors if available
+            logger.info("Attempting to click login button")
+            success = await self.click_login_button(raw_llm_response)
+
+            if success:
+                logger.info("Successfully clicked login button")
+                await self.speak("Clicked login button")
+            else:
+                logger.warning("Could not find login button")
+                await self.speak("Could not find login button")
+            return True
+
+
+        # Improved email command pattern with better handling of speech recognition errors
+        email_command_match = re.search(r'(?:enter|input|type|fill|put|use|set|write)\s+(?:email|emaol|e-mail|email\s+address|email\s+adddress|mail|e mail)\s+([^\s]+@[^\s]+(?:\.[^\s]+)+)(?:\s+(?:and|with|&|plus|using)?\s+(?:password|pass|pwd|pword|oassword|pasword|passord)\s+(\S+))?', command, re.IGNORECASE)
+
+        if email_command_match:
+            # Extract the email - everything after "enter email" and before "and password" if present
+            email_part = email_command_match.group(1).strip()
+            password_part = email_command_match.group(2) if email_command_match.group(2) else None
+
+            logger.info(f"Email command detected. Extracted email: '{email_part}', password: {'*****' if password_part else 'None'}")
+
+            # Create appropriate match objects with the extracted values
+            if password_part:
+                # Both email and password were provided
+                logger.info("Both email and password provided in command")
+                enter_email_match = type('obj', (object,), {'groups': lambda: (email_part, password_part)})
+                email_only_match = None
+            else:
+                # Only email was provided
+                logger.info("Only email provided in command")
+                enter_email_match = None
+                email_only_match = type('obj', (object,), {'group': lambda _: email_part})
+        else:
+            # If the direct approach didn't work, fall back to regex patterns
+            logger.info("Direct email pattern didn't match, trying fallback patterns")
+
+            # First check for email and password pattern
+            enter_email_match = re.search(r'enter\s+(?:email|emaol|e-mail|email\s+address|email\s+adddress)\s+(\S+)(?:\s+(?:and|with|&)?\s+(?:password|pass|pwd|pword|oassword)\s+(\S+))?', command, re.IGNORECASE)
+
+            if not enter_email_match:
+                # Try more flexible patterns for email and password
+                logger.info("Trying flexible email+password patterns")
+                enter_patterns = [
+                    r'(?:enter|input|type)\s+(?:email|email address|email adddress)?\s*(\S+)\s+(?:and|with)\s+(?:password|pass|p[a-z]*)?\s*(\S+)',
+                    r'(?:fill|fill in)\s+(?:with)?\s*(?:email|username|email address|email adddress)?\s*(\S+)\s+(?:and|with)\s*(?:password|pass|p[a-z]*)?\s*(\S+)',
+                    r'(?:enter|input|type|fill|put)\s+(?:in|the)?\s*(?:email|emaol|e-mail|username|email address|email adddress)?\s*(\S+@\S+)(?:\s+(?:and|with|&)?\s+(?:password|pass|pwd|pword|oassword)\s+(\S+))?',
+                    r'(?:email|emaol|e-mail|username|email address|email adddress)\s+(?:is|as)?\s*(\S+@\S+)(?:\s+(?:and|with|&)?\s+(?:password|pass|pwd|pword|oassword)\s+(?:is|as)?\s*(\S+))?'
+                ]
+
+                for pattern in enter_patterns:
+                    enter_email_match = re.search(pattern, command, re.IGNORECASE)
+                    if enter_email_match:
+                        logger.info(f"Matched email+password pattern: {pattern}")
+                        break
+
+            # If no match for email+password, check for just email
+            email_only_match = None
+            if not enter_email_match:
+                logger.info("No email+password pattern matched, trying email-only patterns")
+                email_only_patterns = [
+                    r'enter (?:email|email address|email adddress)\s+(\S+@\S+)',
+                    r'(?:enter|input|type|fill)\s+(?:ema[a-z]+|email address|email adddress)?\s*(\S+@\S+)',  # Handle typos like 'emaol'
+                    r'(?:email|ema[a-z]+|email address|email adddress)\s+(\S+@\S+)',  # Handle typos like 'emaol'
+                    r'(?:enter|input|type|fill)\s+(?:email|ema[a-z]+|email address|email adddress)\s+(\S+)',  # Catch any word after email command
+                    r'(?:email|ema[a-z]+|email address|email adddress)\s+(\S+)'  # Catch any word after email
+                ]
+
+                for pattern in email_only_patterns:
+                    logger.debug(f"Trying email-only pattern: {pattern}")
+                    email_only_match = re.search(pattern, command, re.IGNORECASE)
+                    if email_only_match:
+                        logger.info(f"Matched email-only pattern: {pattern}")
+                        break
+
+        if email_only_match:
+            # Handle email-only case
+            email = email_only_match.group(1)
+            logger.info(f"Processing email-only command with email: {email}")
+            await self.speak(f"Entering email: {email}")
+            success = await self.fill_email_field(email)
+            if success:
+                logger.info("Successfully filled email field")
+                await self.speak("Email entered successfully")
+            else:
+                logger.warning("Could not find email field")
+                await self.speak("Could not find email field")
+            return True
+
+        elif enter_email_match:
+            email, password = enter_email_match.groups()
+            logger.info(f"Processing email+password command with email: {email}, password: {'*****' if password else 'None'}")
+
+            if password:
+                await self.speak(f"Entering email and password...")
+            else:
+                await self.speak(f"Entering email...")
+
+            success = await self.login_with_credentials(email, password if password else "")
+            if success:
+                logger.info("Login successful")
+                await self.speak("Login successful")
+            else:
+                logger.warning("Login failed")
+                await self.speak("Login failed")
+            return True
+
+        # Simple login pattern
+        logger.info("Checking for login pattern")
+        login_match = re.search(r'login with email\s+(\S+)\s+and password\s+(\S+)', command, re.IGNORECASE)
+
+        # If simple pattern doesn't match, try more flexible patterns
+        if not login_match:
+            logger.info("Simple login pattern didn't match, trying flexible patterns")
+            login_patterns = [
+                r'log[a-z]* w[a-z]* (?:email|email address)?\s+(\S+)\s+[a-z]*xxxxx (?:password|pass|p[a-z]*)\s+(\S+)',
+                r'login\s+(?:with|using|w[a-z]*)\s+(?:email|email address)?\s*(\S+)\s+(?:and|with|[a-z]*)\s+(?:password|pass|p[a-z]*)\s*(\S+)',
+                r'(?:login|sign in|signin)\s+(?:with|using|w[a-z]*)?\s*(?:email|username)?\s*(\S+)\s+(?:and|with|[a-z]*)\s*(?:password|pass|p[a-z]*)?\s*(\S+)',
+                r'log[a-z]*.*?(\S+@\S+).*?(\S+)'
+            ]
+
+            for pattern in login_patterns:
+                login_match = re.search(pattern, command, re.IGNORECASE)
+                if login_match:
+                    logger.info(f"Matched login pattern: {pattern}")
+                    break
+
+        # If we found a login match with any pattern
+        if login_match:
+            email, password = login_match.groups()
+            logger.info(f"Login command detected with email: {email}, password: {'*****'}")
+            await self.speak(f"Attempting to log in with email {email}")
+            success = await self.login_with_credentials(email, password)
+            if success:
+                logger.info("Login successful")
+                await self.speak("Login successful")
+            else:
+                logger.warning("Login failed")
+                await self.speak("Login failed")
+            return True
+
+        # Handle "enter password" command with more robust pattern matching
+        logger.info("Checking for password-only command")
+        password_match = re.search(r'(?:enter|input|type|fill|use)\s+(?:the\s+)?(?:password|pass|passwd|pwd|pword|oassword)\s+(\S+)', command, re.IGNORECASE)
+        if not password_match:
+            password_match = re.search(r'(?:password|pass|passwd|pwd|pword|oassword)\s+(?:is\s+)?(\S+)', command, re.IGNORECASE)
+
+        if password_match:
+            password = password_match.group(1)
+            logger.info("Password-only command detected")
+            await self.speak("Entering password")
+            success = await self.fill_password_field(password)
+            if success:
+                logger.info("Successfully filled password field")
+                await self.speak("Password entered successfully")
+            else:
+                logger.warning("Could not find password field")
+                await self.speak("Could not find password field")
+            return True
+
+        # Try specialized handler first
+        if self.specialized_handler:
+            logger.info("Delegating to specialized handler")
+            try:
+                if await self.specialized_handler.handle_command(command):
+                    logger.info("Command handled by specialized handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in specialized handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try form filling handler
+        if self.form_filling_handler:
+            logger.info("Delegating to form filling handler")
+            try:
+                if await self.form_filling_handler.handle_command(command):
+                    logger.info("Command handled by form filling handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in form filling handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try business purpose handler
+        if self.business_purpose_handler:
+            logger.info("Delegating to business purpose handler")
+            try:
+                if await self.business_purpose_handler.handle_command(command):
+                    logger.info("Command handled by business purpose handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in business purpose handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try member/manager handler
+        if self.member_manager_handler:
+            logger.info("Delegating to member/manager handler")
+            try:
+                if await self.member_manager_handler.handle_command(command):
+                    logger.info("Command handled by member/manager handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in member/manager handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try selection handler
+        if self.selection_handler:
+            logger.info("Delegating to selection handler")
+            try:
+                if await self.selection_handler.handle_command(command):
+                    logger.info("Command handled by selection handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in selection handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+        # Try navigation handler
+        if self.navigation_handler:
+            logger.info("Delegating to navigation handler")
+            try:
+                if await self.navigation_handler.handle_command(command):
+                    logger.info("Command handled by navigation handler")
+                    return True
+            except Exception as e:
+                logger.error(f"Error in navigation handler: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
+
+
+
+        # Handle clicking orders with specific IDs (with typo tolerance for "click")
+        order_id_match = re.search(r'(?:click|clcik|clik|clck|clk)\s+(?:on\s+)?(?:the\s+)?order\s+(?:with\s+)?(?:id\s+)?(\d+)', command.lower())
+        if order_id_match:
+            order_id = order_id_match.group(1).strip()
+            logger.info(f"Order click command detected for order ID: {order_id}")
+            await self.speak(f"Looking for order with id {order_id}...")
+
+            # Get the raw LLM response for order selectors if available
+            raw_llm_response = None
+            if hasattr(self, 'llm_utils') and self.llm_utils:
+                try:
+                    # Get the current page context
+                    context = await self._get_page_context()
+                    logger.info(f"Got page context for order search: URL={context.get('url', '')}, Title={context.get('title', '')}")
+
+                    # Ask the LLM for order selectors
+                    prompt = f"Generate CSS selectors for finding an order with ID {order_id} on this page. Return ONLY a JSON array of selector strings. Context: {context.get('url', '')}, {context.get('title', '')}"
+                    logger.info(f"Requesting order selectors from LLM for order ID: {order_id}")
+
+                    # Use the correct method based on what's available
+                    if hasattr(self.llm_utils, 'get_llm_response'):
+                        logger.info("Using get_llm_response method")
+                        raw_llm_response = await self.llm_utils.get_llm_response(prompt)
+                    elif hasattr(self.llm_utils.llm_provider, 'generate_content'):
+                        logger.info("Using generate_content method")
+                        response = self.llm_utils.llm_provider.generate_content(prompt)
+                        raw_llm_response = response.text
+                    elif hasattr(self.llm_utils.llm_provider, 'generate'):
+                        logger.info("Using generate method")
+                        raw_llm_response = await self.llm_utils.llm_provider.generate(prompt)
+                    else:
+                        # Fallback to a simple method if none of the above are available
+                        logger.warning("No suitable LLM method found, using fallback selectors")
+                        raw_llm_response = '["#order-' + order_id + '", "[id=\\"' + order_id + '\\"]", "tr[data-order-id=\\"' + order_id + '\\"]"]'
+
+                    logger.info(f"Raw LLM response for order selectors: {raw_llm_response[:100]}..." if len(raw_llm_response) > 100 else raw_llm_response)
+                except Exception as e:
+                    logger.error(f"Error getting LLM response for order selectors: {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
+
+            # Try to click the order with the specific ID
+            logger.info(f"Attempting to click order with ID: {order_id}")
+            success = await self.click_order_with_id(order_id, raw_llm_response)
+
+            if success:
+                logger.info(f"Successfully clicked order with ID {order_id}")
+                await self.speak(f"Clicked order with id {order_id}")
+            else:
+                logger.warning(f"Could not find order with ID {order_id}")
+                await self.speak(f"Could not find order with id {order_id}")
+            return True
+
+        # Handle principal address dropdown specifically
+        principal_address_match = re.search(r'(?:click|select|open|choose)\s+(?:on\s+)?(?:the\s+)?(?:principal\s+address|principal\s+address\s+dropdown)', command.lower())
+        if principal_address_match:
+            logger.info("Principal address dropdown command detected")
+            await self.speak("Looking for principal address dropdown...")
+
+            success = await self.click_principal_address_dropdown()
+
+            if success:
+                logger.info("Successfully clicked principal address dropdown")
+                await self.speak("Clicked principal address dropdown")
+            else:
+                logger.warning("Could not find principal address dropdown")
+                await self.speak("Could not find principal address dropdown")
+            return True
+
+        # Handle billing info dropdown specifically
+        billing_info_match = re.search(r'(?:click|select|open|choose)\s+(?:on\s+)?(?:the\s+)?(?:billing\s+info|billing\s+information|billing\s+dropdown)', command.lower())
+        if billing_info_match:
+            logger.info("Billing info dropdown command detected")
+            await self.speak("Looking for billing info dropdown...")
+
+            success = await self.click_billing_info_dropdown()
+
+            if success:
+                logger.info("Successfully clicked billing info dropdown")
+                await self.speak("Clicked billing info dropdown")
+            else:
+                logger.warning("Could not find billing info dropdown")
+                await self.speak("Could not find billing info dropdown")
+            return True
+
+        # Handle mailing info dropdown specifically
+        mailing_info_match = re.search(r'(?:click|select|open|choose)\s+(?:on\s+)?(?:the\s+)?(?:mailing\s+info|mailing\s+information|mailing\s+dropdown)', command.lower())
+        if mailing_info_match:
+            logger.info("Mailing info dropdown command detected")
+            await self.speak("Looking for mailing info dropdown...")
+
+            success = await self.click_mailing_info_dropdown()
+
+            if success:
+                logger.info("Successfully clicked mailing info dropdown")
+                await self.speak("Clicked mailing info dropdown")
+            else:
+                logger.warning("Could not find mailing info dropdown")
+                await self.speak("Could not find mailing info dropdown")
+            return True
+
+
+
+        # Handle service checkbox specifically
+        service_match = re.search(r'(?:click|check|select|toggle|mark)\s+(?:on\s+)?(?:the\s+)?(?:service|service\s+checkbox)(?:\s+(?:for|labeled|named|with\s+name|with\s+label)\s+(.+))?', command.lower())
+        if service_match:
+            logger.info("Service checkbox command detected")
+
+            # Check if a specific service name was provided
+            service_name = service_match.group(1) if service_match.group(1) else None
+
+            if service_name:
+                logger.info(f"Looking for service checkbox for: {service_name}")
+                await self.speak(f"Looking for service {service_name}...")
+
+                success = await self.click_service_checkbox(service_name)
+
+                if success:
+                    logger.info(f"Successfully clicked service checkbox for {service_name}")
+                    await self.speak(f"Selected service {service_name}")
+                else:
+                    logger.warning(f"Could not find service checkbox for {service_name}")
+                    await self.speak(f"Could not find service {service_name}")
+            else:
+                logger.info("No specific service name provided")
+                await self.speak("Please specify which service you want to select")
+            return True
+
+        # Handle payment option checkbox specifically
+        payment_option_match = re.search(r'(?:click|check|select|toggle|mark)\s+(?:on\s+)?(?:the\s+)?(?:pay\s+now|pay\s+later)', command.lower())
+        if payment_option_match:
+            payment_option = payment_option_match.group(0).lower()
+            if "now" in payment_option:
+                option = "Pay now"
+            else:
+                option = "Pay later"
+
+            logger.info(f"{option} checkbox command detected")
+            await self.speak(f"Looking for {option} checkbox...")
+
+            success = await self.click_payment_option(option)
+
+            if success:
+                logger.info(f"Successfully clicked {option} checkbox")
+                await self.speak(f"Selected {option}")
+            else:
+                logger.warning(f"Could not find {option} checkbox")
+                await self.speak(f"Could not find {option} checkbox")
+            return True
+
+        # Handle checkbox specifically - with optional name
+        checkbox_match = re.search(r'(?:click|check|select|toggle|mark)\s+(?:on\s+)?(?:the\s+)?(?:checkbox|check\s+box|tick\s+box)(?:\s+(?:for|labeled|named|with\s+name|with\s+label)\s+(.+))?', command.lower())
+        if checkbox_match:
+            logger.info("Checkbox command detected")
+
+            # Check if a specific checkbox name was provided
+            checkbox_name = checkbox_match.group(1) if checkbox_match.group(1) else None
+
+            if checkbox_name:
+                logger.info(f"Looking for checkbox with name: {checkbox_name}")
+                await self.speak(f"Looking for checkbox labeled {checkbox_name}...")
+
+                success = await self.click_checkbox(checkbox_name)
+
+                if success:
+                    logger.info(f"Successfully clicked checkbox labeled {checkbox_name}")
+                    await self.speak(f"Clicked checkbox labeled {checkbox_name}")
+                else:
+                    logger.warning(f"Could not find checkbox labeled {checkbox_name}")
+                    await self.speak(f"Could not find checkbox labeled {checkbox_name}")
+            else:
+                logger.info("Looking for any checkbox")
+                await self.speak("Looking for checkbox...")
+
+                success = await self.click_checkbox()
+
+                if success:
+                    logger.info("Successfully clicked checkbox")
+                    await self.speak("Clicked checkbox")
+                else:
+                    logger.warning("Could not find checkbox")
+                    await self.speak("Could not find checkbox")
+            return True
+
+        # Handle add billing info button specifically
+        add_billing_info_match = re.search(r'(?:click|press|tap|select)\s+(?:on\s+)?(?:the\s+)?(?:add\s+billing\s+info|add\s+billing\s+information|add\s+billing)(?:\s+button)?', command.lower())
+        if add_billing_info_match:
+            logger.info("Add billing info button command detected")
+            await self.speak("Looking for add billing info button...")
+
+            success = await self.click_add_billing_info_button()
+
+            if success:
+                logger.info("Successfully clicked add billing info button")
+                await self.speak("Clicked add billing info button")
+            else:
+                logger.warning("Could not find add billing info button")
+                await self.speak("Could not find add billing info button")
+            return True
+
+        # Handle organizer dropdown specifically
+        organizer_dropdown_match = re.search(r'(?:click|select|open|choose)\s+(?:on\s+)?(?:the\s+)?(?:organizer\s+dropdown|select\s+organizer|organizer)', command.lower())
+        if organizer_dropdown_match:
+            logger.info("Organizer dropdown command detected")
+            await self.speak("Looking for organizer dropdown...")
+
+            success = await self.click_organizer_dropdown()
+
+            if success:
+                logger.info("Successfully clicked organizer dropdown")
+                await self.speak("Clicked organizer dropdown")
+            else:
+                logger.warning("Could not find organizer dropdown")
+                await self.speak("Could not find organizer dropdown")
+            return True
+
+        # Handle add organizer button specifically
+        add_organizer_match = re.search(r'(?:click|press|tap|select)\s+(?:on\s+)?(?:the\s+)?(?:add\s+organizer)(?:\s+button)?', command.lower())
+        if add_organizer_match:
+            logger.info("Add organizer button command detected")
+            await self.speak("Looking for add organizer button...")
+
+            success = await self.click_add_organizer_button()
+
+            if success:
+                logger.info("Successfully clicked add organizer button")
+                await self.speak("Clicked add organizer button")
+            else:
+                logger.warning("Could not find add organizer button")
+                await self.speak("Could not find add organizer button")
+            return True
+
+        # Handle generic click commands (with typo tolerance for "click")
+        click_match = re.search(r'(?:click|clcik|clik|clck|clk)\s+(?:on\s+)?(?:the\s+)?(.+)', command.lower())
+        if click_match:
+            element_name = click_match.group(1).strip()
+
+            # Skip if it's a login button (already handled above)
+            if "login" in element_name or "sign in" in element_name:
+                return True
+
+            # Skip if it's the principal address dropdown (already handled above)
+            if "principal address" in element_name:
+                return True
+
+            await self.speak(f"Looking for {element_name}...")
+
+            # Get the raw LLM response for element selectors if available
+            raw_llm_response = None
+            if hasattr(self, 'llm_utils') and self.llm_utils:
+                try:
+                    # Get the current page context
+                    context = await self._get_page_context()
+
+                    # Ask the LLM for element selectors
+                    prompt = f"Generate CSS selectors for finding a {element_name} on this page. Return ONLY a JSON array of selector strings. Context: {context.get('url', '')}, {context.get('title', '')}"
+                    # Use the correct method based on what's available
+                    if hasattr(self.llm_utils, 'get_llm_response'):
+                        raw_llm_response = await self.llm_utils.get_llm_response(prompt)
+                    elif hasattr(self.llm_utils.llm_provider, 'generate_content'):
+                        response = self.llm_utils.llm_provider.generate_content(prompt)
+                        raw_llm_response = response.text
+                    elif hasattr(self.llm_utils.llm_provider, 'generate'):
+                        raw_llm_response = await self.llm_utils.llm_provider.generate(prompt)
+                    else:
+                        # Fallback to a simple method if none of the above are available
+                        raw_llm_response = '["button:has-text(\\"' + element_name + '\\")"]'
+                    print(f"🔍 Raw LLM response:\n {raw_llm_response}")
+                except Exception as e:
+                    print(f"Error getting LLM response: {e}")
+
+            # Try to click the element with parsed selectors if available
+            success = await self.click_element(element_name, raw_llm_response)
+
+            if success:
+                await self.speak(f"Clicked {element_name}")
+            else:
+                await self.speak(f"Could not find {element_name}")
+            return True
+
+        # Handle various navigation commands with or without spaces
+        navigation_prefixes = {
+            "goto ": 5,           # "goto example.com"
+            "go to ": 6,          # "go to example.com"
+            "navigate to ": 12,    # "navigate to example.com"
+            "open ": 5,           # "open example.com"
+            "browse to ": 10,      # "browse to example.com"
+            "visit ": 6,          # "visit example.com"
+            "load ": 5,           # "load example.com"
+            "show me ": 8,        # "show me example.com"
+            "take me to ": 11      # "take me to example.com"
+        }
+
+        # Check for any of the navigation command prefixes
+        for prefix, length in navigation_prefixes.items():
+            if command.lower().startswith(prefix):
+                # Extract the URL from the command
+                url = command[length:].strip()
+                logger.info(f"Detected navigation command '{prefix.strip()}' for URL: {url}")
+
+                # Preserve the exact domain name as specified by the user
+                original_domain = url
+
+                # Ensure the URL is properly formatted
+                if not url.startswith(("http://", "https://")):
+                    url = "https://" + url
+
+                # Remove any trailing slashes or spaces
+                url = url.rstrip('/ ')
+
+                # Log the exact URL we're navigating to
+                logger.info(f"Navigating to URL: {url} (original input: {original_domain})")
+
+                # Special handling for specific domains
+                if "redberyltest.in" in original_domain.lower() and "redberyltest.in" not in url.lower():
+                    # Force the correct domain for redberyltest.in
+                    url = "https://www.redberyltest.in"
+                    logger.info(f"Corrected URL to: {url}")
+
+                # Special handling for other domains that might be misrecognized
+                domain_corrections = {
+                    "web.com": "web.com",
+                    "google.com": "google.com",
+                    "facebook.com": "facebook.com",
+                    "twitter.com": "twitter.com",
+                    "youtube.com": "youtube.com",
+                    "amazon.com": "amazon.com",
+                    "reddit.com": "reddit.com",
+                    "wikipedia.org": "wikipedia.org",
+                    "linkedin.com": "linkedin.com",
+                    "github.com": "github.com"
+                }
+
+                # Check if any domain correction is needed
+                for correct_domain, replacement in domain_corrections.items():
+                    # Use fuzzy matching to detect similar domains
+                    if correct_domain in original_domain.lower() and correct_domain not in url.lower():
+                        url = f"https://www.{replacement}"
+                        logger.info(f"Corrected URL to: {url}")
+                        break
+
+                await self.navigate_to(url)
+                return True
+
+        # Process page commands (refresh, back, forward, etc.)
+        page_commands = {
+            # Refresh commands
+            "refresh": self._refresh_page,
+            "refresh page": self._refresh_page,
+            "reload": self._refresh_page,
+            "reload page": self._refresh_page,
+            "update page": self._refresh_page,
+            "update": self._refresh_page,
+
+            # Back commands
+            "back": self._go_back,
+            "go back": self._go_back,
+            "previous page": self._go_back,
+            "previous": self._go_back,
+            "return": self._go_back,
+
+            # Forward commands
+            "forward": self._go_forward,
+            "go forward": self._go_forward,
+            "next page": self._go_forward,
+            "next": self._go_forward,
+
+            # Scroll commands
+            "scroll down": self._scroll_down,
+            "scroll up": self._scroll_up,
+            "page down": self._scroll_down,
+            "page up": self._scroll_up,
+            "bottom": self._scroll_to_bottom,
+            "top": self._scroll_to_top,
+            "scroll to bottom": self._scroll_to_bottom,
+            "scroll to top": self._scroll_to_top
+        }
+
+        # Check for exact matches first
+        if command.lower() in page_commands:
+            logger.info(f"Processing page command: {command.lower()}")
+            await page_commands[command.lower()]()
+            return True
+
+        # Check for commands that start with these prefixes
+        for cmd_prefix, handler in page_commands.items():
+            if command.lower().startswith(cmd_prefix + " "):
+                logger.info(f"Processing page command with prefix: {cmd_prefix}")
+                await handler()
+                return True
+
+        # If no handler processed the command, try to process it as a URL
+        if command.startswith("http") or command.startswith("www.") or "." in command:
+            # Skip if it contains common command words
+            if any(word in command.lower() for word in ["goto", "go to", "navigate", "click", "enter", "login", "sign in",
+                                                       "refresh", "reload", "back", "forward", "scroll", "page"]):
+                logger.info(f"Skipping URL processing for command that looks like another command: {command}")
+                return False
+
+            url = command.strip()
+
+            # Preserve the exact domain name as specified by the user
+            original_domain = url
+
+            if not url.startswith("http"):
+                url = "https://" + url
+
+            # Remove any trailing slashes or spaces
+            url = url.rstrip('/ ')
+
+            # Log the exact URL we're navigating to
+            logger.info(f"Processing as direct URL: {url} (original input: {original_domain})")
+
+            # Double-check that we're using the correct domain for specific sites
+            if "redberyltest.in" in original_domain.lower() and "redberyltest.in" not in url.lower():
+                # Force the correct domain for redberyltest.in
+                url = "https://www.redberyltest.in"
+                logger.info(f"Corrected URL to: {url}")
+
+            await self.navigate_to(url)
+            return True
+
+        # If nothing else worked, let the user know
+        await self.speak("I'm not sure how to process that command. Type 'help' for available commands.")
+        return True
 
 def text_input_thread(assistant):
     """Thread for handling text input"""
@@ -5004,3 +5871,1581 @@ if __name__ == "__main__":
 
         logger.error(f"aFatal error: {e}")
         traceback.print_exc()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
